@@ -1,0 +1,266 @@
+@using EventSupportApp.Data
+@namespace EventSupportApp.Components.Pages
+@inject AppDbContext DbContext
+
+<div class="row g-4">
+    <!-- Input Form Column -->
+    <div class="col-lg-5">
+        <div class="premium-card">
+            <div class="card-header-accent"></div>
+            <div class="p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="fs-3">📝</span>
+                    <h3 class="m-0" style="color: var(--pertamina-blue);">Input Acara & Kebutuhan</h3>
+                </div>
+                <p class="text-muted">Masukkan data acara secara manual beserta detail kebutuhan logistik IT.</p>
+                
+                <EditForm Model="NewEvent" OnValidSubmit="HandleSubmitEvent">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Nama Acara / Kegiatan</label>
+                        <input type="text" class="form-control premium-input" @bind="NewEvent.NamaAcara" placeholder="Contoh: Rapat Pleno Dekan, Kuliah Umum" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Lokasi Ruangan</label>
+                        <input type="text" class="form-control premium-input" @bind="NewEvent.Lokasi" placeholder="Contoh: Gedung A Lantai 2, Aula Rektorat" required />
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">Tanggal</label>
+                            <input type="date" class="form-control premium-input" @bind="NewEventDate" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">Waktu Mulai</label>
+                            <input type="time" class="form-control premium-input" @bind="NewEventStart" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-dark">Estimasi Selesai</label>
+                        <input type="time" class="form-control premium-input" @bind="NewEventEnd" required />
+                    </div>
+
+                    <div class="border-top pt-3 mb-4">
+                        <h5 class="fw-bold mb-3 d-flex align-items-center justify-content-between" style="color: var(--pertamina-blue);">
+                            <span>🛠️ Kebutuhan Support IT</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" @onclick="AddNeedInputRow">+ Tambah</button>
+                        </h5>
+
+                        @if (NewNeedsList.Count == 0)
+                        {
+                            <div class="text-center py-3 text-muted border rounded bg-light">
+                                Belum ada kebutuhan ditambahkan. Klik tombol di atas untuk menambah kebutuhan.
+                            </div>
+                        }
+                        else
+                        {
+                            @for (int i = 0; i < NewNeedsList.Count; i++)
+                            {
+                                var index = i;
+                                <div class="row g-2 mb-2 align-items-center">
+                                    <div class="col-5">
+                                        <select class="form-select premium-input py-2" @bind="NewNeedsList[index].JenisKebutuhan">
+                                            <option value="Proyektor">Proyektor</option>
+                                            <option value="Sound System">Sound System</option>
+                                            <option value="Layar / Screen">Layar / Screen</option>
+                                            <option value="Multimedia Laptop">Multimedia Laptop</option>
+                                            <option value="Kabel Roll & Kelistrikan">Kabel & Listrik</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="number" class="form-control premium-input py-2" @bind="NewNeedsList[index].Jumlah" min="1" placeholder="Qty" />
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="text" class="form-control premium-input py-2" @bind="NewNeedsList[index].Keterangan" placeholder="Ket" />
+                                    </div>
+                                    <div class="col-1 text-end">
+                                        <button type="button" class="btn btn-link text-danger p-0" @onclick="() => RemoveNeedInputRow(index)">❌</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3" style="font-family: 'Outfit'; font-size: 1.05rem;">
+                        💾 Simpan Acara Baru
+                    </button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <!-- List Column -->
+    <div class="col-lg-7">
+        <div class="premium-card h-100">
+            <div class="card-header-accent"></div>
+            <div class="p-4">
+                <h3 class="mb-4" style="color: var(--pertamina-blue);">Daftar Inputan Acara Aktif</h3>
+                
+                @if (ActiveEvents.Count == 0)
+                {
+                    <div class="text-center py-5 text-muted">
+                        <span class="fs-1 d-block mb-3">📭</span>
+                        <h5>Belum ada acara terdaftar</h5>
+                        <p>Silakan input data acara di panel sebelah kiri.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Acara</th>
+                                    <th>Waktu & Lokasi</th>
+                                    <th>Kebutuhan IT</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var eventItem in ActiveEvents)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong class="text-dark">@eventItem.NamaAcara</strong>
+                                            <div class="text-muted small">ID: @eventItem.IdAcara</div>
+                                        </td>
+                                        <td>
+                                            <div>📅 @eventItem.Tanggal.ToString("dd MMM yyyy")</div>
+                                            <div class="small text-muted">🕒 @eventItem.JamMulai.ToString(@"hh\:mm") - @eventItem.JamSelesai.ToString(@"hh\:mm")</div>
+                                            <div class="small fw-semibold text-primary">📍 @eventItem.Lokasi</div>
+                                        </td>
+                                        <td>
+                                            <ul class="list-unstyled m-0 p-0 small">
+                                                @foreach (var need in eventItem.Kebutuhan)
+                                                {
+                                                    <li><span class="text-primary">🔹</span> @need.JenisKebutuhan (@need.Jumlah pcs) <span class="text-muted">@need.Keterangan</span></li>
+                                                }
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge @GetStatusClass(eventItem.StatusAcara)">
+                                                @GetStatusIndicator(eventItem.StatusAcara) @eventItem.StatusAcara
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<SupportAcara> ActiveEvents { get; set; } = new();
+
+    [Parameter]
+    public User? LoggedInUser { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnNotify { get; set; }
+
+    [Parameter]
+    public EventCallback OnEventSaved { get; set; }
+
+    // Helpdesk Form Bindings
+    private SupportAcara NewEvent { get; set; } = new();
+    private DateTime NewEventDate { get; set; } = DateTime.Today;
+    private TimeOnly NewEventStart { get; set; } = new TimeOnly(8, 0);
+    private TimeOnly NewEventEnd { get; set; } = new TimeOnly(17, 0);
+    private List<KebutuhanAcara> NewNeedsList { get; set; } = new()
+    {
+        new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Layar utama" },
+        new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Wireless mic 2 buah" }
+    };
+
+    private void AddNeedInputRow()
+    {
+        NewNeedsList.Add(new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "" });
+    }
+
+    private void RemoveNeedInputRow(int index)
+    {
+        if (index >= 0 && index < NewNeedsList.Count)
+        {
+            NewNeedsList.RemoveAt(index);
+        }
+    }
+
+    private async Task HandleSubmitEvent()
+    {
+        try
+        {
+            // Parse times
+            NewEvent.JamMulai = NewEventStart.ToTimeSpan();
+            NewEvent.JamSelesai = NewEventEnd.ToTimeSpan();
+            NewEvent.Tanggal = NewEventDate;
+            NewEvent.IdUserHelpdesk = LoggedInUser?.IdUser ?? 2;
+            NewEvent.StatusAcara = "Belum Ditugaskan";
+
+            // Add needs
+            foreach (var need in NewNeedsList)
+            {
+                NewEvent.Kebutuhan.Add(new KebutuhanAcara
+                {
+                    JenisKebutuhan = need.JenisKebutuhan,
+                    Jumlah = need.Jumlah,
+                    Keterangan = need.Keterangan
+                });
+            }
+
+            DbContext.SupportAcara.Add(NewEvent);
+            await DbContext.SaveChangesAsync();
+
+            await OnNotify.InvokeAsync($"Acara '{NewEvent.NamaAcara}' berhasil disimpan dan berstatus 'Belum Ditugaskan' (Merah).");
+            
+            // Reset form
+            NewEvent = new SupportAcara();
+            NewEventDate = DateTime.Today;
+            NewEventStart = new TimeOnly(8, 0);
+            NewEventEnd = new TimeOnly(17, 0);
+            NewNeedsList = new List<KebutuhanAcara>
+            {
+                new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Layar utama" },
+                new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Wireless mic 2 buah" }
+            };
+
+            await OnEventSaved.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            await OnNotify.InvokeAsync($"Gagal menyimpan acara: {ex.Message}");
+        }
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Belum Ditugaskan" => "red",
+            "Ditugaskan" => "yellow",
+            "Dikonfirmasi" => "green",
+            "Dokumen Diunggah" => "blue",
+            "Selesai" => "gray",
+            _ => "gray"
+        };
+    }
+
+    private string GetStatusIndicator(string status)
+    {
+        return status switch
+        {
+            "Belum Ditugaskan" => "🔴",
+            "Ditugaskan" => "🟡",
+            "Dikonfirmasi" => "🟢",
+            "Dokumen Diunggah" => "🔵",
+            "Selesai" => "⚫",
+            _ => "⚪"
+        };
+    }
+}

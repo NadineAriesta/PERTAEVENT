@@ -1,0 +1,129 @@
+@using EventSupportApp.Data
+@namespace EventSupportApp.Components.Pages
+
+<div class="senior-friendly-container">
+    <div class="senior-card mb-4 text-center" style="background: linear-gradient(135deg, var(--pertamina-blue-light) 0%, #E2E8F0 100%);">
+        <span class="fs-1 d-block mb-2">👨‍🔧</span>
+        <h1 class="senior-title m-0">Halo, Pak @GetTeknisiName(CurrentTeknisiId)!</h1>
+        <p class="senior-subtitle mb-0">Halaman ini dibuat dengan huruf besar agar gampang dibaca bapak-bapak teknisi.</p>
+    </div>
+
+    @if (MyAssignments.Count == 0)
+    {
+        <div class="senior-card text-center border-success border-3">
+            <span class="fs-1 d-block mb-3">✅</span>
+            <h2 class="text-success mb-2" style="font-weight: 800;">TIDAK ADA TUGAS</h2>
+            <p class="senior-subtitle text-muted">Semua tugas bapak sudah selesai. Terima kasih banyak!</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var assign in MyAssignments)
+        {
+            var isSigned = assign.WaktuKonfirmasi != null;
+            var isUploaded = !string.IsNullOrEmpty(assign.DokumentasiKegiatanFile);
+            
+            <div class="senior-card mb-4 border-start border-5 @(isSigned ? (isUploaded ? "border-success" : "border-primary") : "border-warning")">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge @(isSigned ? (isUploaded ? "bg-success" : "bg-primary") : "bg-warning text-dark") fs-5 px-3 py-2 fw-bold">
+                        @if (!isSigned) { <span>⏳ Belum Sign (Kuning)</span> }
+                        else if (!isUploaded) { <span>🤝 Sudah Sign / Dikonfirmasi (Hijau)</span> }
+                        else { <span>📷 Foto Terupload (Biru)</span> }
+                    </span>
+                </div>
+
+                <h2 class="text-dark mb-3" style="font-size: 1.8rem; font-weight: 800;">
+                    📍 @assign.Acara?.NamaAcara
+                </h2>
+
+                <div class="senior-detail-box">
+                    <div class="senior-detail-row">
+                        <span class="senior-detail-label">TEMPAT:</span>
+                        <span class="senior-detail-val text-primary">🏢 @assign.Acara?.Lokasi</span>
+                    </div>
+                    <div class="senior-detail-row">
+                        <span class="senior-detail-label">TANGGAL:</span>
+                        <span class="senior-detail-val">📅 @assign.Acara?.Tanggal.ToString("dd MMMM yyyy")</span>
+                    </div>
+                    <div class="senior-detail-row">
+                        <span class="senior-detail-label">JAM KERJA:</span>
+                        <span class="senior-detail-val text-danger">🕒 @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")</span>
+                    </div>
+                    <div class="senior-detail-row">
+                        <span class="senior-detail-label">MANAJER PIC:</span>
+                        <span class="senior-detail-val">✍️ Pak Adit (Admin)</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-dark fw-bold mb-2">🛠️ BARANG YANG HARUS DIBAWA & DISET-UP:</h4>
+                    <div class="bg-light p-3 rounded border border-2">
+                        @foreach (var need in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
+                        {
+                            <div class="fs-4 fw-bold text-dark mb-2">
+                                🔳 @need.JenisKebutuhan - <span class="text-primary">@need.Jumlah buah</span>
+                                <div class="fs-6 text-muted ms-4">Catatan: @(string.IsNullOrEmpty(need.Keterangan) ? "-" : need.Keterangan)</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-column gap-3 mt-4">
+                    @if (!isSigned)
+                    {
+                        <button class="senior-btn-giant senior-btn-confirm" @onclick="() => OnOpenSignature.InvokeAsync(assign)">
+                            ✍️ TEKAN DI SINI UNTUK TANDA TANGAN (SIGN)
+                        </button>
+                    }
+                    else if (!isUploaded)
+                    {
+                        <div class="alert alert-success border-2 text-center fs-5 py-2 fw-bold">
+                            ✅ Bapak sudah tanda tangan pada @assign.WaktuKonfirmasi?.ToString("HH:mm WIB")
+                        </div>
+                        <button class="senior-btn-giant senior-btn-upload" @onclick="() => OnOpenUpload.InvokeAsync(assign)">
+                            📷 TEKAN DI SINI UNTUK UNGGAH FOTO BUKTI
+                        </button>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success border-2 text-center fs-5 py-2 fw-bold mb-0">
+                            📷 Foto bukti setup sudah dikirim ke Admin. Menunggu verifikasi Pak Adit.
+                        </div>
+                        <div class="text-center mt-2">
+                            <img src="@assign.DokumentasiKegiatanFile" class="img-fluid rounded border border-3" style="max-height: 250px; border-color: var(--pertamina-green) !important;" />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int CurrentTeknisiId { get; set; }
+
+    [Parameter]
+    public List<Penugasan> Assignments { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<Penugasan> OnOpenSignature { get; set; }
+
+    [Parameter]
+    public EventCallback<Penugasan> OnOpenUpload { get; set; }
+
+    private List<Penugasan> MyAssignments => 
+        Assignments.Where(a => a.IdTeknisi == CurrentTeknisiId && a.Acara?.StatusAcara != "Selesai").ToList();
+
+    private string GetTeknisiName(int id)
+    {
+        return id switch
+        {
+            1 => "Joko",
+            2 => "Budi",
+            3 => "Bambang",
+            _ => "Teknisi Lapangan"
+        };
+    }
+}

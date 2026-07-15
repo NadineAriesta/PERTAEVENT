@@ -1,0 +1,424 @@
+@using EventSupportApp.Data
+@namespace EventSupportApp.Components.Pages
+
+<!-- Stats Widgets -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-2">
+        <div class="stats-card border-red">
+            <div class="stats-label">Belum Ditugaskan</div>
+            <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Belum Ditugaskan")</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="stats-card border-yellow">
+            <div class="stats-label">Menunggu Sign</div>
+            <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Ditugaskan")</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="stats-card border-green">
+            <div class="stats-label">Dikonfirmasi (Signed)</div>
+            <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Dikonfirmasi")</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="stats-card border-blue">
+            <div class="stats-label">Dokumen Terupload</div>
+            <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Dokumen Diunggah")</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="stats-card border-secondary">
+            <div class="stats-label">Total Aktif</div>
+            <div class="stats-value">@ActiveEvents.Count</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="stats-card border-info">
+            <div class="stats-label">Total Selesai</div>
+            <div class="stats-value">@HistoryEvents.Count</div>
+        </div>
+    </div>
+</div>
+
+<!-- Workflow Roadmap Guide -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="premium-card p-4">
+            <h4 class="mb-3 d-flex align-items-center gap-2" style="color: var(--pertamina-blue);">
+                <span>🔄</span> Alur Kerja & Status Penugasan IT Support
+            </h4>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3 bg-light p-3 rounded-3 border">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-danger rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">1</span>
+                    <div>
+                        <strong class="d-block text-dark small">Input Acara (Helpdesk)</strong>
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 0.72rem;">🔴 Belum Ditugaskan</span>
+                    </div>
+                </div>
+                <div class="text-muted d-none d-md-block fs-5">➡️</div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-warning text-dark rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">2</span>
+                    <div>
+                        <strong class="d-block text-dark small">Tugaskan Teknisi (Admin)</strong>
+                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 0.72rem;">🟡 Menunggu Sign</span>
+                    </div>
+                </div>
+                <div class="text-muted d-none d-md-block fs-5">➡️</div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">3</span>
+                    <div>
+                        <strong class="d-block text-dark small">Tanda Tangan (Teknisi)</strong>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.72rem;">🔵 Dikonfirmasi</span>
+                    </div>
+                </div>
+                <div class="text-muted d-none d-md-block fs-5">➡️</div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">4</span>
+                    <div>
+                        <strong class="d-block text-dark small">Unggah Bukti Setup (Teknisi)</strong>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.72rem;">🟢 Dokumen Diunggah</span>
+                    </div>
+                </div>
+                <div class="text-muted d-none d-md-block fs-5">➡️</div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-secondary rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">5</span>
+                    <div>
+                        <strong class="d-block text-dark small">Penyelesaian (Admin)</strong>
+                        <span class="badge bg-light text-secondary border" style="font-size: 0.72rem;">⚫ Selesai (Riwayat)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Active Events & Assignments Panel -->
+    <div class="col-12">
+        <div class="premium-card">
+            <div class="card-header-accent"></div>
+            <div class="p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+                    <div>
+                        <h3 class="m-0" style="color: var(--pertamina-blue);">Monitor Alur Penugasan & Approval</h3>
+                        <p class="text-muted m-0">Menyelesaikan masalah miss-komunikasi approval tanda tangan (sign) dan bukti foto teknisi.</p>
+                    </div>
+                </div>
+
+                @if (ActiveEvents.Count == 0)
+                {
+                    <div class="text-center py-5 text-muted">
+                        <span class="fs-1 d-block mb-3">🎉</span>
+                        <h5>Semua tugas telah diselesaikan atau belum ada input acara baru</h5>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3">
+                        @foreach (var eventItem in ActiveEvents)
+                        {
+                            var assignment = GetAssignmentForEvent(eventItem.IdAcara);
+                            
+                            <div class="col-12">
+                                <div class="event-card status-@GetStatusColorName(eventItem.StatusAcara) p-3">
+                                    <div class="row align-items-center g-3">
+                                        <!-- Event Info -->
+                                        <div class="col-md-3">
+                                            <h5 class="mb-1 text-dark" style="font-family: 'Outfit';">@eventItem.NamaAcara</h5>
+                                            <div class="small text-muted">
+                                                <span>📍</span> @eventItem.Lokasi <br/>
+                                                <span>🕒</span> @eventItem.Tanggal.ToString("dd MMM yyyy") | @eventItem.JamMulai.ToString(@"hh\:mm") - @eventItem.JamSelesai.ToString(@"hh\:mm")
+                                            </div>
+                                        </div>
+
+                                        <!-- Needs List -->
+                                        <div class="col-md-3 border-start">
+                                            <strong class="small text-secondary d-block mb-1">🛠️ Kebutuhan Support IT:</strong>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                @foreach (var need in eventItem.Kebutuhan)
+                                                {
+                                                    <span class="badge bg-light text-dark border small">@need.JenisKebutuhan (@need.Jumlah)</span>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <!-- Assignment Details & Sign Tracker -->
+                                        <div class="col-md-3 border-start">
+                                            <strong class="small text-secondary d-block mb-1">📋 Detail Penugasan & Tanda Tangan:</strong>
+                                            @if (assignment == null)
+                                            {
+                                                <span class="text-danger small fw-bold">❌ Belum ada Teknisi ditugaskan</span>
+                                            }
+                                            else
+                                            {
+                                                <div class="small">
+                                                    <div><strong>Teknisi:</strong> @assignment.Teknisi?.User?.Username (@assignment.Teknisi?.Spesialisasi)</div>
+                                                    <div class="mt-1 d-flex flex-column gap-1">
+                                                        <!-- Admin Sign Tracker -->
+                                                        <span class="text-success fw-bold">
+                                                            ✍️ Disetujui Admin (Pak Adit)
+                                                        </span>
+                                                        <!-- Technician Sign Tracker -->
+                                                        @if (assignment.WaktuKonfirmasi != null)
+                                                        {
+                                                            <span class="text-success fw-bold">
+                                                                🤝 Dikonfirmasi Teknisi: @assignment.WaktuKonfirmasi?.ToString("dd/MM HH:mm")
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-danger">
+                                                                ⏳ Menunggu Sign Teknisi
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <!-- Action Buttons / Status Timeline -->
+                                        <div class="col-md-3 text-md-end border-start">
+                                            <div class="mb-2">
+                                                <span class="status-badge @GetStatusClass(eventItem.StatusAcara)">
+                                                    @GetStatusIndicator(eventItem.StatusAcara) @eventItem.StatusAcara
+                                                </span>
+                                            </div>
+
+                                            @if (eventItem.StatusAcara == "Belum Ditugaskan")
+                                            {
+                                                <button class="btn btn-danger btn-sm px-3 rounded-pill fw-bold" @onclick="() => OnOpenAssignModal.InvokeAsync(eventItem)">
+                                                    ➕ Tugaskan Teknisi
+                                                </button>
+                                            }
+                                            else if (eventItem.StatusAcara == "Ditugaskan")
+                                            {
+                                                <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill" disabled>
+                                                    ⏳ Menunggu Teknisi Sign
+                                                </button>
+                                            }
+                                            else if (eventItem.StatusAcara == "Dikonfirmasi")
+                                            {
+                                                <button class="btn btn-outline-primary btn-sm px-3 rounded-pill" disabled>
+                                                    ⏳ Menunggu Foto Dokumentasi
+                                                </button>
+                                            }
+                                            else if (eventItem.StatusAcara == "Dokumen Diunggah" && assignment != null)
+                                            {
+                                                <div class="d-flex flex-column gap-1 align-items-md-end">
+                                                    <button class="btn btn-sm btn-outline-info mb-1 rounded-pill" @onclick="() => OnPreviewDocumentation.InvokeAsync(assignment)">
+                                                        🔍 Lihat Bukti Foto
+                                                    </button>
+                                                    <button class="btn btn-success btn-sm px-3 rounded-pill fw-bold" @onclick="() => OnCompleteEvent.InvokeAsync(eventItem)">
+                                                        ✅ Tuntaskan Acara
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Big Database Tables: Mapping Teknisi & Riwayat -->
+    <div class="col-12">
+        <div class="premium-card">
+            <div class="card-header-accent"></div>
+            <div class="p-4">
+                <ul class="nav nav-tabs mb-3" id="dbTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link @(ActiveTab == "teknisi" ? "active fw-bold" : "")" @onclick='() => ActiveTab = "teknisi"'>
+                            👥 Mapping & Ketersediaan Teknisi (Database Besar)
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link @(ActiveTab == "riwayat" ? "active fw-bold" : "")" @onclick='() => ActiveTab = "riwayat"'>
+                            📁 Riwayat Acara Selesai (Archive)
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- Mapping Teknisi Tab -->
+                    @if (ActiveTab == "teknisi")
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Teknisi</th>
+                                        <th>Spesialisasi</th>
+                                        <th>Status Ketersediaan</th>
+                                        <th>Tugas Aktif</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var tek in Technicians)
+                                    {
+                                        var activeTaskCount = ActiveEvents.Count(e => e.PenugasanList.Any(p => p.IdTeknisi == tek.IdTeknisi));
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold text-dark">@tek.User?.Username</div>
+                                                <div class="text-muted small">User ID: @tek.IdUser</div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">@tek.Spesialisasi</span>
+                                            </td>
+                                            <td>
+                                                @if (tek.StatusKetersediaan == "Tersedia")
+                                                {
+                                                    <span class="badge bg-success-subtle text-success border border-success px-2 py-1">Tersedia</span>
+                                                }
+                                                else if (tek.StatusKetersediaan == "Sibuk")
+                                                {
+                                                    <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1">Sibuk (Sedang Bertugas)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1">Tidak Aktif</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-dark">@activeTaskCount Acara</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    <!-- Riwayat Tab -->
+                    @if (ActiveTab == "riwayat")
+                    {
+                        @if (HistoryEvents.Count == 0)
+                        {
+                            <div class="text-center py-4 text-muted">
+                                Belum ada riwayat acara yang dituntaskan.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Acara</th>
+                                            <th>Teknisi</th>
+                                            <th>Tanggal Acara</th>
+                                            <th>Waktu Selesai</th>
+                                            <th>Bukti Dokumentasi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var riwayat in HistoryEvents)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <strong class="text-dark">@riwayat.NamaAcara</strong>
+                                                    <div class="text-muted small">Riwayat ID: @riwayat.IdRiwayat</div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-dark">@riwayat.NamaTeknisi</span>
+                                                </td>
+                                                <td>📅 @riwayat.TanggalAcara.ToString("dd MMM yyyy")</td>
+                                                <td>🕒 @riwayat.WaktuSelesai.ToString("dd MMM yyyy HH:mm")</td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(riwayat.DokumentasiKegiatanFile))
+                                                    {
+                                                        <img src="@riwayat.DokumentasiKegiatanFile" class="img-thumbnail" style="max-height: 60px; cursor: pointer; border: 2px solid var(--pertamina-blue);" @onclick="() => OnPreviewImage.InvokeAsync(riwayat.DokumentasiKegiatanFile)" title="Klik untuk memperbesar" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted small">Tidak ada foto</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<SupportAcara> ActiveEvents { get; set; } = new();
+
+    [Parameter]
+    public List<MappingTeknisi> Technicians { get; set; } = new();
+
+    [Parameter]
+    public List<Penugasan> Assignments { get; set; } = new();
+
+    [Parameter]
+    public List<RiwayatAcara> HistoryEvents { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<SupportAcara> OnOpenAssignModal { get; set; }
+
+    [Parameter]
+    public EventCallback<Penugasan> OnPreviewDocumentation { get; set; }
+
+    [Parameter]
+    public EventCallback<SupportAcara> OnCompleteEvent { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnPreviewImage { get; set; }
+
+    private string ActiveTab { get; set; } = "teknisi";
+
+    private Penugasan? GetAssignmentForEvent(int eventId)
+    {
+        return Assignments.FirstOrDefault(a => a.IdAcara == eventId);
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Belum Ditugaskan" => "red",
+            "Ditugaskan" => "yellow",
+            "Dikonfirmasi" => "green",
+            "Dokumen Diunggah" => "blue",
+            "Selesai" => "gray",
+            _ => "gray"
+        };
+    }
+
+    private string GetStatusColorName(string status)
+    {
+        return status switch
+        {
+            "Belum Ditugaskan" => "red",
+            "Ditugaskan" => "yellow",
+            "Dikonfirmasi" => "green",
+            "Dokumen Diunggah" => "blue",
+            "Selesai" => "gray",
+            _ => "gray"
+        };
+    }
+
+    private string GetStatusIndicator(string status)
+    {
+        return status switch
+        {
+            "Belum Ditugaskan" => "🔴",
+            "Ditugaskan" => "🟡",
+            "Dikonfirmasi" => "🟢",
+            "Dokumen Diunggah" => "🔵",
+            "Selesai" => "⚫",
+            _ => "⚪"
+        };
+    }
+}
