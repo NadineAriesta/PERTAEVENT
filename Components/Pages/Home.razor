@@ -36,15 +36,21 @@
                             <a style="cursor: pointer;" class="corp-nav-link" @onclick='() => ScrollToElement("about-section")'>TENTANG SISTEM</a>
                             <a style="cursor: pointer;" class="corp-nav-link" @onclick='() => ScrollToElement("help-section")'>BANTUAN</a>
                         </nav>
-                        <div class="corp-login-dropdown">
-                            <button type="button" class="corp-login-toggle" @onclick="OpenEmptyLoginModal">
-                                Login
+                        <div class="dropdown" style="position: relative;">
+                            <button type="button" class="btn btn-outline-primary rounded-3 px-3 fw-bold d-flex align-items-center gap-1" style="border: 1px solid #cce5ff; color: #005CA9; background: #f0f8ff;" @onclick="ToggleLoginDropdown">
+                                Login 
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px;"><path d="m6 9 6 6 6-6"/></svg>
                             </button>
-                            <div class="corp-login-menu">
-                                <button type="button" class="corp-login-item" @onclick='() => PrepareQuickLogin("admin")'>Admin</button>
-                                <button type="button" class="corp-login-item" @onclick='() => PrepareQuickLogin("helpdesk")'>Helpdesk</button>
-                                <button type="button" class="corp-login-item" @onclick='() => PrepareQuickLogin("pak_joko")'>Teknisi</button>
-                            </div>
+                            @if (ShowLoginDropdown)
+                            {
+                                <!-- Invisible backdrop to close dropdown when clicking outside -->
+                                <div style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index: 999;" @onclick="() => ShowLoginDropdown = false"></div>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 show" style="position: absolute; right: 0; top: 100%; min-width: 150px; border-radius: 8px; z-index: 1000;">
+                                    <li><a class="dropdown-item py-2" style="cursor: pointer;" @onclick='() => SelectLoginRoleAndOpen("Admin")'>Admin</a></li>
+                                    <li><a class="dropdown-item py-2" style="cursor: pointer;" @onclick='() => SelectLoginRoleAndOpen("Helpdesk")'>Helpdesk</a></li>
+                                    <li><a class="dropdown-item py-2" style="cursor: pointer;" @onclick='() => SelectLoginRoleAndOpen("Teknisi")'>Teknisi</a></li>
+                                </ul>
+                            }
                         </div>
                     </div>
                 </div>
@@ -235,40 +241,36 @@
                         <div class="p-4 text-start">
                             <div class="d-flex align-items-center gap-2 mb-3">
                                 <span class="fs-4">🔑</span>
-                                <h4 class="m-0 fw-bold text-white" style="font-family: 'Outfit';">IT Support Portal</h4>
+                                <h4 class="m-0 fw-bold text-white" style="font-family: 'Outfit';">Login @SelectedLoginRole</h4>
                             </div>
-                            <p class="text-white-50 small mb-4">Masuk untuk mengelola support acara PT Pertamina.</p>
+                                <p class="text-white-50 small mb-4">Silakan masukkan username dan password Anda.</p>
 
-                            @if (!string.IsNullOrEmpty(LoginErrorMessage))
-                            {
-                                <div class="alert alert-danger border-0 p-2 mb-3 text-center" style="background-color: rgba(220, 53, 69, 0.25); color: #F8D7DA; border-left: 4px solid #E31E24 !important; font-size: 0.85rem;">
-                                    ⚠️ @LoginErrorMessage
-                                </div>
-                            }
+                                @if (!string.IsNullOrEmpty(LoginErrorMessage))
+                                {
+                                    <div class="alert alert-danger border-0 p-2 mb-3 text-center" style="background-color: rgba(220, 53, 69, 0.25); color: #F8D7DA; border-left: 4px solid #E31E24 !important; font-size: 0.85rem;">
+                                        ⚠️ @LoginErrorMessage
+                                    </div>
+                                }
 
-                            <form @submit:preventDefault="HandleLogin">
-                                <div class="mb-3">
-                                    <label class="form-label text-white-50">Username</label>
-                                    <input type="text" class="form-control premium-input text-white" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);" @bind="InputUsername" placeholder="Username Anda" />
+                                <form @onsubmit="HandleLogin">
+                                    <div class="mb-3">
+                                        <label class="form-label text-white-50">Username</label>
+                                        <input type="text" class="form-control premium-input text-white" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);" @bind="InputUsername" placeholder="Username Anda" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label text-white-50">Password</label>
+                                        <input type="password" class="form-control premium-input text-white" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);" @bind="InputPassword" placeholder="••••••••" />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold rounded-3 shadow text-uppercase" style="background: #E31E24; border: none; transition: all 0.2s;">
+                                        MASUK SEBAGAI @SelectedLoginRole.ToUpper()
+                                    </button>
+                                </form>
+                                
+                                <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-link text-white-50 p-0 text-decoration-none" style="font-size: 0.8rem;" @onclick='() => PrepareQuickLogin(InputUsername)'>
+                                        (Demo: Auto-fill Password)
+                                    </button>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label text-white-50">Password</label>
-                                    <input type="password" class="form-control premium-input text-white" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);" @bind="InputPassword" placeholder="••••••••" />
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold rounded-3 shadow text-uppercase" style="background: #E31E24; border: none; transition: all 0.2s;">
-                                    MASUK PORTAL
-                                </button>
-                            </form>
-
-                            <!-- Quick Logins inside widget -->
-                            <div class="border-top border-secondary pt-3 mt-4" style="border-color: rgba(255, 255, 255, 0.12) !important;">
-                                <span class="d-block text-uppercase fw-bold text-white-50 mb-2" style="font-size: 0.7rem; letter-spacing: 0.05rem;">💡 Demo Login Cepat</span>
-                                <div class="d-flex flex-wrap gap-1.5">
-                                    <button type="button" class="btn btn-sm btn-outline-light py-1 px-2.5 rounded-pill text-white" style="font-size: 0.72rem; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);" @onclick='() => PrepareQuickLogin("admin")'>👑 Admin</button>
-                                    <button type="button" class="btn btn-sm btn-outline-light py-1 px-2.5 rounded-pill text-white" style="font-size: 0.72rem; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);" @onclick='() => PrepareQuickLogin("helpdesk")'>📝 Helpdesk</button>
-                                    <button type="button" class="btn btn-sm btn-outline-light py-1 px-2.5 rounded-pill text-white" style="font-size: 0.72rem; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);" @onclick='() => PrepareQuickLogin("pak_joko")'>👨‍🔧 Teknisi</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -278,614 +280,224 @@
 }
 else
 {
-    <!-- Header App -->
-    <header class="app-header d-flex align-items-center justify-content-between">
-        <div class="brand-title">
-            <!-- SVG Pertamina Logo -->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80" width="36" height="30" class="me-1">
-                <g transform="skewX(-25) translate(15, 2)">
-                    <rect x="42" y="10" width="40" height="20" rx="4" fill="#E31E24" />
-                    <rect x="42" y="40" width="40" height="20" rx="4" fill="#92C83E" />
-                    <rect x="10" y="32" width="20" height="48" rx="4" fill="#005CA9" />
-                </g>
-            </svg>
-            <div class="brand-text">
-                <div><span class="text-blue">Perta</span><span class="text-red">Event</span></div>
-                <span class="brand-subtitle">IT Support Portal</span>
-            </div>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-            <div class="text-end d-none d-md-block">
-                <span class="d-block fw-bold text-dark" style="font-family: 'Outfit';">@GetUserDisplayName()</span>
-                <span class="badge bg-secondary" style="font-size: 0.7rem; font-weight: 700;">Peran: @CurrentRole</span>
-            </div>
-            <button class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" @onclick="ResetDatabase" title="Reset semua data ke kondisi awal demo">
-                🔄 Reset Demo Data
-            </button>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold" @onclick="HandleLogout">
-                🚪 Keluar
-            </button>
-        </div>
-    </header>
+    <!-- ========== DASHBOARD SHELL ========== -->
+    <div class="dash-shell">
 
-<div class="container-fluid py-4" style="max-width: 1400px;">
-    
+    <!-- Sidebar -->
+    <aside class="dash-sidebar" style="background: #09203F;">
+        <div class="dash-sidebar-brand d-flex align-items-center gap-3" style="padding: 1.5rem 1.25rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1rem;">
+            <div style="background: #E31E24; color: white; font-weight: 800; font-size: 0.95rem; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(227,30,36,0.5);">
+                ES
+            </div>
+            <div style="line-height: 1.2;">
+                <div style="color: white; font-weight: 700; font-family: 'Outfit'; font-size: 0.95rem;">Event Support</div>
+                <div style="color: rgba(255,255,255,0.55); font-size: 0.7rem; margin-top: 2px;">Pertamina - Internal</div>
+            </div>
+        </div>
+
+        <div class="dash-sidebar-section">
+            <div class="dash-sidebar-label" style="margin-bottom: 0.5rem; letter-spacing: 0.15rem; color: rgba(255,255,255,0.4);">MENU</div>
+            <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "dashboard" ? "menu-active" : "")" @onclick='() => ActiveMenu = "dashboard"'><span class="dash-sidebar-menu-icon">📊</span> Dashboard</button>
+            <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "semua_acara" ? "menu-active" : "")" @onclick='() => ActiveMenu = "semua_acara"'><span class="dash-sidebar-menu-icon">📁</span> Support Acara</button>
+            <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master"'><span class="dash-sidebar-menu-icon">📋</span> Kebutuhan Acara</button>
+            <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "mapping" ? "menu-active" : "")" @onclick='() => ActiveMenu = "mapping"'><span class="dash-sidebar-menu-icon">👥</span> Mapping Teknisi</button>
+            <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon">📝</span> Penugasan Teknisi</button>
+        </div>
+
+        <div class="dash-sidebar-section" style="margin-top:auto; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
+            <div class="d-flex align-items-center gap-2 mb-3 px-2">
+                <div style="width: 32px; height: 32px; background: #005CA9; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                    @(GetUserDisplayName().Substring(0, 1))
+                </div>
+                <div style="line-height: 1.2;">
+                    <div style="color: white; font-weight: 500; font-size: 0.85rem; font-family: 'Outfit';">@GetUserDisplayName()</div>
+                    <div style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">@CurrentRole</div>
+                </div>
+            </div>
+            <button type="button" class="dash-sidebar-menu-btn text-danger" @onclick="HandleLogout"><span class="dash-sidebar-menu-icon">🚪</span> Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main">
+
     @if (!string.IsNullOrEmpty(SystemNotification))
     {
-        <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm border-0" role="alert" style="border-left: 5px solid var(--pertamina-green) !important; background-color: var(--pertamina-green-light); color: var(--pertamina-green-hover);">
-            <strong>✨ Info Sistem:</strong> @SystemNotification
+        <div class="alert alert-success alert-dismissible fade show mb-3 shadow-sm border-0" role="alert" style="border-left: 5px solid var(--pertamina-green) !important; background-color: var(--pertamina-green-light); color: var(--pertamina-green-hover); font-size: 0.88rem;">
+            <strong>✨ Info:</strong> @SystemNotification
             <button type="button" class="btn-close" @onclick="ClearNotification"></button>
         </div>
     }
 
-    <!-- Hero Banner -->
-    <div class="hero-banner p-4 p-md-5 rounded-4 mb-4 shadow-sm">
-        <div class="hero-overlay"></div>
-        <div class="position-relative z-index-1">
-            <div class="badge bg-danger mb-2 px-3 py-1.5 text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05rem;">PT Pertamina (Persero)</div>
-            <h1 class="hero-title">IT Event Support Management Portal</h1>
-            <p class="hero-lead mb-4">
-                Sistem monitoring penugasan dan persetujuan IT Support untuk memastikan kelancaran setiap agenda corporate event Pertamina secara profesional, transparan, dan realtime.
+    <!-- Breadcrumb + Page Header -->
+    <div class="dash-breadcrumb">Home / Internal Apps / <span>Event Support</span></div>
+    <div class="dash-page-header">
+        <div>
+            <h1 class="dash-page-title">Dashboard @CurrentRole</h1>
+            <p class="dash-page-subtitle">
+                @if (CurrentRole == "Admin") { <span>Pantau seluruh acara, status penugasan teknisi, dan konfirmasi secara real-time.</span> }
+                else if (CurrentRole == "Helpdesk") { <span>Input acara baru dan pantau status kebutuhan IT support.</span> }
+                else if (CurrentRole == "Teknisi") { <span>Konfirmasi tugas lapangan via tanda tangan digital dan upload bukti setup.</span> }
             </p>
-            <div class="d-flex flex-wrap gap-3">
-                <div class="hero-stat-pill">
-                    <span class="stat-icon">📅</span>
-                    <div>
-                        <span class="stat-number">@ActiveEvents.Count</span>
-                        <span class="stat-label">Acara Aktif</span>
-                    </div>
-                </div>
-                <div class="hero-stat-pill">
-                    <span class="stat-icon">👥</span>
-                    <div>
-                        <span class="stat-number">@Technicians.Count</span>
-                        <span class="stat-label">Teknisi Lapangan</span>
-                    </div>
-                </div>
-                <div class="hero-stat-pill">
-                    <span class="stat-icon">📁</span>
-                    <div>
-                        <span class="stat-number">@HistoryEvents.Count</span>
-                        <span class="stat-label">Selesai (Archive)</span>
-                    </div>
-                </div>
+        </div>
+        <div class="dash-user-pill">
+            <div>
+                <div class="dash-user-pill-name">@GetUserDisplayName()</div>
+                <div class="dash-user-pill-role">@CurrentRole</div>
+            </div>
+            <div class="dash-user-pill-avatar">@(GetUserDisplayName().Substring(0, 1))</div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="dash-stats-row">
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon bg-red">🚩</div>
+            <div>
+                <div class="dash-stat-value">@ActiveEvents.Count(e => e.StatusAcara == "Belum Ditugaskan")</div>
+                <div class="dash-stat-label">Belum ada teknisi</div>
+            </div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon bg-yellow">🤝</div>
+            <div>
+                <div class="dash-stat-value">@ActiveEvents.Count(e => e.StatusAcara == "Ditugaskan")</div>
+                <div class="dash-stat-label">Menunggu konfirmasi</div>
+            </div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon bg-green">✅</div>
+            <div>
+                <div class="dash-stat-value">@ActiveEvents.Count(e => e.StatusAcara == "Dikonfirmasi" || e.StatusAcara == "Dokumen Diunggah")</div>
+                <div class="dash-stat-label">Terkonfirmasi (sign)</div>
+            </div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon bg-blue">📁</div>
+            <div>
+                <div class="dash-stat-value">@HistoryEvents.Count</div>
+                <div class="dash-stat-label">Selesai tugas ini</div>
             </div>
         </div>
     </div>
 
     <!-- ============================================== -->
-    <!-- HELPDESK VIEW                                  -->
+    <!-- DAFTAR ACARA (Unified Event List)              -->
     <!-- ============================================== -->
+    <h3 class="dash-section-title">Daftar Acara</h3>
+
+    <!-- Filter Bar -->
+    <div class="dash-filter-bar">
+        <input type="text" class="dash-filter-search" placeholder="Cari nama acara, lokasi, atau teknisi..." @bind="SearchFilter" @bind:event="oninput" />
+        <button type="button" class="dash-filter-btn filter-active">Semua</button>
+        <button type="button" class="dash-filter-btn">Hari ini</button>
+        <button type="button" class="dash-filter-btn">Minggu ini</button>
+    </div>
+
+    <!-- Status Legend -->
+    <div class="dash-status-legend">
+        <span><span class="dash-status-dot dot-red"></span> Belum ditugaskan</span>
+        <span><span class="dash-status-dot dot-yellow"></span> Ditugaskan, belum sign</span>
+        <span><span class="dash-status-dot dot-green"></span> Dikonfirmasi (sign)</span>
+        <span><span class="dash-status-dot dot-blue" style="background: var(--pertamina-blue);"></span> Dokumentasi diunggah</span>
+        <span><span class="dash-status-dot dot-gray"></span> Selesai</span>
+    </div>
+
+    <!-- Helpdesk: Input Acara Form (shown only for Helpdesk) -->
     @if (CurrentRole == "Helpdesk")
     {
-        <div class="row g-4">
-            <!-- Input Form Column -->
-            <div class="col-lg-5">
-                <div class="premium-card">
-                    <div class="card-header-accent"></div>
-                    <div class="p-4">
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <span class="fs-3">📝</span>
-                            <h3 class="m-0" style="color: var(--pertamina-blue);">Input Acara & Kebutuhan</h3>
-                        </div>
-                        <p class="text-muted">Masukkan data acara secara manual beserta detail kebutuhan logistik IT.</p>
-                        
-                        <EditForm Model="NewEvent" OnValidSubmit="HandleSubmitEvent">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-dark">Nama Acara / Kegiatan</label>
-                                <input type="text" class="form-control premium-input" @bind="NewEvent.NamaAcara" placeholder="Contoh: Rapat Pleno Dekan, Kuliah Umum" required />
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-dark">Lokasi Ruangan</label>
-                                <input type="text" class="form-control premium-input" @bind="NewEvent.Lokasi" placeholder="Contoh: Gedung A Lantai 2, Aula Rektorat" required />
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold text-dark">Tanggal</label>
-                                    <input type="date" class="form-control premium-input" @bind="NewEventDate" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold text-dark">Waktu Mulai</label>
-                                    <input type="time" class="form-control premium-input" @bind="NewEventStart" required />
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-dark">Estimasi Selesai</label>
-                                <input type="time" class="form-control premium-input" @bind="NewEventEnd" required />
-                            </div>
-
-                            <div class="border-top pt-3 mb-4">
-                                <h5 class="fw-bold mb-3 d-flex align-items-center justify-content-between" style="color: var(--pertamina-blue);">
-                                    <span>🛠️ Kebutuhan Support IT</span>
-                                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" @onclick="AddNeedInputRow">+ Tambah</button>
-                                </h5>
-
-                                @if (NewNeedsList.Count == 0)
-                                {
-                                    <div class="text-center py-3 text-muted border rounded bg-light">
-                                        Belum ada kebutuhan ditambahkan. Klik tombol di atas untuk menambah kebutuhan.
-                                    </div>
-                                }
-                                else
-                                {
-                                    @for (int i = 0; i < NewNeedsList.Count; i++)
-                                    {
-                                        var index = i;
-                                        <div class="row g-2 mb-2 align-items-center">
-                                            <div class="col-5">
-                                                <select class="form-select premium-input py-2" @bind="NewNeedsList[index].JenisKebutuhan">
-                                                    <option value="Proyektor">Proyektor</option>
-                                                    <option value="Sound System">Sound System</option>
-                                                    <option value="Layar / Screen">Layar / Screen</option>
-                                                    <option value="Multimedia Laptop">Multimedia Laptop</option>
-                                                    <option value="Kabel Roll & Kelistrikan">Kabel & Listrik</option>
-                                                    <option value="Lainnya">Lainnya</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-3">
-                                                <input type="number" class="form-control premium-input py-2" @bind="NewNeedsList[index].Jumlah" min="1" placeholder="Qty" />
-                                            </div>
-                                            <div class="col-3">
-                                                <input type="text" class="form-control premium-input py-2" @bind="NewNeedsList[index].Keterangan" placeholder="Ket" />
-                                            </div>
-                                            <div class="col-1 text-end">
-                                                <button type="button" class="btn btn-link text-danger p-0" @onclick="() => RemoveNeedInputRow(index)">❌</button>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3" style="font-family: 'Outfit'; font-size: 1.05rem;">
-                                💾 Simpan Acara Baru
-                            </button>
-                        </EditForm>
-                    </div>
+        <div class="premium-card mb-4">
+            <div class="card-header-accent"></div>
+            <div class="p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="fs-3">📝</span>
+                    <h3 class="m-0" style="color: var(--pertamina-blue);">Input Acara & Kebutuhan</h3>
                 </div>
-            </div>
+                <p class="text-muted">Masukkan data acara secara manual beserta detail kebutuhan logistik IT.</p>
+                
+                <EditForm Model="NewEvent" OnValidSubmit="HandleSubmitEvent">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">Nama Acara / Kegiatan</label>
+                            <input type="text" class="form-control premium-input" @bind="NewEvent.NamaAcara" placeholder="Contoh: Rapat Pleno Dekan" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">Lokasi Ruangan</label>
+                            <input type="text" class="form-control premium-input" @bind="NewEvent.Lokasi" placeholder="Contoh: Gedung A Lt.2" required />
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">Tanggal</label>
+                            <input type="date" class="form-control premium-input" @bind="NewEventDate" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">Waktu Mulai</label>
+                            <input type="time" class="form-control premium-input" @bind="NewEventStart" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">Estimasi Selesai</label>
+                            <input type="time" class="form-control premium-input" @bind="NewEventEnd" required />
+                        </div>
+                    </div>
 
-            <!-- List Column -->
-            <div class="col-lg-7">
-                <div class="premium-card h-100">
-                    <div class="card-header-accent"></div>
-                    <div class="p-4">
-                        <h3 class="mb-4" style="color: var(--pertamina-blue);">Daftar Inputan Acara Aktif</h3>
-                        
-                        @if (ActiveEvents.Count == 0)
+                    <div class="border-top pt-3 mb-3">
+                        <h5 class="fw-bold mb-3 d-flex align-items-center justify-content-between" style="color: var(--pertamina-blue);">
+                            <span>🛠️ Kebutuhan Support IT</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" @onclick="AddNeedInputRow">+ Tambah</button>
+                        </h5>
+                        @if (NewNeedsList.Count == 0)
                         {
-                            <div class="text-center py-5 text-muted">
-                                <span class="fs-1 d-block mb-3">📭</span>
-                                <h5>Belum ada acara terdaftar</h5>
-                                <p>Silakan input data acara di panel sebelah kiri.</p>
-                            </div>
+                            <div class="text-center py-3 text-muted border rounded bg-light">Belum ada kebutuhan. Klik + Tambah.</div>
                         }
                         else
                         {
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th>Acara</th>
-                                            <th>Waktu & Lokasi</th>
-                                            <th>Kebutuhan IT</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var eventItem in ActiveEvents)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    <strong class="text-dark">@eventItem.NamaAcara</strong>
-                                                    <div class="text-muted small">ID: @eventItem.IdAcara</div>
-                                                </td>
-                                                <td>
-                                                    <div>📅 @eventItem.Tanggal.ToString("dd MMM yyyy")</div>
-                                                    <div class="small text-muted">🕒 @eventItem.JamMulai.ToString(@"hh\:mm") - @eventItem.JamSelesai.ToString(@"hh\:mm")</div>
-                                                    <div class="small fw-semibold text-primary">📍 @eventItem.Lokasi</div>
-                                                </td>
-                                                <td>
-                                                    <ul class="list-unstyled m-0 p-0 small">
-                                                        @foreach (var need in eventItem.Kebutuhan)
-                                                        {
-                                                            <li><span class="text-primary">🔹</span> @need.JenisKebutuhan (@need.Jumlah pcs) <span class="text-muted">@need.Keterangan</span></li>
-                                                        }
-                                                    </ul>
-                                                </td>
-                                                <td>
-                                                    <span class="status-badge @GetStatusClass(eventItem.StatusAcara)">
-                                                        @GetStatusIndicator(eventItem.StatusAcara) @eventItem.StatusAcara
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                            @for (int i = 0; i < NewNeedsList.Count; i++)
+                            {
+                                var index = i;
+                                <div class="row g-2 mb-2 align-items-center">
+                                    <div class="col-5">
+                                        <select class="form-select premium-input py-2" @bind="NewNeedsList[index].JenisKebutuhan">
+                                            <option value="Proyektor">Proyektor</option>
+                                            <option value="Sound System">Sound System</option>
+                                            <option value="Layar / Screen">Layar / Screen</option>
+                                            <option value="Multimedia Laptop">Multimedia Laptop</option>
+                                            <option value="Kabel Roll &amp; Kelistrikan">Kabel &amp; Listrik</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="number" class="form-control premium-input py-2" @bind="NewNeedsList[index].Jumlah" min="1" placeholder="Qty" />
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="text" class="form-control premium-input py-2" @bind="NewNeedsList[index].Keterangan" placeholder="Ket" />
+                                    </div>
+                                    <div class="col-1 text-end">
+                                        <button type="button" class="btn btn-link text-danger p-0" @onclick="() => RemoveNeedInputRow(index)">❌</button>
+                                    </div>
+                                </div>
+                            }
                         }
                     </div>
-                </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3" style="font-family: 'Outfit'; font-size: 1.05rem;">
+                        💾 Simpan Acara Baru
+                    </button>
+                </EditForm>
             </div>
         </div>
     }
 
-    <!-- ============================================== -->
-    <!-- ADMIN / MANAGER VIEW                           -->
-    <!-- ============================================== -->
-    @if (CurrentRole == "Admin")
-    {
-        <!-- Stats Widgets -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-2">
-                <div class="stats-card border-red">
-                    <div class="stats-label">Belum Ditugaskan</div>
-                    <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Belum Ditugaskan")</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-2">
-                <div class="stats-card border-yellow">
-                    <div class="stats-label">Menunggu Sign</div>
-                    <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Ditugaskan")</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-2">
-                <div class="stats-card border-green">
-                    <div class="stats-label">Dikonfirmasi (Signed)</div>
-                    <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Dikonfirmasi")</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-2">
-                <div class="stats-card border-blue">
-                    <div class="stats-label">Dokumen Terupload</div>
-                    <div class="stats-value">@ActiveEvents.Count(e => e.StatusAcara == "Dokumen Diunggah")</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-2">
-                <div class="stats-card border-secondary">
-                    <div class="stats-label">Total Aktif</div>
-                    <div class="stats-value">@ActiveEvents.Count</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-2">
-                <div class="stats-card border-info">
-                    <div class="stats-label">Total Selesai</div>
-                    <div class="stats-value">@HistoryEvents.Count</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Workflow Roadmap Guide -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="premium-card p-4">
-                    <h4 class="mb-3 d-flex align-items-center gap-2" style="color: var(--pertamina-blue);">
-                        <span>🔄</span> Alur Kerja & Status Penugasan IT Support
-                    </h4>
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3 bg-light p-3 rounded-3 border">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-danger rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">1</span>
-                            <div>
-                                <strong class="d-block text-dark small">Input Acara (Helpdesk)</strong>
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 0.72rem;">🔴 Belum Ditugaskan</span>
-                            </div>
-                        </div>
-                        <div class="text-muted d-none d-md-block fs-5">➡️</div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-warning text-dark rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">2</span>
-                            <div>
-                                <strong class="d-block text-dark small">Tugaskan Teknisi (Admin)</strong>
-                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 0.72rem;">🟡 Menunggu Sign</span>
-                            </div>
-                        </div>
-                        <div class="text-muted d-none d-md-block fs-5">➡️</div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">3</span>
-                            <div>
-                                <strong class="d-block text-dark small">Tanda Tangan (Teknisi)</strong>
-                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.72rem;">🔵 Dikonfirmasi</span>
-                            </div>
-                        </div>
-                        <div class="text-muted d-none d-md-block fs-5">➡️</div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">4</span>
-                            <div>
-                                <strong class="d-block text-dark small">Unggah Bukti Setup (Teknisi)</strong>
-                                <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.72rem;">🟢 Dokumen Diunggah</span>
-                            </div>
-                        </div>
-                        <div class="text-muted d-none d-md-block fs-5">➡️</div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-secondary rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">5</span>
-                            <div>
-                                <strong class="d-block text-dark small">Penyelesaian (Admin)</strong>
-                                <span class="badge bg-light text-secondary border" style="font-size: 0.72rem;">⚫ Selesai (Riwayat)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-4">
-            <!-- Active Events & Assignments Panel -->
-            <div class="col-12">
-                <div class="premium-card">
-                    <div class="card-header-accent"></div>
-                    <div class="p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-                            <div>
-                                <h3 class="m-0" style="color: var(--pertamina-blue);">Monitor Alur Penugasan & Approval</h3>
-                                <p class="text-muted m-0">Menyelesaikan masalah miss-komunikasi approval tanda tangan (sign) dan bukti foto teknisi.</p>
-                            </div>
-                        </div>
-
-                        @if (ActiveEvents.Count == 0)
-                        {
-                            <div class="text-center py-5 text-muted">
-                                <span class="fs-1 d-block mb-3">🎉</span>
-                                <h5>Semua tugas telah diselesaikan atau belum ada input acara baru</h5>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="row g-3">
-                                @foreach (var eventItem in ActiveEvents)
-                                {
-                                    var assignment = GetAssignmentForEvent(eventItem.IdAcara);
-                                    
-                                    <div class="col-12">
-                                        <div class="event-card status-@GetStatusColorName(eventItem.StatusAcara) p-3">
-                                            <div class="row align-items-center g-3">
-                                                <!-- Event Info -->
-                                                <div class="col-md-3">
-                                                    <h5 class="mb-1 text-dark" style="font-family: 'Outfit';">@eventItem.NamaAcara</h5>
-                                                    <div class="small text-muted">
-                                                        <span>📍</span> @eventItem.Lokasi <br/>
-                                                        <span>🕒</span> @eventItem.Tanggal.ToString("dd MMM yyyy") | @eventItem.JamMulai.ToString(@"hh\:mm") - @eventItem.JamSelesai.ToString(@"hh\:mm")
-                                                    </div>
-                                                </div>
-
-                                                <!-- Needs List -->
-                                                <div class="col-md-3 border-start">
-                                                    <strong class="small text-secondary d-block mb-1">🛠️ Kebutuhan Support IT:</strong>
-                                                    <div class="d-flex flex-wrap gap-1">
-                                                        @foreach (var need in eventItem.Kebutuhan)
-                                                        {
-                                                            <span class="badge bg-light text-dark border small">@need.JenisKebutuhan (@need.Jumlah)</span>
-                                                        }
-                                                    </div>
-                                                </div>
-
-                                                <!-- Assignment Details & Sign Tracker -->
-                                                <div class="col-md-3 border-start">
-                                                    <strong class="small text-secondary d-block mb-1">📋 Detail Penugasan & Tanda Tangan:</strong>
-                                                    @if (assignment == null)
-                                                    {
-                                                        <span class="text-danger small fw-bold">❌ Belum ada Teknisi ditugaskan</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="small">
-                                                            <div><strong>Teknisi:</strong> @assignment.Teknisi?.User?.Username (@assignment.Teknisi?.Spesialisasi)</div>
-                                                            <div class="mt-1 d-flex flex-column gap-1">
-                                                                <!-- Admin Sign Tracker -->
-                                                                <span class="text-success fw-bold">
-                                                                    ✍️ Disetujui Admin (Pak Adit)
-                                                                </span>
-                                                                <!-- Technician Sign Tracker -->
-                                                                @if (assignment.WaktuKonfirmasi != null)
-                                                                {
-                                                                    <span class="text-success fw-bold">
-                                                                        🤝 Dikonfirmasi Teknisi: @assignment.WaktuKonfirmasi?.ToString("dd/MM HH:mm")
-                                                                    </span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span class="text-danger">
-                                                                        ⏳ Menunggu Sign Teknisi
-                                                                    </span>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                </div>
-
-                                                <!-- Action Buttons / Status Timeline -->
-                                                <div class="col-md-3 text-md-end border-start">
-                                                    <div class="mb-2">
-                                                        <span class="status-badge @GetStatusClass(eventItem.StatusAcara) d-inline-flex">
-                                                            @GetStatusIndicator(eventItem.StatusAcara) @eventItem.StatusAcara
-                                                        </span>
-                                                    </div>
-
-                                                    @if (eventItem.StatusAcara == "Belum Ditugaskan")
-                                                    {
-                                                        <button class="btn btn-danger btn-sm px-3 rounded-pill fw-bold" @onclick="() => OpenAssignModal(eventItem)">
-                                                            ➕ Tugaskan Teknisi
-                                                        </button>
-                                                    }
-                                                    else if (eventItem.StatusAcara == "Ditugaskan")
-                                                    {
-                                                        <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill" disabled>
-                                                            ⏳ Menunggu Teknisi Sign
-                                                        </button>
-                                                    }
-                                                    else if (eventItem.StatusAcara == "Dikonfirmasi")
-                                                    {
-                                                        <button class="btn btn-outline-primary btn-sm px-3 rounded-pill" disabled>
-                                                            ⏳ Menunggu Foto Dokumentasi
-                                                        </button>
-                                                    }
-                                                    else if (eventItem.StatusAcara == "Dokumen Diunggah" && assignment != null)
-                                                    {
-                                                        <div class="d-flex flex-column gap-1 align-items-md-end">
-                                                            <button class="btn btn-sm btn-outline-info mb-1 rounded-pill" @onclick="() => PreviewDocumentation(assignment)">
-                                                                🔍 Lihat Bukti Foto
-                                                            </button>
-                                                            <button class="btn btn-success btn-sm px-3 rounded-pill fw-bold" @onclick="() => CompleteEvent(eventItem)">
-                                                                ✅ Tuntaskan Acara
-                                                            </button>
-                                                        </div>
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <!-- Big Database Tables: Mapping Teknisi & Riwayat -->
-            <div class="col-12">
-                <div class="premium-card">
-                    <div class="card-header-accent"></div>
-                    <div class="p-4">
-                        <ul class="nav nav-tabs mb-3" id="dbTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link @(ActiveTab == "teknisi" ? "active fw-bold" : "")" @onclick='() => ActiveTab = "teknisi"'>
-                                    👥 Mapping & Ketersediaan Teknisi (Database Besar)
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link @(ActiveTab == "riwayat" ? "active fw-bold" : "")" @onclick='() => ActiveTab = "riwayat"'>
-                                    📁 Riwayat Acara Selesai (Archive)
-                                </button>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content">
-                            <!-- Mapping Teknisi Tab -->
-                            @if (ActiveTab == "teknisi")
-                            {
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>Nama Teknisi</th>
-                                                <th>Spesialisasi</th>
-                                                <th>Status Ketersediaan</th>
-                                                <th>Tugas Aktif</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var tek in Technicians)
-                                            {
-                                                var activeTaskCount = ActiveEvents.Count(e => e.PenugasanList.Any(p => p.IdTeknisi == tek.IdTeknisi));
-                                                <tr>
-                                                    <td>
-                                                        <div class="fw-bold text-dark">@tek.User?.Username</div>
-                                                        <div class="text-muted small">User ID: @tek.IdUser</div>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge bg-secondary">@tek.Spesialisasi</span>
-                                                    </td>
-                                                    <td>
-                                                        @if (tek.StatusKetersediaan == "Tersedia")
-                                                        {
-                                                            <span class="badge bg-success-subtle text-success border border-success px-2 py-1">Tersedia</span>
-                                                        }
-                                                        else if (tek.StatusKetersediaan == "Sibuk")
-                                                        {
-                                                            <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-1">Sibuk (Sedang Bertugas)</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1">Tidak Aktif</span>
-                                                        }
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge bg-dark">@activeTaskCount Acara</span>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            }
-
-                            <!-- Riwayat Tab -->
-                            @if (ActiveTab == "riwayat")
-                            {
-                                @if (HistoryEvents.Count == 0)
-                                {
-                                    <div class="text-center py-4 text-muted">
-                                        Belum ada riwayat acara yang dituntaskan.
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-middle">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nama Acara</th>
-                                                    <th>Teknisi</th>
-                                                    <th>Tanggal Acara</th>
-                                                    <th>Waktu Selesai</th>
-                                                    <th>Bukti Dokumentasi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var riwayat in HistoryEvents)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            <strong class="text-dark">@riwayat.NamaAcara</strong>
-                                                            <div class="text-muted small">Riwayat ID: @riwayat.IdRiwayat</div>
-                                                        </td>
-                                                        <td>
-                                                            <span class="badge bg-dark">@riwayat.NamaTeknisi</span>
-                                                        </td>
-                                                        <td>📅 @riwayat.TanggalAcara.ToString("dd MMM yyyy")</td>
-                                                        <td>🕒 @riwayat.WaktuSelesai.ToString("dd MMM yyyy HH:mm")</td>
-                                                        <td>
-                                                            @if (!string.IsNullOrEmpty(riwayat.DokumentasiKegiatanFile))
-                                                            {
-                                                                <img src="@riwayat.DokumentasiKegiatanFile" class="img-thumbnail" style="max-height: 60px; cursor: pointer; border: 2px solid var(--pertamina-blue);" @onclick="() => PreviewImage(riwayat.DokumentasiKegiatanFile)" title="Klik untuk memperbesar" />
-                                                            }
-                                                            else
-                                                            {
-                                                                <span class="text-muted small">Tidak ada foto</span>
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-    <!-- ============================================== -->
-    <!-- TEKNISI VIEW (SENIOR FRIENDLY)                -->
-    <!-- ============================================== -->
+    <!-- Teknisi: Senior-Friendly Task Cards -->
     @if (CurrentRole == "Teknisi")
     {
         var tekId = CurrentTeknisiId;
         var myAssignments = GetAssignmentsForTechnician(tekId);
 
-        <div class="senior-friendly-container">
-            <div class="senior-card mb-4 text-center" style="background: linear-gradient(135deg, var(--pertamina-blue-light) 0%, #E2E8F0 100%);">
-                <span class="fs-1 d-block mb-2">👨‍🔧</span>
-                <h1 class="senior-title m-0">Halo, Pak @GetTeknisiName(tekId)!</h1>
-                <p class="senior-subtitle mb-0">Halaman ini dibuat dengan huruf besar agar gampang dibaca bapak-bapak teknisi.</p>
-            </div>
-
+        <div class="senior-friendly-container" style="max-width:100%;">
             @if (myAssignments.Count == 0)
             {
-                <div class="senior-card text-center border-success border-3">
+                <div class="senior-card text-center border-success border-3 mb-4">
                     <span class="fs-1 d-block mb-3">✅</span>
                     <h2 class="text-success mb-2" style="font-weight: 800;">TIDAK ADA TUGAS</h2>
                     <p class="senior-subtitle text-muted">Semua tugas bapak sudah selesai. Terima kasih banyak!</p>
@@ -897,66 +509,31 @@ else
                 {
                     var isSigned = assign.WaktuKonfirmasi != null;
                     var isUploaded = !string.IsNullOrEmpty(assign.DokumentasiKegiatanFile);
-                    
-                    <div class="senior-card mb-4 border-start border-5 @(isSigned ? (isUploaded ? "border-success" : "border-primary") : "border-warning")">
+                    <div class="senior-card mb-4 border-start border-5 p-4 rounded bg-white shadow-sm @(isSigned ? (isUploaded ? "border-primary" : "border-success") : "border-warning")" style="border-left-width: 8px !important;">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge @(isSigned ? (isUploaded ? "bg-success" : "bg-primary") : "bg-warning text-dark") fs-5 px-3 py-2 fw-bold">
-                                @if (!isSigned) { <span>⏳ Belum Sign (Kuning)</span> }
-                                else if (!isUploaded) { <span>🤝 Sudah Sign / Dikonfirmasi (Hijau)</span> }
-                                else { <span>📷 Foto Terupload (Biru)</span> }
+                            <span class="badge @(isSigned ? (isUploaded ? "bg-primary" : "bg-success") : "bg-warning text-dark") fs-4 px-4 py-2.5 fw-bold">
+                                @if (!isSigned) { <span>⏳ Ditugaskan - Belum Sign (Kuning)</span> }
+                                else if (!isUploaded) { <span>🤝 Dikonfirmasi - Sudah Sign (Hijau)</span> }
+                                else { <span>📷 Dokumen Diunggah (Biru)</span> }
                             </span>
                         </div>
-
-                        <h2 class="text-dark mb-3" style="font-size: 1.8rem; font-weight: 800;">
-                            📍 @assign.Acara?.NamaAcara
-                        </h2>
-
+                        <h2 class="text-dark mb-3" style="font-size: 1.8rem; font-weight: 800;">📍 @assign.Acara?.NamaAcara</h2>
                         <div class="senior-detail-box">
-                            <div class="senior-detail-row">
-                                <span class="senior-detail-label">TEMPAT:</span>
-                                <span class="senior-detail-val text-primary">🏢 @assign.Acara?.Lokasi</span>
-                            </div>
-                            <div class="senior-detail-row">
-                                <span class="senior-detail-label">TANGGAL:</span>
-                                <span class="senior-detail-val">📅 @assign.Acara?.Tanggal.ToString("dd MMMM yyyy")</span>
-                            </div>
-                            <div class="senior-detail-row">
-                                <span class="senior-detail-label">JAM KERJA:</span>
-                                <span class="senior-detail-val text-danger">🕒 @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")</span>
-                            </div>
-                            <div class="senior-detail-row">
-                                <span class="senior-detail-label">MANAJER PIC:</span>
-                                <span class="senior-detail-val">✍️ Pak Adit (Admin)</span>
-                            </div>
+                            <div class="senior-detail-row"><span class="senior-detail-label">TEMPAT:</span><span class="senior-detail-val text-primary">🏢 @assign.Acara?.Lokasi</span></div>
+                            <div class="senior-detail-row"><span class="senior-detail-label">TANGGAL:</span><span class="senior-detail-val">📅 @assign.Acara?.Tanggal.ToString("dd MMMM yyyy")</span></div>
+                            <div class="senior-detail-row"><span class="senior-detail-label">JAM KERJA:</span><span class="senior-detail-val text-danger">🕒 @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")</span></div>
                         </div>
-
-                        <div class="mb-4">
-                            <h4 class="text-dark fw-bold mb-2">🛠️ BARANG YANG HARUS DIBAWA & DISET-UP:</h4>
-                            <div class="bg-light p-3 rounded border border-2">
-                                @foreach (var need in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
-                                {
-                                    <div class="fs-4 fw-bold text-dark mb-2">
-                                        🔳 @need.JenisKebutuhan - <span class="text-primary">@need.Jumlah buah</span>
-                                        <div class="fs-6 text-muted ms-4">Catatan: @(string.IsNullOrEmpty(need.Keterangan) ? "-" : need.Keterangan)</div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
                         <div class="d-flex flex-column gap-3 mt-4">
                             @if (!isSigned)
                             {
-                                <button class="senior-btn-giant senior-btn-confirm" @onclick="() => HandleOpenSignature(assign)">
+                                <button class="btn btn-warning w-100 py-3.5 fs-2 fw-bold text-dark rounded-3 shadow" @onclick="() => HandleOpenSignature(assign)">
                                     ✍️ TEKAN DI SINI UNTUK TANDA TANGAN (SIGN)
                                 </button>
                             }
                             else if (!isUploaded)
                             {
-                                <div class="alert alert-success border-2 text-center fs-5 py-2 fw-bold">
-                                    ✅ Bapak sudah tanda tangan pada @assign.WaktuKonfirmasi?.ToString("HH:mm WIB")
-                                </div>
-                                <button class="senior-btn-giant senior-btn-upload" @onclick="() => HandleOpenUpload(assign)">
+                                <div class="alert alert-success border-2 text-center fs-5 py-2 fw-bold">✅ Sudah tanda tangan pada @assign.WaktuKonfirmasi?.ToString("HH:mm WIB")</div>
+                                <button class="btn btn-primary w-100 py-3.5 fs-2 fw-bold text-white rounded-3 shadow" @onclick="() => HandleOpenUpload(assign)">
                                     📷 TEKAN DI SINI UNTUK UNGGAH FOTO BUKTI
                                 </button>
                             }
@@ -964,9 +541,6 @@ else
                             {
                                 <div class="alert alert-success border-2 text-center fs-5 py-2 fw-bold mb-0">
                                     📷 Foto bukti setup sudah dikirim ke Admin. Menunggu verifikasi Pak Adit.
-                                </div>
-                                <div class="text-center mt-2">
-                                    <img src="@assign.DokumentasiKegiatanFile" class="img-fluid rounded border border-3" style="max-height: 250px; border-color: var(--pertamina-green) !important;" />
                                 </div>
                             }
                         </div>
@@ -976,67 +550,126 @@ else
         </div>
     }
 
-</div>
+    <!-- Event List (for Admin & Helpdesk) -->
+    @if (CurrentRole != "Teknisi")
+    {
+        @if (ActiveEvents.Count == 0)
+        {
+            <div class="text-center py-5 text-muted">
+                <span class="fs-1 d-block mb-3">📭</span>
+                <h5>Belum ada acara terdaftar</h5>
+                <p>Silakan input data acara baru atau tunggu helpdesk menambahkan acara.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var eventItem in ActiveEvents)
+            {
+                var assignment = GetAssignmentForEvent(eventItem.IdAcara);
+                var matchFilter = string.IsNullOrEmpty(SearchFilter) || 
+                    eventItem.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                    eventItem.Lokasi.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase);
 
-<!-- Footer for Dashboard view to make it cohesive with the landing page design -->
-<footer class="corp-footer-red text-start mt-5">
-    <div class="container-fluid" style="max-width: 1200px;">
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="corp-footer-title">Contact Pertamina</div>
-                <div class="corp-footer-phone">1500-000</div>
-                <div class="mt-3">
-                    <a href="#" class="corp-footer-social-btn">f</a>
-                    <a href="#" class="corp-footer-social-btn">t</a>
-                    <a href="#" class="corp-footer-social-btn">y</a>
+                if (!matchFilter) continue;
+
+                <div class="dash-event-item">
+                    <div class="dash-event-info">
+                        <div class="dash-event-name">@eventItem.NamaAcara</div>
+                        <div class="dash-event-meta">
+                            <span class="dash-event-meta-item">📅 @eventItem.Tanggal.ToString("dd MMM yyyy") · @eventItem.JamMulai.ToString(@"hh\:mm")-@eventItem.JamSelesai.ToString(@"hh\:mm")</span>
+                            <span class="dash-event-meta-item">📍 @eventItem.Lokasi</span>
+                        </div>
+                        <div class="dash-event-tags">
+                            @foreach (var need in eventItem.Kebutuhan)
+                            {
+                                <span class="dash-event-tag">@need.JenisKebutuhan</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="dash-event-actions">
+                        @if (eventItem.StatusAcara == "Belum Ditugaskan")
+                        {
+                            <span class="dash-btn-status st-pending">Belum Ditugaskan</span>
+                            @if (CurrentRole == "Admin")
+                            {
+                                <button class="dash-btn-action btn-assign" @onclick="() => OpenAssignModal(eventItem)">+ Tugaskan Teknisi</button>
+                            }
+                        }
+                        else if (eventItem.StatusAcara == "Ditugaskan")
+                        {
+                            <span class="dash-btn-status st-waiting">Ditugaskan</span>
+                        }
+                        else if (eventItem.StatusAcara == "Dikonfirmasi")
+                        {
+                            <span class="dash-btn-status st-confirmed">Dikonfirmasi</span>
+                        }
+                        else if (eventItem.StatusAcara == "Dokumen Diunggah" && assignment != null)
+                        {
+                            <span class="dash-btn-status st-uploaded">Dok. Diunggah</span>
+                            @if (CurrentRole == "Admin")
+                            {
+                                <button class="dash-btn-action btn-detail" @onclick="() => PreviewDocumentation(assignment)">🔍 Lihat Foto</button>
+                                <button class="dash-btn-action btn-assign" @onclick="() => CompleteEvent(eventItem)">✅ Selesaikan</button>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+
+        <!-- Completed Events (shown inline if any) -->
+        @if (HistoryEvents.Count > 0)
+        {
+            @foreach (var hist in HistoryEvents.Take(3))
+            {
+                <div class="dash-event-item" style="opacity:0.7;">
+                    <div class="dash-event-info">
+                        <div class="dash-event-name">@hist.NamaAcara</div>
+                        <div class="dash-event-meta">
+                            <span class="dash-event-meta-item">📅 @hist.TanggalAcara.ToString("dd MMM yyyy")</span>
+                            <span class="dash-event-meta-item">👤 @hist.NamaTeknisi</span>
+                        </div>
+                    </div>
+                    <div class="dash-event-actions">
+                        <span class="dash-btn-status st-done">Selesai</span>
+                        <span class="dash-btn-action btn-history" style="cursor:default;">Lihat Riwayat</span>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+    <!-- Data Master & Pengguna Section -->
+    @if (CurrentRole == "Admin")
+    {
+        <h3 class="dash-section-title" style="margin-top:2rem;">Data Master & Pengguna</h3>
+        <div class="dash-master-row">
+            <div class="dash-master-card" @onclick='() => ActiveMenu = "pengguna"'>
+                <div class="dash-master-icon">👤</div>
+                <div>
+                    <div class="dash-master-title">Pengguna & Role</div>
+                    <div class="dash-master-desc">Kelola akun Helpdesk, Admin, Teknisi</div>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-2 col-lg-2">
-                <div class="corp-footer-title">Our Website</div>
-                <ul class="corp-footer-list">
-                    <li><a href="#">Term & Condition</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Scam Alert</a></li>
-                    <li><a href="#">Social Media</a></li>
-                </ul>
+            <div class="dash-master-card" @onclick='() => ActiveMenu = "master"'>
+                <div class="dash-master-icon">📦</div>
+                <div>
+                    <div class="dash-master-title">Master Kebutuhan IT</div>
+                    <div class="dash-master-desc">Proyektor, sound system, layar, dll</div>
+                </div>
             </div>
-            <div class="col-sm-6 col-md-2 col-lg-2">
-                <div class="corp-footer-title">Tools</div>
-                <ul class="corp-footer-list">
-                    <li><a href="#">Webmail</a></li>
-                    <li><a href="#">i-Plan</a></li>
-                    <li><a href="#">Gas Station Registration</a></li>
-                    <li><a href="#">Pertamina Clean</a></li>
-                    <li><a href="#">HSSE Database</a></li>
-                </ul>
-            </div>
-            <div class="col-sm-6 col-md-2 col-lg-2">
-                <div class="corp-footer-title">Announcement</div>
-                <ul class="corp-footer-list">
-                    <li><a href="#">Pertamina Info</a></li>
-                    <li><a href="#">Procurement</a></li>
-                    <li><a href="#">Announcement</a></li>
-                    <li><a href="#">E-Procurement</a></li>
-                </ul>
-            </div>
-            <div class="col-sm-6 col-md-2 col-lg-2">
-                <div class="corp-footer-title">Network</div>
-                <ul class="corp-footer-list">
-                    <li><a href="#">Subsidiaries</a></li>
-                    <li><a href="#">Joint Operation</a></li>
-                    <li><a href="#">Office Address</a></li>
-                    <li><a href="#">Product Distribution</a></li>
-                </ul>
+            <div class="dash-master-card" @onclick='() => ActiveMenu = "penugasan"'>
+                <div class="dash-master-icon">🔧</div>
+                <div>
+                    <div class="dash-master-title">Data Teknisi</div>
+                    <div class="dash-master-desc">Spesialisasi & status ketersediaan</div>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+    }
 
-<div class="corp-bottom-bar mb-4">
-    <div class="container">
-        Copyright &copy; 2026 PT Pertamina. All rights reserved.
-    </div>
-</div>
+    </main>
+    </div> <!-- end dash-shell -->
 
 <!-- ============================================== -->
 <!-- MODALS SECTION                                 -->
@@ -1203,13 +836,41 @@ else
     private string LoginErrorMessage { get; set; } = string.Empty;
     private User? LoggedInUser { get; set; }
     private bool ShowLoginModal { get; set; } = false;
+    private string SelectedLoginRole { get; set; } = string.Empty;
+    private bool ShowLoginDropdown { get; set; } = false;
+
+    private void ToggleLoginDropdown()
+    {
+        ShowLoginDropdown = !ShowLoginDropdown;
+    }
 
     private void OpenEmptyLoginModal()
     {
         InputUsername = string.Empty;
         InputPassword = string.Empty;
         LoginErrorMessage = string.Empty;
+        SelectedLoginRole = string.Empty; // Reset to step 1
         ShowLoginModal = true;
+    }
+
+    private void SelectLoginRoleAndOpen(string roleName)
+    {
+        ShowLoginDropdown = false;
+        SelectLoginRole(roleName);
+        ShowLoginModal = true;
+    }
+
+    private void SelectLoginRole(string roleName)
+    {
+        SelectedLoginRole = roleName;
+        LoginErrorMessage = string.Empty;
+        InputUsername = string.Empty;
+        InputPassword = string.Empty;
+        
+        // Auto-fill username for quick demo purposes based on role
+        if (roleName == "Admin") InputUsername = "admin";
+        if (roleName == "Helpdesk") InputUsername = "helpdesk";
+        if (roleName == "Teknisi") InputUsername = "pak_joko";
     }
 
     private void PrepareQuickLogin(string username)
@@ -1226,6 +887,8 @@ else
     
     // UI Database tab state
     private string ActiveTab { get; set; } = "teknisi";
+    private string ActiveMenu { get; set; } = "dashboard";
+    private string SearchFilter { get; set; } = string.Empty;
     
     // Notification text
     private string SystemNotification { get; set; } = string.Empty;
@@ -1374,7 +1037,20 @@ else
         IsLoggedIn = false;
         LoggedInUser = null;
         CurrentRole = "Guest";
+        ActiveMenu = "dashboard";
         SystemNotification = "Anda telah berhasil keluar dari sistem.";
+    }
+
+    private async Task SwitchRole(string roleName)
+    {
+        CurrentRole = roleName;
+        ActiveMenu = "dashboard";
+        if (roleName == "Teknisi")
+        {
+            var mapping = await DbContext.MappingTeknisi.FirstOrDefaultAsync(m => m.IdUser == LoggedInUser!.IdUser);
+            CurrentTeknisiId = mapping?.IdTeknisi ?? 1;
+        }
+        await LoadDataAsync();
     }
 
     private string GetUserDisplayName()

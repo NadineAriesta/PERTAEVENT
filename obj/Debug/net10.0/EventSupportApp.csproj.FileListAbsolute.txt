@@ -241,4 +241,5 @@ D:\BelajarDotNet\PERTAEVENT\bin\Debug\net10.0\runtimes\ios-arm64\native\e_sqlite
 D:\BelajarDotNet\PERTAEVENT\bin\Debug\net10.0\runtimes\iossimulator-arm64\native\e_sqlite3.a
 D:\BelajarDotNet\PERTAEVENT\bin\Debug\net10.0\runtimes\iossimulator-x64\native\e_sqlite3.a
 D:\BelajarDotNet\PERTAEVENT\bin\Debug\net10.0\runtimes\iossimulator-x86\native\e_sqlite3.a
-D:\BelajarDotNet\PERTAEVENT\obj\Debug\net10.0\compressed\1zyacnw7mm-{0}-rqgoiu4ks1-rqgoiu4ks1.gz
+D:\BelajarDotNet\PERTAEVENT\obj\Debug\net10.0\EventSupportApp.sourcelink.json
+D:\BelajarDotNet\PERTAEVENT\obj\Debug\net10.0\compressed\1zyacnw7mm-{0}-wnnbb9vke8-wnnbb9vke8.gz
