@@ -29,12 +29,13 @@ namespace EventSupportApp.Data
             );
 
             // Seed Users
+            var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
             modelBuilder.Entity<User>().HasData(
-                new User { IdUser = 1, Username = "admin", Password = "123", StatusAktif = true },
-                new User { IdUser = 2, Username = "helpdesk", Password = "123", StatusAktif = true },
-                new User { IdUser = 3, Username = "pak_joko", Password = "123", StatusAktif = true },
-                new User { IdUser = 4, Username = "pak_budi", Password = "123", StatusAktif = true },
-                new User { IdUser = 5, Username = "pak_bambang", Password = "123", StatusAktif = true }
+                new User { IdUser = 1, Username = "admin", Password = hasher.HashPassword(null!, "123"), StatusAktif = true },
+                new User { IdUser = 2, Username = "helpdesk", Password = hasher.HashPassword(null!, "123"), StatusAktif = true },
+                new User { IdUser = 3, Username = "pak_joko", Password = hasher.HashPassword(null!, "123"), StatusAktif = true },
+                new User { IdUser = 4, Username = "pak_budi", Password = hasher.HashPassword(null!, "123"), StatusAktif = true },
+                new User { IdUser = 5, Username = "pak_bambang", Password = hasher.HashPassword(null!, "123"), StatusAktif = true }
             );
 
             // Seed UserRoles

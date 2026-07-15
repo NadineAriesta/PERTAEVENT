@@ -617,13 +617,645 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   PERTAMINA CORPORATE RE-DESIGN PORTAL STYLES (Public Landing & Login)
+   ENT-* ENTERPRISE LANDING PAGE — Pertamina IT Event Support Portal 2026
+   Modern Internal System Design (Azure / SAP Fiori inspired)
    ========================================================================== */
 
+/* ── Portal wrapper ── */
+.ent-portal {
+    background: #FFFFFF;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    color: #2F3542;
+    min-height: 100vh;
+}
+
+/* ── Navigation ── */
+.ent-nav {
+    background: rgba(255, 255, 255, 0.75);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1030;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.ent-nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+.ent-brand-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.02rem;
+    line-height: 1.1;
+}
+.ent-brand-sub {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+}
+.ent-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.ent-nav-link {
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+}
+.ent-nav-link:hover {
+    color: #005CA9;
+    background: #EBF3FC;
+}
+
+/* ── Buttons ── */
+.ent-btn-primary {
+    background: #005CA9;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    padding: 0.55rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.88rem;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.ent-btn-primary:hover {
+    background: #004b8b;
+    box-shadow: 0 4px 14px rgba(0, 92, 169, 0.3);
+    transform: translateY(-1px);
+    color: #FFFFFF;
+}
+.ent-btn-primary-lg {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+.ent-btn-outline {
+    background: transparent;
+    color: #005CA9;
+    border: 1.5px solid #005CA9;
+    border-radius: 8px;
+    padding: 0.55rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.88rem;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.ent-btn-outline:hover {
+    background: #005CA9;
+    color: #FFFFFF;
+}
+.ent-btn-outline-white {
+    background: transparent;
+    color: #FFFFFF;
+    border: 1.5px solid rgba(255,255,255,0.6);
+    border-radius: 10px;
+    padding: 0.8rem 2rem;
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+.ent-btn-outline-white:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: #FFFFFF;
+    color: #FFFFFF;
+}
+.ent-btn-sm-blue {
+    background: transparent;
+    color: #005CA9;
+    border: 1.5px solid #005CA9;
+    border-radius: 20px;
+    padding: 0.4rem 1.1rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    margin-top: 0.75rem;
+}
+.ent-btn-sm-blue:hover {
+    background: #005CA9;
+    color: #FFFFFF;
+}
+
+/* Quick login dropdown */
+.ent-quick-wrap { position: relative; display: inline-block; }
+.ent-quick-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+    min-width: 170px;
+    z-index: 2000;
+    animation: ent-fade-in 0.15s ease;
+}
+.ent-quick-wrap:hover .ent-quick-menu { display: block; }
+.ent-quick-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 0.55rem 0.9rem;
+    border-radius: 7px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2F3542;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.ent-quick-item:hover { background: #F5F7FA; color: #005CA9; }
+
+/* ── Hero Section ── */
+.ent-hero {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.65) 100%),
+                url('/images/refinery_hero.png') center center / cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+.ent-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    pointer-events: none;
+}
+.ent-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 8rem 1.5rem 4rem;
+    width: 100%;
+}
+.ent-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(226,31,38,0.9);
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+}
+.ent-hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1.15;
+    letter-spacing: -0.03rem;
+    margin-bottom: 1.25rem;
+    max-width: 680px;
+}
+.ent-hero-desc {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.82);
+    max-width: 580px;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+/* Stats bar pinned at hero bottom */
+.ent-hero-statsbar {
+    position: relative;
+    z-index: 2;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: auto;
+}
+.ent-hero-statsbar-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.ent-stat-item { display: flex; align-items: center; gap: 0.75rem; }
+.ent-stat-num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1;
+}
+.ent-stat-lbl {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    line-height: 1.3;
+}
+.ent-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255,255,255,0.2);
+}
+
+/* ── Section common ── */
+.ent-section {
+    padding: 5rem 1.5rem;
+}
+.ent-section-inner { max-width: 1280px; margin: 0 auto; }
+.ent-section-badge {
+    display: inline-block;
+    background: #EBF3FC;
+    color: #005CA9;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+.ent-section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    color: #0B2240;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+}
+.ent-section-desc {
+    font-size: 1rem;
+    color: #64748B;
+    max-width: 580px;
+    line-height: 1.65;
+    margin: 0 auto;
+}
+
+/* ── Feature Cards ── */
+.ent-feature-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 2rem;
+    height: 100%;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+.ent-feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: #005CA9;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+.ent-feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,92,169,0.1); border-color: #C7DFF7; }
+.ent-feature-card:hover::before { transform: scaleX(1); }
+.ent-feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+}
+.ent-feature-icon.blue { background: #EBF3FC; }
+.ent-feature-icon.red  { background: #FEF2F2; }
+.ent-feature-icon.green{ background: #ECFDF5; }
+.ent-feature-card h5 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: #0B2240;
+    font-size: 1.05rem;
+    margin-bottom: 0.6rem;
+}
+.ent-feature-card p {
+    font-size: 0.9rem;
+    color: #64748B;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ── Workflow Steps ── */
+.ent-workflow-wrap {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+.ent-wf-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 120px;
+    position: relative;
+}
+.ent-wf-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: calc(50% + 22px);
+    right: calc(-50% + 22px);
+    height: 2px;
+    background: linear-gradient(90deg, #CBD5E1, #CBD5E1);
+    z-index: 0;
+}
+.ent-wf-circle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #FFFFFF;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.ent-wf-circle.c-red    { background: #E21F26; }
+.ent-wf-circle.c-orange { background: #F59E0B; }
+.ent-wf-circle.c-blue   { background: #005CA9; }
+.ent-wf-circle.c-green  { background: #00A757; }
+.ent-wf-circle.c-gray   { background: #64748B; }
+.ent-wf-label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #0B2240;
+    text-align: center;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+}
+.ent-wf-who {
+    font-size: 0.72rem;
+    color: #64748B;
+    font-weight: 600;
+    text-align: center;
+}
+.ent-wf-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    margin-top: 0.75rem;
+}
+.ent-wf-card:hover {
+    border-color: #C7DFF7;
+    box-shadow: 0 4px 12px rgba(0,92,169,0.08);
+    transform: translateY(-2px);
+}
+
+/* ── Role Cards ── */
+.ent-role-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    height: 100%;
+    transition: all 0.25s ease;
+}
+.ent-role-card:hover {
+    box-shadow: 0 12px 30px rgba(0,92,169,0.1);
+    border-color: #C7DFF7;
+    transform: translateY(-4px);
+}
+.ent-role-avatar {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 1.25rem;
+}
+.ent-role-card h5 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    color: #0B2240;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+.ent-role-card p {
+    font-size: 0.88rem;
+    color: #64748B;
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+}
+.ent-role-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+/* ── Enterprise Footer ── */
+.ent-footer {
+    background-color: #002244;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(0, 92, 169, 0.25) 0px, transparent 50%),
+        linear-gradient(180deg, #002A54 0%, #001A35 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='none' stroke='rgba(0,146,255,0.12)' stroke-width='2' d='M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,218.7C672,203,768,149,864,128C960,107,1056,117,1152,138.7C1248,160,1344,192,1392,208L1440,224'/%3E%3Cpath fill='none' stroke='rgba(0,146,255,0.08)' stroke-width='1.5' d='M0,160L48,176C96,192,192,224,288,218.7C384,213,480,171,576,149.3C672,128,768,128,864,149.3C960,171,1056,213,1152,218.7C1248,224,1344,192,1392,176L1440,160'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: center;
+    color: #FFFFFF;
+    padding: 3.5rem 1.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+.ent-footer-inner { max-width: 1280px; margin: 0 auto; }
+.ent-footer-brand {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: #FFFFFF;
+}
+.ent-footer-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.65;
+    margin-top: 0.75rem;
+    max-width: 280px;
+}
+.ent-footer-head {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1rem;
+}
+.ent-footer-list {
+    list-style: none;
+    padding: 0; margin: 0;
+}
+.ent-footer-list li { margin-bottom: 0.6rem; }
+.ent-footer-list a, .ent-footer-list button {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    text-align: left;
+}
+.ent-footer-list a:hover, .ent-footer-list button:hover { color: #FFFFFF; }
+.ent-footer-contact { font-size: 0.85rem; color: rgba(255,255,255,0.8); line-height: 1.7; }
+.ent-footer-divider { border-color: rgba(255,255,255,0.12); margin: 2.5rem 0 1.5rem; }
+.ent-footer-bottom {
+    padding-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.ent-footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+.ent-footer-sys  { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+
+/* ── Animate fade-in (used in modals & dropdown) ── */
+@keyframes ent-fade-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.ent-animate-in {
+    animation: ent-fade-in 0.2s ease forwards;
+}
+
+/* ── Login Modal override for new portal ── */
+.ent-login-modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ent-login-box {
+    background: rgba(11,34,64,0.5);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 2.25rem;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+    animation: ent-fade-in 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* keep old corp-footer-red used in dashboard footer */
+.corp-footer-red {
+    background-color: #E31E24;
+    color: #FFFFFF;
+    padding: 3.5rem 0;
+}
+.corp-footer-title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.05rem;
+}
+.corp-footer-phone {
+    font-size: 2.8rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.05rem;
+}
+.corp-footer-social-btn {
+    color: #E31E24;
+    background-color: #FFFFFF;
+    width: 32px; height: 32px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    transition: transform 0.2s ease;
+}
+.corp-footer-social-btn:hover { transform: translateY(-2px); color: #E31E24; }
+.corp-footer-list { list-style: none; padding: 0; margin: 0; }
+.corp-footer-list li { margin-bottom: 0.45rem; }
+.corp-footer-list a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: color 0.15s ease;
+}
+.corp-footer-list a:hover { color: #FFFFFF; text-decoration: underline; }
+.corp-bottom-bar {
+    background-color: #000000;
+    color: #94A3B8;
+    font-size: 0.75rem;
+    padding: 1.25rem 0;
+    text-align: center;
+}
+
+/* keep old .public-portal for backward compat */
 .public-portal {
     background-color: #FFFFFF;
     font-family: 'Outfit', sans-serif;
-    color: #333333;
 }
 
 /* 1. Header */
