@@ -1225,6 +1225,8 @@ h1, h2, h3, h4, h5, h6 {
     padding-top: 1rem;
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.1) transparent;
+    display: flex;
+    flex-direction: column;
 }
 
 .dash-sidebar-brand {
@@ -1336,7 +1338,7 @@ h1, h2, h3, h4, h5, h6 {
 .dash-main {
     margin-left: 230px;
     margin-top: 0;
-    padding: 1.75rem 2rem 3rem;
+    padding: 0 2rem 3rem;
     flex: 1;
     min-height: 100vh;
 }
@@ -1724,6 +1726,7 @@ h1, h2, h3, h4, h5, h6 {
     .dash-event-actions { width: 100%; justify-content: flex-end; }
 }
 
+<<<<<<< Updated upstream
 /* ==========================================================================
    PertaEvent Modern Sticky/Fixed Navigation and Layout Refinements
    ========================================================================== */
@@ -2111,3 +2114,40 @@ h1, h2, h3, h4, h5, h6 {
 .lp-role-card:hover .lp-role-cta {
     color: #E31E24;
 }
+=======
+/* Custom Login Modal Input Groups */
+.custom-input-group:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+    border-radius: 6px;
+}
+.custom-input-group:focus-within .input-group-text,
+.custom-input-group:focus-within .form-control {
+    border-color: #10b981 !important;
+}
+.custom-input-group:focus-within .input-group-text {
+    color: #10b981 !important;
+}
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+} 
+ 
+>>>>>>> Stashed changes

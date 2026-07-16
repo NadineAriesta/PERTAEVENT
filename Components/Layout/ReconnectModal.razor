@@ -1,31 +1,56 @@
-﻿<script type="module" src="@Assets["Components/Layout/ReconnectModal.razor.js"]"></script>
+<script type="module" src="@Assets["Components/Layout/ReconnectModal.razor.js"]"></script>
 
 <dialog id="components-reconnect-modal" data-nosnippet>
     <div class="components-reconnect-container">
+        <!-- Rejoining Animation -->
         <div class="components-rejoining-animation" aria-hidden="true">
-            <div></div>
-            <div></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-icon">📡</div>
         </div>
-        <p class="components-reconnect-first-attempt-visible">
-            Rejoining the server...
-        </p>
-        <p class="components-reconnect-repeated-attempt-visible">
-            Rejoin failed... trying again in <span id="components-seconds-to-next-attempt"></span> seconds.
-        </p>
-        <p class="components-reconnect-failed-visible">
-            Failed to rejoin.<br />Please retry or reload the page.
-        </p>
-        <button id="components-reconnect-button" class="components-reconnect-failed-visible">
-            Retry
-        </button>
-        <p class="components-pause-visible">
-            The session has been paused by the server.
-        </p>
-        <p class="components-resume-failed-visible">
-            Failed to resume the session.<br />Please retry or reload the page.
-        </p>
-        <button id="components-resume-button" class="components-pause-visible components-resume-failed-visible">
-            Resume
-        </button>
+
+        <div class="error-content text-center">
+            <h4 class="error-title components-reconnect-first-attempt-visible">
+                Menghubungkan Kembali...
+            </h4>
+            <p class="components-reconnect-first-attempt-visible error-subtitle">
+                Mencoba mengembalikan koneksi dengan server PertaEvent.
+            </p>
+
+            <h4 class="error-title components-reconnect-repeated-attempt-visible">
+                Koneksi Terputus
+            </h4>
+            <p class="components-reconnect-repeated-attempt-visible error-subtitle">
+                Gagal menghubungkan. Mencoba lagi dalam <span id="components-seconds-to-next-attempt" class="fw-bold text-danger"></span> detik...
+            </p>
+
+            <div class="components-reconnect-failed-visible">
+                <div class="mb-3 fs-1 error-icon-static">⚠️</div>
+                <h4 class="error-title text-danger">Koneksi Server Gagal</h4>
+                <p class="error-subtitle mb-4">
+                    Tidak dapat terhubung ke server PertaEvent.<br />Silakan periksa koneksi atau muat ulang halaman.
+                </p>
+            </div>
+            
+            <button id="components-reconnect-button" class="components-reconnect-failed-visible btn-retry">
+                Muat Ulang Halaman
+            </button>
+
+            <div class="components-pause-visible components-resume-failed-visible">
+                <div class="mb-3 fs-1 error-icon-static">⏸️</div>
+                <h4 class="error-title">Sesi Dijeda</h4>
+            </div>
+
+            <p class="components-pause-visible error-subtitle mb-4">
+                Sesi aplikasi Anda telah dijeda oleh server.
+            </p>
+            
+            <p class="components-resume-failed-visible error-subtitle mb-4 text-danger">
+                Gagal melanjutkan sesi.<br />Silakan muat ulang halaman.
+            </p>
+
+            <button id="components-resume-button" class="components-pause-visible components-resume-failed-visible btn-retry">
+                Lanjutkan Sesi
+            </button>
+        </div>
     </div>
 </dialog>
