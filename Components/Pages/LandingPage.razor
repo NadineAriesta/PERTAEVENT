@@ -3,161 +3,183 @@
 <div class="ent-portal">
 
     <!-- ══════════════════════════════════════════
-         NAVIGATION BAR
+         NAVIGATION BAR (FIXED - selalu terlihat)
     ══════════════════════════════════════════ -->
-    <nav class="ent-nav">
-        <div class="ent-nav-inner">
-            <!-- Brand -->
-            <div class="d-flex align-items-center gap-2" style="margin-left: 1.5rem;">
-                <img src="images/pertamina-logo.png" alt="Pertamina Logo" style="height: 68px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));" />
+    <nav class="ent-nav shadow-sm bg-white" style="position: fixed; top: 0; width: 100%; z-index: 1050; padding: 0.5rem 0;">
+        <div class="container-fluid d-flex justify-content-between align-items-center" style="max-width: 1400px; padding: 0 2rem;">
+            <!-- Brand Logo -->
+            <div class="d-flex align-items-center">
+                <img src="images/pertamina-logo.png"
+                     alt="Pertamina Logo"
+                     style="height: 50px; width: auto; object-fit: contain;" />
             </div>
 
-            <!-- Links & Actions (Right Aligned) -->
-            <div class="d-flex align-items-center gap-4 ms-auto">
-                <div class="ent-nav-links d-none d-lg-flex">
-                    <button class="ent-nav-link" style="font-size: 1.05rem;" @onclick='() => OnScrollToElement.InvokeAsync("ent-workflow")'>Alur Kerja</button>
-                    <button class="ent-nav-link" style="font-size: 1.05rem;" @onclick='() => OnScrollToElement.InvokeAsync("ent-roles")'>Pengguna</button>
-                </div>
-                
-                <div class="ent-quick-wrap d-none d-sm-inline-block">
-                    <button class="ent-btn-primary" style="border-radius: 8px; font-size: 1.05rem; padding: 0.6rem 1.5rem;">Login</button>
-                    <div class="ent-quick-menu">
-                        <button class="ent-quick-item" @onclick='() => OnQuickLogin.InvokeAsync("admin")'>Admin</button>
-                        <button class="ent-quick-item" @onclick='() => OnQuickLogin.InvokeAsync("helpdesk")'>Helpdesk</button>
-                        <button class="ent-quick-item" @onclick='() => OnQuickLogin.InvokeAsync("pak_joko")'>Teknisi</button>
+            <!-- Nav Links & Login (Right Aligned) -->
+            <div class="d-flex align-items-center gap-4">
+                <nav class="d-none d-lg-flex gap-4">
+                    <button class="btn btn-link text-decoration-none fw-bold text-dark" style="font-family: 'Outfit', sans-serif;" @onclick='() => OnScrollToElement.InvokeAsync("hero-section")'>Home</button>
+                    <button class="btn btn-link text-decoration-none fw-bold text-dark" style="font-family: 'Outfit', sans-serif;" @onclick='() => OnScrollToElement.InvokeAsync("workflow-section")'>Alur Kerja</button>
+                </nav>
+
+                <div class="ent-quick-wrap position-relative">
+                    <button class="btn btn-danger fw-bold rounded-pill px-4" style="background-color: #E31E24; border: none; font-family: 'Outfit', sans-serif;" @onclick="() => OnOpenLoginModal.InvokeAsync()">Login</button>
+                    <div class="ent-quick-menu position-absolute bg-white shadow rounded mt-2 py-2" style="right: 0; min-width: 150px; display: none; border: 1px solid #E2E8F0;">
+                        <button class="dropdown-item py-2 fw-medium" @onclick='() => OnQuickLogin.InvokeAsync("admin")'>Admin</button>
+                        <button class="dropdown-item py-2 fw-medium" @onclick='() => OnQuickLogin.InvokeAsync("helpdesk")'>Helpdesk</button>
+                        <button class="dropdown-item py-2 fw-medium" @onclick='() => OnQuickLogin.InvokeAsync("pak_joko")'>Teknisi</button>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+    <style>
+        .ent-quick-wrap:hover .ent-quick-menu { display: block !important; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .role-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+    </style>
 
     <!-- ══════════════════════════════════════════
-         HERO SECTION
+         HERO SECTION (HOME)
     ══════════════════════════════════════════ -->
-    <section class="ent-hero">
-        <div class="ent-hero-inner">
-            <div style="max-width:800px; outline: none !important; border: none !important; box-shadow: none !important;" class="text-center mx-auto" tabindex="-1">
-                <h1 class="ent-hero-title mx-auto text-center" style="outline: none !important; border: none !important;">
-                    Manajemen IT Support<br />Acara Korporat
-                </h1>
-                <p class="ent-hero-desc mx-auto text-center" style="outline: none !important; border: none !important;">
-                    Platform terintegrasi untuk koordinasi penugasan teknisi IT, konfirmasi digital,
-                    dan dokumentasi kegiatan corporate event Pertamina secara transparan dan real-time.
+    <section class="d-flex align-items-center position-relative" id="hero-section" style="min-height: 85vh; background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.7)), url('images/refinery_hero.png') no-repeat center center; background-size: cover; margin-top: 0;">
+        <div class="container text-center" style="max-width: 900px; padding: 6rem 15px 4rem;">
+            <h1 class="display-6 fw-bolder mb-2" tabindex="-1" style="font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -1px; text-shadow: 0 4px 15px rgba(0,0,0,0.4); outline: none; color: #F8FAFC;">PERTAEVENT</h1>
+            <h2 class="h3 mb-4 fw-normal text-light" style="font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 1px;">Pertamina Event Support System</h2>
+            <p class="lead mb-5 mx-auto" style="font-size: 1.15rem; line-height: 1.8; color: rgba(255,255,255,0.9); font-family: 'Inter', sans-serif; max-width: 750px;">
+                Platform internal untuk mengelola seluruh kebutuhan support IT pada kegiatan perusahaan secara terintegrasi, mulai dari perencanaan acara, pengelolaan kebutuhan support, penugasan teknisi, monitoring progres pekerjaan, hingga dokumentasi penyelesaian kegiatan secara real-time.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION ALUR KERJA SISTEM
+    ══════════════════════════════════════════ -->
+    <section class="py-5" id="workflow-section" style="background-color: #FFFFFF;">
+        <div class="container" style="max-width: 1200px; padding: 4rem 15px;">
+            <div class="text-center mb-5">
+                <h2 class="fw-bolder mb-3" style="color: #1E293B; font-family: 'Outfit', sans-serif; font-size: 2.2rem;">Alur Kerja Sistem</h2>
+                <p class="text-muted mx-auto" style="max-width: 700px; line-height: 1.7; font-size: 1.05rem;">
+                    Proses pengelolaan terstruktur yang memastikan efisiensi dan transparansi di setiap tahap kegiatan, melibatkan tiga peran utama.
                 </p>
             </div>
-        </div>
-    </section>
 
-    <!-- ══════════════════════════════════════════
-         WORKFLOW SECTION (Corp About Style)
-    ══════════════════════════════════════════ -->
-    <section class="corp-about" id="ent-workflow">
-        <div class="container py-3">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-5 mb-lg-0 text-center text-lg-start">
-                    <h2 class="corp-about-title">Alur Kerja Sistem</h2>
-                    <p class="corp-about-text mb-4">
-                        Setiap acara melewati 5 tahap proses yang terstruktur untuk memastikan koordinasi sempurna antara Helpdesk, Admin, dan Teknisi Lapangan secara transparan.
-                    </p>
-                    <div class="d-flex flex-column gap-3 text-start" style="max-width: 500px; margin: 0 auto 0 0;">
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-white text-danger fs-6 p-2 rounded-circle" style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;">1</span>
-                            <span style="font-size:1.1rem; font-weight:600;">Helpdesk mencatat kebutuhan IT acara</span>
+            <div class="row g-2 mt-3 justify-content-center">
+                
+                <!-- Admin Card -->
+                <div class="col-lg-4">
+                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('images/refinery_hero.png') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
+                        <div class="mb-4">
+                            <h4 class="fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">ADMIN</h4>
+                            <span class="text-muted small fw-medium">Pengelola Utama Sistem</span>
                         </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-white text-danger fs-6 p-2 rounded-circle" style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;">2</span>
-                            <span style="font-size:1.1rem; font-weight:600;">Admin menugaskan teknisi lapangan</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-white text-danger fs-6 p-2 rounded-circle" style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;">3</span>
-                            <span style="font-size:1.1rem; font-weight:600;">Teknisi melakukan konfirmasi digital</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-white text-danger fs-6 p-2 rounded-circle" style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;">4</span>
-                            <span style="font-size:1.1rem; font-weight:600;">Teknisi mengunggah foto dokumentasi</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-white text-danger fs-6 p-2 rounded-circle" style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;">5</span>
-                            <span style="font-size:1.1rem; font-weight:600;">Admin memverifikasi dan menuntaskan laporan</span>
+                        <div class="mb-2">
+                            <p class="text-dark small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Tahapan Kerja:</p>
+                            <ul class="list-unstyled text-dark small" style="line-height: 1.8;">
+                                <li><i class="bi bi-check2 text-danger me-2"></i>Membuat data acara</li>
+                                <li><i class="bi bi-check2 text-danger me-2"></i>Mengelola kebutuhan support</li>
+                                <li><i class="bi bi-check2 text-danger me-2"></i>Menugaskan teknisi</li>
+                                <li><i class="bi bi-check2 text-danger me-2"></i>Mengelola master support</li>
+                                <li><i class="bi bi-check2 text-danger me-2"></i>Mengelola data teknisi</li>
+                                <li><i class="bi bi-check2 text-danger me-2"></i>Monitoring seluruh kegiatan</li>
+                                <li><i class="bi bi-check2 text-danger me-2"></i>Melihat laporan</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 corp-about-truck-container">
-                    <img src="images/fuel_truck.png" alt="Pertamina Workflow" class="corp-about-truck" />
+
+                <!-- Help Desk Card -->
+                <div class="col-lg-4">
+                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('images/refinery_hero.png') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
+                        <div class="mb-4">
+                            <h4 class="fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">HELP DESK</h4>
+                            <span class="text-muted small fw-medium">Pusat Koordinasi & Monitoring</span>
+                        </div>
+                        <div class="mb-2">
+                            <p class="text-dark small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Tahapan Kerja:</p>
+                            <ul class="list-unstyled text-dark small" style="line-height: 1.8;">
+                                <li><i class="bi bi-check2 text-primary me-2"></i>Monitoring seluruh kegiatan</li>
+                                <li><i class="bi bi-check2 text-primary me-2"></i>Memastikan status penugasan diperbarui</li>
+                                <li><i class="bi bi-check2 text-primary me-2"></i>Membantu koordinasi antar pengguna</li>
+                                <li><i class="bi bi-check2 text-primary me-2"></i>Memastikan informasi kegiatan akurat</li>
+                                <li><i class="bi bi-check2 text-primary me-2"></i>Membantu penanganan kendala operasional</li>
+                                <li><i class="bi bi-check2 text-primary me-2"></i>Memantau progres penyelesaian pekerjaan</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Teknisi Card -->
+                <div class="col-lg-4">
+                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('images/refinery_hero.png') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
+                        <div class="mb-4">
+                            <h4 class="fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">TEKNISI</h4>
+                            <span class="text-muted small fw-medium">Pelaksana Support IT</span>
+                        </div>
+                        <div class="mb-2">
+                            <p class="text-dark small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Tahapan Kerja:</p>
+                            <ul class="list-unstyled text-dark small" style="line-height: 1.8;">
+                                <li><i class="bi bi-check2 text-success me-2"></i>Melihat penugasan</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i>Konfirmasi menerima tugas</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i>Melaksanakan support IT</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i>Upload dokumentasi</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i>Memberikan catatan pekerjaan</li>
+                                <li><i class="bi bi-check2 text-success me-2"></i>Menyelesaikan tugas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
     <!-- ══════════════════════════════════════════
-         ROLES SECTION (Corp Highlights Style)
+         FOOTER
     ══════════════════════════════════════════ -->
-    <section class="py-5" style="background:#F5F7FA" id="ent-roles">
-        <div class="container py-4">
-            <h2 class="mb-5 text-center" style="font-family:'Outfit', sans-serif; font-weight:900; font-size:2.5rem; color:#005CA9; text-transform:uppercase;">Pengguna Sistem</h2>
-            <div class="tile-container">
-                <div class="tile-col-left">
-                    <div class="highlight-card shadow-sm border-0">
-                        <div class="highlight-img-container" style="background-image: url('images/engineers_highlight.png'); min-height: 350px;"></div>
-                        <div class="highlight-footer-bar" style="cursor:pointer;" @onclick='() => OnQuickLogin.InvokeAsync("admin")'>
-                            LOGIN SEBAGAI ADMIN / MANAGER
-                        </div>
-                    </div>
-                </div>
-                <div class="tile-col-right">
-                    <button class="business-tile-blue shadow-sm border-0 w-100" @onclick='() => OnQuickLogin.InvokeAsync("helpdesk")'>
-                        HELPDESK / STAFF IT
-                    </button>
-                    <button class="business-tile-green shadow-sm border-0 w-100" @onclick='() => OnQuickLogin.InvokeAsync("pak_joko")'>
-                        TEKNISI LAPANGAN
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══════════════════════════════════════════
-         ENTERPRISE FOOTER
-    ══════════════════════════════════════════ -->
-    <footer class="ent-footer" id="ent-footer">
-        <div class="ent-footer-inner">
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-12 mb-2">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <img src="images/pertamina-logo.png" alt="Pertamina Logo" style="height: 28px; width: auto; object-fit: contain; filter: brightness(0) invert(1);" />
-                        <span style="border-left: 1px solid rgba(255,255,255,0.3); height: 18px; margin: 0 4px;"></span>
-                        <span class="ent-footer-brand">PertaEvent</span>
-                    </div>
-                    <p class="ent-footer-desc">Sistem IT Event Support Management untuk mendukung kelancaran kegiatan korporat PT Pertamina (Persero) secara efisien dan transparan.</p>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <h6 class="ent-footer-head">Navigasi</h6>
-                    <ul class="ent-footer-list">
-                        <li><button @onclick='() => OnScrollToElement.InvokeAsync("ent-workflow")'>Alur Kerja</button></li>
-                        <li><button @onclick='() => OnScrollToElement.InvokeAsync("ent-roles")'>Pengguna</button></li>
+    <footer style="background-color: #0B2240; color: #FFFFFF; font-family: 'Inter', sans-serif;" id="help-section">
+        <div class="container" style="max-width: 1200px; padding: 4rem 15px 2rem;">
+            <div class="row g-5 border-bottom border-secondary pb-4 mb-4">
+                
+                <div class="col-md-3">
+                    <h6 class="fw-bold text-uppercase mb-4" style="color: #94A3B8; letter-spacing: 1px; font-size: 0.85rem;">Tentang Sistem</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none" @onclick:preventDefault @onclick='() => OnScrollToElement.InvokeAsync("hero-section")'>Home</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none" @onclick:preventDefault @onclick='() => OnScrollToElement.InvokeAsync("workflow-section")'>Alur Kerja</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-4 col-6">
-                    <h6 class="ent-footer-head">Demo Akses</h6>
-                    <ul class="ent-footer-list">
-                        <li><button @onclick='() => OnQuickLogin.InvokeAsync("admin")'>Masuk sebagai Admin</button></li>
-                        <li><button @onclick='() => OnQuickLogin.InvokeAsync("helpdesk")'>Masuk sebagai Helpdesk</button></li>
-                        <li><button @onclick='() => OnQuickLogin.InvokeAsync("pak_joko")'>Masuk sebagai Teknisi</button></li>
+
+                <div class="col-md-3">
+                    <h6 class="fw-bold text-uppercase mb-4" style="color: #94A3B8; letter-spacing: 1px; font-size: 0.85rem;">Dokumentasi</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Panduan Pengguna</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">FAQ</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Bantuan</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-4">
-                    <h6 class="ent-footer-head">Kontak IT Support</h6>
-                    <p class="ent-footer-contact">
-                        IT Helpdesk Pertamina<br />
-                        Ext. 1500-000<br />
-                        itsupport@pertamina.com
-                    </p>
+
+                <div class="col-md-3">
+                    <h6 class="fw-bold text-uppercase mb-4" style="color: #94A3B8; letter-spacing: 1px; font-size: 0.85rem;">Kontak</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 text-light"><i class="bi bi-headset me-2"></i>Help Desk IT</li>
+                        <li class="mb-2 text-light"><i class="bi bi-envelope me-2"></i>support.it@pertamina.com</li>
+                        <li class="mb-2 text-light"><i class="bi bi-telephone me-2"></i>Ext. 1234</li>
+                    </ul>
                 </div>
+
+                <div class="col-md-3">
+                    <h6 class="fw-bold text-uppercase mb-4" style="color: #94A3B8; letter-spacing: 1px; font-size: 0.85rem;">Versi Sistem</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-1 text-light fw-bold" style="font-family: 'Outfit', sans-serif;">PERTAEVENT</li>
+                        <li class="text-muted small">Versi 1.0.0</li>
+                    </ul>
+                </div>
+
             </div>
-            <hr class="ent-footer-divider" />
-            <div class="ent-footer-bottom">
-                <span class="ent-footer-copy">© 2026 PT Pertamina (Persero). All rights reserved.</span>
-                <span class="ent-footer-sys">PertaEvent v1.0 — IT Event Support System</span>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-muted small">
+                <span>&copy; 2026 PT Pertamina Patra Niaga</span>
+                <span>PERTAEVENT – Pertamina Event Support System</span>
             </div>
         </div>
     </footer>

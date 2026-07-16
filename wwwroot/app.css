@@ -779,8 +779,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* 3. About Us */
 .corp-about {
-    background-color: #8CC63F;
-    color: #FFFFFF;
+    background-color: #FFFFFF;
+    color: #334155;
     padding: 4rem 0;
     overflow: hidden;
 }
@@ -794,7 +794,7 @@ h1, h2, h3, h4, h5, h6 {
 .corp-about-truck {
     max-width: 90%;
     height: auto;
-    filter: drop-shadow(5px 15px 20px rgba(0,0,0,0.25));
+    filter: drop-shadow(5px 15px 20px rgba(0,0,0,0.15));
     transform: scale(1.05);
 }
 
@@ -804,6 +804,7 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     margin-bottom: 1rem;
     letter-spacing: 0.05rem;
+    color: #005CA9;
 }
 
 .corp-about-text {
@@ -1721,4 +1722,392 @@ h1, h2, h3, h4, h5, h6 {
     .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
     .dash-event-item { flex-direction: column; align-items: flex-start; }
     .dash-event-actions { width: 100%; justify-content: flex-end; }
+}
+
+/* ==========================================================================
+   PertaEvent Modern Sticky/Fixed Navigation and Layout Refinements
+   ========================================================================== */
+
+.ent-portal {
+    padding-top: 80px;
+    background-color: #FFFFFF;
+    font-family: 'Outfit', sans-serif;
+}
+
+.ent-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    z-index: 1030;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+}
+
+.ent-nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ent-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.ent-nav-link {
+    background: none;
+    border: none;
+    color: #334155;
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    outline: none;
+}
+
+.ent-nav-link:hover, .ent-nav-link:focus {
+    color: #E31E24;
+    outline: none;
+    border: none;
+}
+
+/* Quick Login Dropdown/Button Wrapper */
+.ent-quick-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.ent-btn-primary {
+    background-color: #E31E24;
+    color: #FFFFFF;
+    border: none;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.ent-btn-primary:hover, .ent-btn-primary:focus {
+    background-color: #C1181D;
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.ent-quick-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #FFFFFF;
+    min-width: 160px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 1040;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.ent-quick-wrap:hover .ent-quick-menu {
+    display: block;
+}
+
+.ent-quick-item {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    text-align: left;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    outline: none;
+}
+
+.ent-quick-item:hover, .ent-quick-item:focus {
+    background-color: #F1F5F9;
+    color: #E31E24;
+    outline: none;
+}
+
+/* Native Scroll Margins to clear the fixed navbar */
+#hero-section, #about-section, #workflow-section, #roles-section, #help-section {
+    scroll-margin-top: 80px;
+}
+
+/* ==========================================================================
+   Landing Page — Workflow & Roles Section Styles
+   ========================================================================== */
+
+/* Shared Section Titles */
+.lp-section-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    color: #005CA9;
+    text-transform: uppercase;
+    letter-spacing: 0.04rem;
+    margin-bottom: 0.75rem;
+}
+
+.lp-section-sub {
+    font-size: 1rem;
+    color: #64748B;
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.75;
+}
+
+.lp-section-badge-label {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #334155;
+    margin: 0;
+}
+
+/* ── Alur Kerja Section ── */
+.lp-workflow-section {
+    background-color: #F8FAFC;
+    padding: 5rem 1.5rem;
+    border-top: 1px solid #E2E8F0;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.lp-flow-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+.lp-flow-start,
+.lp-flow-end {
+    text-align: center;
+    width: 100%;
+}
+
+.lp-flow-badge {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+    padding: 0.65rem 2.5rem;
+    border-radius: 4px;
+}
+
+.lp-badge-red {
+    background-color: #E31E24;
+    color: #FFFFFF;
+}
+
+.lp-badge-blue {
+    background-color: #005CA9;
+    color: #FFFFFF;
+}
+
+.lp-flow-arrow {
+    font-size: 1.8rem;
+    color: #94A3B8;
+    line-height: 1;
+    margin: 0.4rem 0;
+    user-select: none;
+}
+
+.lp-flow-steps {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+.lp-flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.lp-flow-step:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateX(4px);
+}
+
+.lp-step-num {
+    background-color: #E31E24;
+    color: #FFFFFF;
+    font-size: 0.85rem;
+    font-weight: 800;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.lp-step-body {
+    flex: 1;
+}
+
+.lp-step-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1E293B;
+    margin-bottom: 0.2rem;
+}
+
+.lp-step-desc {
+    font-size: 0.875rem;
+    color: #64748B;
+    line-height: 1.5;
+}
+
+/* ── Pengguna Sistem Section ── */
+.lp-roles-section {
+    background-color: #FFFFFF;
+    padding: 5rem 1.5rem;
+}
+
+.lp-role-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 1.75rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    cursor: pointer;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    border-top-width: 4px;
+}
+
+.lp-role-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+}
+
+.lp-role-card-red  { border-top-color: #E31E24; }
+.lp-role-card-blue { border-top-color: #005CA9; }
+.lp-role-card-green { border-top-color: #2d6a0a; }
+
+.lp-role-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.lp-role-avatar {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #FFFFFF;
+}
+
+.lp-avatar-red   { background-color: #E31E24; }
+.lp-avatar-blue  { background-color: #005CA9; }
+.lp-avatar-green { background-color: #2d6a0a; }
+
+.lp-role-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1E293B;
+    text-transform: uppercase;
+    letter-spacing: 0.04rem;
+}
+
+.lp-role-subtitle {
+    font-size: 0.8rem;
+    color: #64748B;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.lp-role-desc {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.lp-role-task-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+    color: #94A3B8;
+    border-top: 1px solid #F1F5F9;
+    padding-top: 0.75rem;
+}
+
+.lp-role-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    flex: 1;
+}
+
+.lp-role-tasks li {
+    font-size: 0.88rem;
+    color: #334155;
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+}
+
+.lp-role-tasks li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #CBD5E1;
+    font-size: 0.75rem;
+}
+
+.lp-role-cta {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #94A3B8;
+    text-align: right;
+    border-top: 1px solid #F1F5F9;
+    padding-top: 0.75rem;
+    transition: color 0.2s ease;
+    margin-top: auto;
+}
+
+.lp-role-card:hover .lp-role-cta {
+    color: #E31E24;
 }
