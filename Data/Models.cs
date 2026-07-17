@@ -148,6 +148,31 @@ namespace EventSupportApp.Data
         public string? DokumentasiKegiatanFile { get; set; } // Path/Base64 untuk demo
         
         public DateTime? WaktuUpload { get; set; }
+
+        public int Progress { get; set; } = 0; // e.g. 0 to 100
+        
+        [MaxLength(500)]
+        public string? CatatanTeknisi { get; set; }
+    }
+
+    public class Notification
+    {
+        [Key]
+        public int IdNotification { get; set; }
+        
+        public int IdUser { get; set; }
+        [ForeignKey("IdUser")]
+        public virtual User? User { get; set; }
+        
+        [Required]
+        [MaxLength(250)]
+        public string Message { get; set; } = string.Empty;
+        
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        
+        [Required]
+        [MaxLength(20)]
+        public string Status { get; set; } = "Unread"; // Unread, Read
     }
 
     public class RiwayatAcara

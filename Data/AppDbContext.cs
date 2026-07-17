@@ -16,6 +16,7 @@ namespace EventSupportApp.Data
         public DbSet<KebutuhanAcara> KebutuhanAcara => Set<KebutuhanAcara>();
         public DbSet<Penugasan> Penugasan => Set<Penugasan>();
         public DbSet<RiwayatAcara> RiwayatAcara => Set<RiwayatAcara>();
+        public DbSet<Notification> Notifications => Set<Notification>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

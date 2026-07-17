@@ -8,7 +8,7 @@
 
 @if (!IsLoggedIn)
 {
-    <LandingPage OnQuickLogin="QuickLogin" OnScrollToElement="ScrollToElement" OnOpenLoginModal="OpenEmptyLoginModal" />
+    <LandingPage OnQuickLogin="QuickLogin" OnPrefillLogin="PrefillLoginModal" OnScrollToElement="ScrollToElement" OnOpenLoginModal="OpenEmptyLoginModal" />
 
         <!-- Clean Corporate Login Modal -->
         @if (ShowLoginModal)
@@ -21,20 +21,22 @@
                         <button type="button" class="btn-close position-absolute top-0 end-0 m-3 shadow-none" style="z-index: 10;" @onclick="() => ShowLoginModal = false" aria-label="Close"></button>
 
                         <div class="p-5 text-center">
-                            <!-- Pertamina Patra Niaga Logo -->
+                            <!-- Pertamina Logo -->
                             <div class="mb-4 d-flex justify-content-center align-items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="200" height="55">
-                                    <g transform="skewX(-25) translate(35, 2)">
-                                        <rect x="42" y="10" width="40" height="20" rx="4" fill="#E31E24" />
-                                        <rect x="42" y="40" width="40" height="20" rx="4" fill="#92C83E" />
-                                        <rect x="10" y="32" width="20" height="48" rx="4" fill="#005CA9" />
-                                    </g>
-                                    <text x="110" y="35" font-family="'Outfit', 'Inter', sans-serif" font-weight="900" font-size="22" fill="#212529" letter-spacing="-0.02rem">PERTAMINA</text>
-                                    <text x="112" y="55" font-family="'Outfit', 'Inter', sans-serif" font-weight="700" font-size="13" fill="#E31E24" letter-spacing="0.05rem">PATRA NIAGA</text>
-                                </svg>
+                                <img src="images/pertamina-logo.png" alt="Pertamina Logo" style="height: 50px; width: auto; object-fit: contain;" />
                             </div>
 
-                            <p class="text-muted mb-4" style="font-size: 0.95rem;">Gunakan akun untuk login sebagai <strong class="text-dark">@SelectedLoginRole</strong></p>
+                            @if (!string.IsNullOrEmpty(SelectedLoginRole))
+                            {
+                                <p class="text-muted mb-1" style="font-size: 0.95rem;">Gunakan akun untuk login sebagai <strong class="text-dark">@SelectedLoginRole</strong></p>
+                                <div class="mb-4">
+                                    <button type="button" class="btn btn-link p-0 text-decoration-none" style="font-size: 0.85rem; color: #005CA9;" @onclick="OpenEmptyLoginModal">&larr; Ganti Peran</button>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-4" style="font-size: 0.95rem;">Masukkan username dan password Anda</p>
+                            }
 
                             @if (!string.IsNullOrEmpty(LoginErrorMessage))
                             {
@@ -60,30 +62,8 @@
                                     <input type="password" class="form-control border-start-0 ps-0 shadow-none" style="border-radius: 0 6px 6px 0; border-color: #ced4da;" @bind="InputPassword" placeholder="Password" required />
                                 </div>
 
-                                <button type="submit" class="btn w-100 py-2 fw-bold text-white login-btn" style="background-color: #10b981; border-radius: 6px; font-size: 1rem;">
-                                    Login
-                                </button>
-                                
-                                <div class="text-center mt-2">
-                                    <button type="button" class="btn btn-link text-muted p-0 text-decoration-none" style="font-size: 0.75rem;" @onclick='() => PrepareQuickLogin(InputUsername)'>
-                                        (Demo: Auto-fill Password)
-                                    </button>
-                                </div>
+                                <button type="submit" class="btn w-100 py-2 fw-bold text-white login-btn" style="background-color: #10b981; border-radius: 6px; font-size: 1rem;">Login</button>
                             </form>
-                            
-                            <!-- Links -->
-                            <div class="mt-4 text-center">
-                                <a href="#" class="text-decoration-none text-muted" style="font-size: 0.9rem;" @onclick="() => ShowLoginModal = false">Beranda</a> 
-                                <span class="text-muted mx-1">|</span> 
-                                <a href="#" class="text-decoration-none text-muted" style="font-size: 0.9rem;">Lupa Password</a>
-                            </div>
-
-                            <hr class="my-4" style="border-color: #e2e8f0; opacity: 1;">
-
-                            <div class="text-center">
-                                <span class="text-muted" style="font-size: 0.9rem;">Belum memiliki akun ? </span>
-                                <a href="#" class="text-decoration-none" style="font-size: 0.9rem; color: #475569;">Registrasi</a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -149,6 +129,13 @@ else
             </div>
         </div>
     </div>
+
+    @if (IsLoggedIn && UserNotifications.Any(n => n.Status == "Unread"))
+    {
+        <div class="alert alert-warning mb-4 shadow-sm border-0" style="border-left: 4px solid #f59e0b; background-color: #fef3c7; color: #92400e; font-size: 0.9rem;">
+            <strong>Notifikasi:</strong> Anda memiliki @UserNotifications.Count(n => n.Status == "Unread") pesan baru yang belum dibaca.
+        </div>
+    }
 
     @if (!string.IsNullOrEmpty(SystemNotification))
     {
@@ -740,6 +727,19 @@ else
             }
         }
     }
+    else if (CurrentRole == "Teknisi")
+    {
+        <TeknisiDashboard 
+            ActiveMenu="@ActiveMenu"
+            CurrentTeknisiId="CurrentTeknisiId" 
+            Assignments="Assignments" 
+            ActiveEvents="ActiveEvents"
+            HistoryEvents="HistoryEvents"
+            Technicians="Technicians"
+            OnOpenSignature="HandleOpenSignature" 
+            OnOpenUpload="HandleOpenUpload" 
+            OnUpdateProgress="HandleUpdateProgress" />
+    }
 
     <!-- Data Master & Pengguna Section -->
     @if (CurrentRole == "Admin" && ActiveMenu == "dashboard")
@@ -1124,6 +1124,7 @@ else
     private List<MappingTeknisi> Technicians { get; set; } = new();
     private List<Penugasan> Assignments { get; set; } = new();
     private List<RiwayatAcara> HistoryEvents { get; set; } = new();
+    private List<Notification> UserNotifications { get; set; } = new();
 
     // Helpdesk Form Bindings
     private SupportAcara NewEvent { get; set; } = new();
@@ -1216,6 +1217,14 @@ else
                 .OrderByDescending(r => r.WaktuSelesai)
                 .ToListAsync();
         }
+
+        if (IsLoggedIn && LoggedInUser != null)
+        {
+            UserNotifications = await DbContext.Notifications
+                .Where(n => n.IdUser == LoggedInUser.IdUser)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+        }
     }
 
     private async Task HandleLogin()
@@ -1273,6 +1282,21 @@ else
         InputUsername = username;
         InputPassword = "123";
         await HandleLogin();
+    }
+
+    private void PrefillLoginModal(string username)
+    {
+        // Hanya prefill username, buka modal - user harus input password sendiri
+        InputUsername = username;
+        InputPassword = string.Empty;
+        LoginErrorMessage = string.Empty;
+        SelectedLoginRole = username switch
+        {
+            "admin"    => "Admin",
+            "helpdesk" => "Help Desk",
+            _          => "Teknisi"
+        };
+        ShowLoginModal = true;
     }
 
     private void HandleLogout()
@@ -1445,6 +1469,21 @@ else
                     });
                 }
 
+                // Add Notification to technicians assigned
+                var penugasan = await DbContext.Penugasan.Where(p => p.IdAcara == EditEvent.IdAcara).Include(p => p.Teknisi).ToListAsync();
+                foreach (var p in penugasan)
+                {
+                    if (p.Teknisi != null)
+                    {
+                        DbContext.Notifications.Add(new Notification
+                        {
+                            IdUser = p.Teknisi.IdUser,
+                            Message = $"Perubahan jadwal/kebutuhan untuk Event {existingEvent.NamaAcara}.",
+                            Status = "Unread"
+                        });
+                    }
+                }
+
                 await DbContext.SaveChangesAsync();
                 SystemNotification = $"Acara '{existingEvent.NamaAcara}' berhasil diperbarui.";
             }
@@ -1498,6 +1537,12 @@ else
                 if (tek != null)
                 {
                     tek.StatusKetersediaan = "Sibuk";
+                    DbContext.Notifications.Add(new Notification
+                    {
+                        IdUser = tek.IdUser,
+                        Message = $"Penugasan baru untuk Event {eventItem.NamaAcara}.",
+                        Status = "Unread"
+                    });
                 }
 
                 await DbContext.SaveChangesAsync();
@@ -1619,6 +1664,14 @@ else
                     penugasan.Acara.StatusAcara = "Dokumen Diunggah"; // status becomes Biru
                 }
 
+                // Notify admin
+                DbContext.Notifications.Add(new Notification
+                {
+                    IdUser = 1, // Admin Id
+                    Message = $"Dokumentasi diunggah untuk Event {penugasan.Acara?.NamaAcara} oleh Teknisi.",
+                    Status = "Unread"
+                });
+
                 await DbContext.SaveChangesAsync();
                 SystemNotification = $"Foto bukti setup berhasil diunggah! Status berubah menjadi 'Dokumen Diunggah' (Biru).";
                 ShowUploadModal = false;
@@ -1628,6 +1681,35 @@ else
         catch (Exception ex)
         {
             SystemNotification = $"Gagal menyimpan foto bukti: {ex.Message}";
+        }
+    }
+
+    private async Task HandleUpdateProgress(Penugasan assignment)
+    {
+        try
+        {
+            var penugasan = await DbContext.Penugasan.Include(p => p.Acara).FirstOrDefaultAsync(p => p.IdPenugasan == assignment.IdPenugasan);
+            if (penugasan != null)
+            {
+                penugasan.Progress = assignment.Progress;
+                penugasan.CatatanTeknisi = assignment.CatatanTeknisi;
+
+                // Notify admin
+                DbContext.Notifications.Add(new Notification
+                {
+                    IdUser = 1, // Admin
+                    Message = $"Progress diperbarui ({penugasan.Progress}%) untuk Event {penugasan.Acara?.NamaAcara}.",
+                    Status = "Unread"
+                });
+
+                await DbContext.SaveChangesAsync();
+                SystemNotification = "Progress dan Catatan Teknisi berhasil disimpan.";
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            SystemNotification = $"Gagal mengupdate progress: {ex.Message}";
         }
     }
 

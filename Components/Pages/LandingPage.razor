@@ -11,7 +11,7 @@
             <div class="d-flex align-items-center">
                 <img src="images/pertamina-logo.png"
                      alt="Pertamina Logo"
-                     style="height: 50px; width: auto; object-fit: contain;" />
+                     style="height: 68px; width: auto; object-fit: contain;" />
             </div>
 
             <!-- Nav Links & Login (Right Aligned) -->
@@ -21,19 +21,29 @@
                     <button class="btn btn-link text-decoration-none fw-bold text-dark" style="font-family: 'Outfit', sans-serif;" @onclick='() => OnScrollToElement.InvokeAsync("workflow-section")'>Alur Kerja</button>
                 </nav>
 
-                <div class="ent-quick-wrap position-relative">
-                    <button class="btn btn-danger fw-bold rounded-pill px-4" style="background-color: #E31E24; border: none; font-family: 'Outfit', sans-serif;" @onclick="() => OnOpenLoginModal.InvokeAsync()">Login</button>
-                    <div class="ent-quick-menu position-absolute bg-white shadow rounded mt-2 py-2" style="right: 0; min-width: 150px; display: none; border: 1px solid #E2E8F0;">
-                        <button class="dropdown-item py-2 fw-medium" @onclick='() => OnQuickLogin.InvokeAsync("admin")'>Admin</button>
-                        <button class="dropdown-item py-2 fw-medium" @onclick='() => OnQuickLogin.InvokeAsync("helpdesk")'>Helpdesk</button>
-                        <button class="dropdown-item py-2 fw-medium" @onclick='() => OnQuickLogin.InvokeAsync("pak_joko")'>Teknisi</button>
-                    </div>
+                <div class="position-relative">
+                    <button class="btn btn-danger fw-bold rounded-pill px-4" style="background-color: #E31E24; border: none; font-family: 'Outfit', sans-serif;" @onclick="ToggleDropdown">Login</button>
+                    @if (ShowDropdown)
+                    {
+                        <div class="position-absolute bg-white shadow-lg rounded-3 py-2" style="right: 0; top: calc(100% + 8px); min-width: 165px; z-index: 2000; border: 1px solid #E2E8F0;">
+                            <button class="dropdown-item py-2 px-3 fw-medium" style="font-size: 0.9rem;" @onclick='async () => { ShowDropdown = false; await OnPrefillLogin.InvokeAsync("admin"); }'>
+                                <i class="bi bi-person-workspace me-2 text-danger"></i>Admin
+                            </button>
+                            <button class="dropdown-item py-2 px-3 fw-medium" style="font-size: 0.9rem;" @onclick='async () => { ShowDropdown = false; await OnPrefillLogin.InvokeAsync("helpdesk"); }'>
+                                <i class="bi bi-headset me-2 text-primary"></i>Help Desk
+                            </button>
+                            <button class="dropdown-item py-2 px-3 fw-medium" style="font-size: 0.9rem;" @onclick='async () => { ShowDropdown = false; await OnPrefillLogin.InvokeAsync("pak_joko"); }'>
+                                <i class="bi bi-tools me-2 text-success"></i>Teknisi
+                            </button>
+                        </div>
+                        <!-- Backdrop untuk tutup dropdown saat klik di luar -->
+                        <div style="position:fixed;inset:0;z-index:1999;" @onclick="() => ShowDropdown = false"></div>
+                    }
                 </div>
             </div>
         </div>
     </nav>
     <style>
-        .ent-quick-wrap:hover .ent-quick-menu { display: block !important; }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .role-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
     </style>
@@ -68,7 +78,7 @@
                 
                 <!-- Admin Card -->
                 <div class="col-lg-4">
-                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('images/refinery_hero.png') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
+                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.91), rgba(255, 255, 255, 0.91)), url('images/gam1.jpg') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
                         <div class="mb-4">
                             <h4 class="fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">ADMIN</h4>
                             <span class="text-muted small fw-medium">Pengelola Utama Sistem</span>
@@ -90,7 +100,7 @@
 
                 <!-- Help Desk Card -->
                 <div class="col-lg-4">
-                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('images/refinery_hero.png') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
+                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.91), rgba(255, 255, 255, 0.91)), url('images/gam2.jpg') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
                         <div class="mb-4">
                             <h4 class="fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">HELP DESK</h4>
                             <span class="text-muted small fw-medium">Pusat Koordinasi & Monitoring</span>
@@ -111,7 +121,7 @@
 
                 <!-- Teknisi Card -->
                 <div class="col-lg-4">
-                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url('images/refinery_hero.png') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
+                    <div class="role-card rounded-4 p-4 h-100" style="border: 1px solid #E2E8F0; background: linear-gradient(rgba(255, 255, 255, 0.91), rgba(255, 255, 255, 0.91)), url('images/gam3.png') no-repeat center center; background-size: cover; transition: all 0.3s ease;">
                         <div class="mb-4">
                             <h4 class="fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">TEKNISI</h4>
                             <span class="text-muted small fw-medium">Pelaksana Support IT</span>
@@ -191,8 +201,15 @@
     public EventCallback<string> OnQuickLogin { get; set; }
 
     [Parameter]
+    public EventCallback<string> OnPrefillLogin { get; set; }
+
+    [Parameter]
     public EventCallback OnOpenLoginModal { get; set; }
 
     [Parameter]
     public EventCallback<string> OnScrollToElement { get; set; }
+
+    private bool ShowDropdown { get; set; } = false;
+
+    private void ToggleDropdown() => ShowDropdown = !ShowDropdown;
 }
