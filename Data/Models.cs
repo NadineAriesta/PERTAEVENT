@@ -153,6 +153,31 @@ namespace EventSupportApp.Data
         
         [MaxLength(500)]
         public string? CatatanTeknisi { get; set; }
+
+        [MaxLength(500)]
+        public string? AlasanPenolakan { get; set; }
+
+        public virtual ICollection<DiskusiPenugasan> DiskusiList { get; set; } = new List<DiskusiPenugasan>();
+    }
+
+    public class DiskusiPenugasan
+    {
+        [Key]
+        public int IdDiskusi { get; set; }
+        
+        public int IdPenugasan { get; set; }
+        [ForeignKey("IdPenugasan")]
+        public virtual Penugasan? Penugasan { get; set; }
+
+        public int IdUserPengirim { get; set; }
+        [ForeignKey("IdUserPengirim")]
+        public virtual User? Pengirim { get; set; }
+
+        [Required]
+        [MaxLength(1000)]
+        public string Pesan { get; set; } = string.Empty;
+
+        public DateTime WaktuKirim { get; set; } = DateTime.Now;
     }
 
     public class Notification

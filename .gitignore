@@ -5,10 +5,20 @@ obj/
 # Visual Studio
 .vs/
 *.user
+*.suo
 
-# Database SQLite
+# SQLite
+*.db
 *.db-shm
 *.db-wal
 
 # Logs
 *.log
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

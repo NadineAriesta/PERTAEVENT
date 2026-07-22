@@ -1,228 +1,261 @@
 @using EventSupportApp.Data
+@using Microsoft.EntityFrameworkCore
 @namespace EventSupportApp.Components.Pages
+@inject AppDbContext DbContext
+
+<style>
+    /* Enterprise Dashboard CSS for Teknisi */
+    .tek-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+    }
+    .tek-card:hover {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .tek-stat-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .tek-stat-card {
+        flex: 1;
+        min-width: 140px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    .tek-stat-card:hover {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border-color: #cbd5e1;
+    }
+    .tek-stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+    .tek-stat-label {
+        font-size: 0.8rem;
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+    .tek-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .tek-table th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+    }
+    .tek-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 0.875rem;
+    }
+    .tek-table tr:last-child td {
+        border-bottom: none;
+    }
+    .tek-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .tek-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .tek-btn-primary { background: #0f172a; color: white; }
+    .tek-btn-primary:hover { background: #1e293b; }
+    .tek-btn-outline { background: white; border-color: #e2e8f0; color: #0f172a; }
+    .tek-btn-outline:hover { background: #f8fafc; }
+    .keb-checklist { list-style: none; padding: 0; margin: 0; }
+    .keb-checklist li { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; color: #334155; }
+    .keb-checklist li:last-child { border-bottom: none; }
+    .keb-checklist input[type=checkbox] { width: 16px; height: 16px; accent-color: #0f172a; cursor: pointer; flex-shrink: 0; }
+    .keb-checklist li.checked { text-decoration: line-through; color: #94a3b8; }
+    .save-notif { font-size: 0.8rem; color: #16a34a; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    /* Event card grid for dashboard */
+    .tek-event-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .tek-event-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        transition: box-shadow 0.2s;
+    }
+    .tek-event-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    }
+    .tek-filter-bar {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .tek-filter-bar input, .tek-filter-bar select {
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 0.45rem 0.85rem;
+        font-size: 0.875rem;
+        color: #334155;
+        background: #fff;
+    }
+    .tek-filter-bar input:focus, .tek-filter-bar select:focus {
+        outline: none;
+        border-color: #94a3b8;
+    }
+</style>
 
 @if (ActiveMenu == "dashboard")
 {
     <!-- Stats Row -->
-    <div class="dash-stats-row mb-4">
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon" style="background-color: #f1f5f9; color: #475569;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
-            <div>
-                <div class="dash-stat-value" style="color: #0f172a;">@TotalPenugasan</div>
-                <div class="dash-stat-label">Total Penugasan</div>
-            </div>
+    <div class="tek-stat-row">
+        <div class="tek-stat-card">
+            <div class="tek-stat-value">@TotalPenugasan</div>
+            <div class="tek-stat-label">Total Penugasan</div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon" style="background-color: #e0e7ff; color: #4f46e5;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
-            <div>
-                <div class="dash-stat-value" style="color: #0f172a;">@PenugasanHariIni</div>
-                <div class="dash-stat-label">Penugasan Hari Ini</div>
-            </div>
+        <div class="tek-stat-card">
+            <div class="tek-stat-value">@PenugasanHariIni</div>
+            <div class="tek-stat-label">Penugasan Hari Ini</div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon bg-yellow"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
-            <div>
-                <div class="dash-stat-value">@MenungguKonfirmasi</div>
-                <div class="dash-stat-label">Menunggu Konfirmasi</div>
-            </div>
+        <div class="tek-stat-card">
+            <div class="tek-stat-value">@EventAktif</div>
+            <div class="tek-stat-label">Event Aktif</div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon bg-blue"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
-            <div>
-                <div class="dash-stat-value">@SedangBerlangsung</div>
-                <div class="dash-stat-label">Sedang Berlangsung</div>
-            </div>
+        <div class="tek-stat-card">
+            <div class="tek-stat-value">@MenungguKonfirmasi</div>
+            <div class="tek-stat-label">Menunggu Konfirmasi</div>
         </div>
-        <div class="dash-stat-card">
-            <div class="dash-stat-icon bg-green"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
-            <div>
-                <div class="dash-stat-value">@Selesai</div>
-                <div class="dash-stat-label">Selesai</div>
-            </div>
+        <div class="tek-stat-card">
+            <div class="tek-stat-value">@Selesai</div>
+            <div class="tek-stat-label">Selesai</div>
         </div>
     </div>
 
-    <!-- Jadwal Hari Ini -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <h5 class="fw-bold text-dark mb-4">Jadwal Hari Ini</h5>
-        <div class="table-responsive">
-            <table class="table align-middle m-0" style="table-layout: fixed; width: 100%;">
-                <thead>
-                    <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
-                        <th class="border-0 py-3 ps-4" style="width: 30%;">NAMA EVENT</th>
-                        <th class="border-0 py-3" style="width: 25%;">LOKASI</th>
-                        <th class="border-0 py-3" style="width: 25%;">WAKTU</th>
-                        <th class="border-0 py-3 pe-4" style="width: 20%;">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var assign in HariIni)
-                    {
-                        <tr>
-                            <td class="fw-bold py-3 ps-4 text-dark">@assign.Acara?.NamaAcara</td>
-                            <td class="text-muted py-3">@assign.Acara?.Lokasi</td>
-                            <td class="text-muted py-3">@assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")</td>
-                            <td class="py-3 pe-4">
-                                @if (string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) && assign.WaktuKonfirmasi == null)
-                                {
-                                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2 fw-bold">Menunggu Konfirmasi</span>
-                                }
-                                else if (assign.WaktuKonfirmasi != null && string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
-                                {
-                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold">Berlangsung</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-bold">Selesai</span>
-                                }
-                            </td>
-                        </tr>
-                    }
-                    @if (HariIni.Count == 0)
-                    {
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">Tidak ada jadwal hari ini.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+    <!-- Filter Bar -->
+    <div class="tek-filter-bar">
+        <input type="text" placeholder="Cari nama event atau lokasi..." style="min-width:220px; flex:1;"
+            @bind="DashSearch" @bind:event="oninput" />
+        <select @bind="DashFilterStatus" style="min-width:150px;">
+            <option value="Semua">Semua Status</option>
+            <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+            <option value="Diterima">Diterima</option>
+            <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
+            <option value="Selesai">Selesai</option>
+        </select>
+        <select @bind="DashFilterWaktu" style="min-width:140px;">
+            <option value="Semua">Semua Waktu</option>
+            <option value="Hari Ini">Hari Ini</option>
+            <option value="Minggu Ini">Minggu Ini</option>
+            <option value="Akan Datang">Akan Datang</option>
+        </select>
     </div>
-}
-else if (ActiveMenu == "semua_acara")
-{
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <div style="width: 6px; height: 24px; background: var(--pertamina-red); border-radius: 4px;"></div>
-        <h4 class="m-0 fw-bold text-dark">Support Acara</h4>
-    </div>
-    
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <div class="table-responsive">
-            <table class="table align-middle m-0" style="table-layout: fixed; width: 100%;">
-                <thead>
-                    <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
-                        <th class="border-0 py-3 ps-4" style="width: 30%;">NAMA EVENT</th>
-                        <th class="border-0 py-3" style="width: 15%;">TANGGAL</th>
-                        <th class="border-0 py-3" style="width: 20%;">LOKASI</th>
-                        <th class="border-0 py-3" style="width: 20%;">STATUS PROGRESS</th>
-                        <th class="border-0 py-3 pe-4" style="width: 15%;">AKSI</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var assign in MyAssignments)
-                    {
-                        <tr>
-                            <td class="fw-bold py-3 ps-4 text-dark">@assign.Acara?.NamaAcara</td>
-                            <td class="text-muted py-3">@assign.Acara?.Tanggal.ToString("dd MMM yyyy")</td>
-                            <td class="text-muted py-3">@assign.Acara?.Lokasi</td>
-                            <td class="py-3">
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block">100% - Selesai</small>
-                                }
-                                else if (assign.WaktuKonfirmasi != null && string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
-                                {
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: @assign.Progress%" aria-valuenow="@assign.Progress" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block">@assign.Progress% - Berlangsung</small>
-                                }
-                                else
-                                {
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block">25% - Persiapan</small>
-                                }
-                            </td>
-                            <td class="py-3 pe-4">
-                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" @onclick="() => OnOpenSignature.InvokeAsync(assign)">Detail</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+
+    <!-- All Events Card Grid -->
+    <div class="tek-event-grid">
+        @{
+            var filteredDash = FilteredDashboard();
+        }
+        @if (!filteredDash.Any())
+        {
+            <div class="tek-card p-4 text-center text-muted">Tidak ada penugasan yang sesuai filter.</div>
+        }
+        @foreach (var assign in filteredDash)
+        {
+            var status = GetStatusPenugasan(assign);
+            var progress = CalculateProgress(assign);
+            <div class="tek-event-card">
+                <div style="flex:1; min-width:180px;">
+                    <div class="fw-bold text-dark" style="font-size:0.95rem;">@assign.Acara?.NamaAcara</div>
+                    <div class="text-muted small">@assign.Acara?.Tanggal.ToString("dd MMM yyyy") &nbsp;·&nbsp; @assign.Acara?.JamMulai.ToString(@"hh\:mm")–@assign.Acara?.JamSelesai.ToString(@"hh\:mm")</div>
+                    <div class="text-muted small">📍 @assign.Acara?.Lokasi</div>
+                </div>
+                <div style="min-width:130px; text-align:center;">
+                    <div class="text-muted" style="font-size:0.75rem; margin-bottom:2px;">@progress%</div>
+                    <div class="progress" style="height:5px; background:#e2e8f0; margin-bottom:4px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width:@(progress)%"></div>
+                    </div>
+                    <span class="tek-badge bg-light text-dark border">@status</span>
+                </div>
+                <div style="min-width:110px; text-align:right;">
+                    <button class="tek-btn tek-btn-outline" @onclick='() => ActiveMenu = "penugasan"'>Lihat Detail</button>
+                </div>
+            </div>
+        }
     </div>
 }
 else if (ActiveMenu == "master")
 {
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <div style="width: 6px; height: 24px; background: var(--pertamina-red); border-radius: 4px;"></div>
-        <h4 class="m-0 fw-bold text-dark">Kebutuhan Acara</h4>
-    </div>
-    
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <!-- Kebutuhan Acara -->
+    <div class="tek-card mb-4">
+        <div class="p-3 border-bottom border-light d-flex gap-3 align-items-center">
+            <input type="text" class="form-control form-control-sm" style="max-width:280px;" placeholder="Cari nama event..." @bind="MasterSearch" @bind:event="oninput" />
+        </div>
         <div class="table-responsive">
-            <table class="table align-middle m-0">
+            <table class="tek-table">
                 <thead>
-                    <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
-                        <th class="border-0 py-3 ps-4">NAMA EVENT</th>
-                        <th class="border-0 py-3">PERALATAN</th>
-                        <th class="border-0 py-3">JUMLAH</th>
-                        <th class="border-0 py-3 pe-4">CATATAN</th>
+                    <tr>
+                        <th>Nama Event</th>
+                        <th>Peralatan</th>
+                        <th>Jumlah</th>
+                        <th>Catatan</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var assign in MyAssignments)
+                    @{
+                        var masterFiltered = MyAssignments
+                            .Where(a => string.IsNullOrEmpty(MasterSearch) || (a.Acara?.NamaAcara.Contains(MasterSearch, StringComparison.OrdinalIgnoreCase) == true))
+                            .ToList();
+                    }
+                    @foreach (var assign in masterFiltered)
                     {
                         @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
                         {
                             <tr>
-                                <td class="fw-bold py-3 ps-4 text-dark">@assign.Acara?.NamaAcara</td>
-                                <td class="text-dark py-3">@keb.JenisKebutuhan</td>
-                                <td class="text-muted py-3">@keb.Jumlah unit</td>
-                                <td class="text-muted py-3 pe-4">@(string.IsNullOrEmpty(keb.Keterangan) ? "-" : keb.Keterangan)</td>
+                                <td class="fw-bold">@assign.Acara?.NamaAcara</td>
+                                <td>@keb.JenisKebutuhan</td>
+                                <td>@keb.Jumlah unit</td>
+                                <td class="text-muted">@(string.IsNullOrEmpty(keb.Keterangan) ? "-" : keb.Keterangan)</td>
                             </tr>
                         }
                     }
-                </tbody>
-            </table>
-        </div>
-    </div>
-}
-else if (ActiveMenu == "mapping")
-{
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <div style="width: 6px; height: 24px; background: var(--pertamina-red); border-radius: 4px;"></div>
-        <h4 class="m-0 fw-bold text-dark">Mapping Teknisi (Read-Only)</h4>
-    </div>
-    
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <div class="table-responsive">
-            <table class="table align-middle m-0">
-                <thead>
-                    <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
-                        <th class="border-0 py-3 ps-4">NAMA TEKNISI</th>
-                        <th class="border-0 py-3">SPESIALISASI</th>
-                        <th class="border-0 py-3 pe-4">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var tek in Technicians)
+                    @if (!masterFiltered.Any() || !masterFiltered.SelectMany(a => a.Acara?.Kebutuhan ?? new List<KebutuhanAcara>()).Any())
                     {
-                        <tr>
-                            <td class="fw-bold py-3 ps-4 text-dark">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #005CA9, #063d6b); font-size: 0.9rem;">
-                                        @((tek.User?.Username ?? "T")[0].ToString().ToUpper())
-                                    </div>
-                                    <span>@tek.User?.Username</span>
-                                </div>
-                            </td>
-                            <td class="text-muted py-3">@tek.Spesialisasi</td>
-                            <td class="py-3 pe-4">
-                                @if (tek.StatusKetersediaan == "Tersedia")
-                                {
-                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-bold" style="font-size: 0.8rem;">Available</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2 fw-bold" style="font-size: 0.8rem;">On Duty</span>
-                                }
-                            </td>
-                        </tr>
+                        <tr><td colspan="4" class="text-center text-muted">Belum ada data kebutuhan acara.</td></tr>
                     }
                 </tbody>
             </table>
@@ -231,131 +264,236 @@ else if (ActiveMenu == "mapping")
 }
 else if (ActiveMenu == "penugasan")
 {
-    <div class="d-flex align-items-center gap-2 mb-4">
-        <div style="width: 6px; height: 24px; background: var(--pertamina-red); border-radius: 4px;"></div>
-        <h4 class="m-0 fw-bold text-dark">Penugasan Teknisi</h4>
-    </div>
-    
-    @foreach (var assign in MyAssignments)
+    <!-- Penugasan Teknisi - All events, each in its own card -->
+    @foreach (var assign in MyAssignments.OrderBy(a => !string.IsNullOrEmpty(a.DokumentasiKegiatanFile)).ThenByDescending(a => a.IdPenugasan))
     {
-        var isSigned = assign.WaktuKonfirmasi != null;
-        var isUploaded = !string.IsNullOrEmpty(assign.DokumentasiKegiatanFile);
+        var status = GetStatusPenugasan(assign);
+        var progress = CalculateProgress(assign);
 
-        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" style="border-left: 4px solid @(isSigned ? (isUploaded ? "#10b981" : "#3b82f6") : "#f59e0b") !important;">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                    <h5 class="fw-bold text-dark mb-1">@assign.Acara?.NamaAcara</h5>
-                    <div class="text-muted small">📅 @assign.Acara?.Tanggal.ToString("dd MMM yyyy") | 🕒 @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm") | 📍 @assign.Acara?.Lokasi</div>
+        <div class="tek-card mb-4">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">@assign.Acara?.NamaAcara</h5>
+                        <div class="text-muted small">@assign.Acara?.Tanggal.ToString("dd MMM yyyy") | @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm") | @assign.Acara?.Lokasi</div>
+                    </div>
+                    <span class="tek-badge border">Status: @status</span>
                 </div>
-                <span class="badge @(isSigned ? (isUploaded ? "bg-success" : "bg-primary") : "bg-warning text-dark") px-3 py-2 rounded-pill fw-bold">
-                    @if (!isSigned) { <span>Menunggu Konfirmasi</span> }
-                    else if (!isUploaded) { <span>Berlangsung</span> }
-                    else { <span>Selesai (Verifikasi)</span> }
-                </span>
-            </div>
 
-            <div class="mb-4">
-                <h6 class="fw-bold text-dark mb-2">Daftar Kebutuhan Support:</h6>
-                <div class="d-flex gap-2 flex-wrap">
-                    @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
-                    {
-                        <span class="badge bg-light text-dark border px-3 py-2 fw-normal" style="border-radius: 6px;">@keb.JenisKebutuhan (@keb.Jumlah)</span>
-                    }
+                <div class="mb-4">
+                    <h6 class="fw-bold text-dark mb-2" style="font-size: 0.85rem;">Kebutuhan Support:</h6>
+                    <ul class="keb-checklist">
+                        @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
+                        {
+                            var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
+                            var isChecked = CheckedKebutuhan.Contains(kebKey);
+                            <li class="@(isChecked ? "checked" : "")">
+                                <input type="checkbox" checked="@isChecked"
+                                    @onchange="() => ToggleKebutuhan(kebKey)" />
+                                <span>@keb.JenisKebutuhan</span>
+                                <span class="tek-badge bg-light text-dark border ms-auto">x@keb.Jumlah</span>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
 
-            <div class="d-flex gap-3">
-                @if (!isSigned)
+                @if (status == "Menunggu Konfirmasi")
                 {
-                    <button class="btn btn-warning fw-bold px-4 py-2 rounded-3 text-dark" @onclick="() => OnOpenSignature.InvokeAsync(assign)">
-                        ✍️ Terima Penugasan (Sign)
-                    </button>
-                    <button class="btn btn-outline-danger fw-bold px-4 py-2 rounded-3">
-                        Tolak Penugasan
-                    </button>
-                }
-                else if (!isUploaded)
-                {
-                    <div class="w-100 p-3 bg-light rounded-3 mb-3 border">
-                        <label class="form-label fw-bold small text-dark">Update Progress: @assign.Progress%</label>
-                        <input type="range" class="form-range mb-3" min="0" max="100" step="5" @bind="assign.Progress" />
-                        
-                        <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
-                        <textarea class="form-control mb-3 premium-input" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
-                        
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-outline-primary fw-bold px-3 py-2 rounded-3" @onclick="() => OnUpdateProgress.InvokeAsync(assign)">
-                                💾 Simpan Progress
-                            </button>
-                            <button class="btn btn-primary fw-bold px-3 py-2 rounded-3" @onclick="() => OnOpenUpload.InvokeAsync(assign)">
-                                📷 Upload Dokumentasi & Selesaikan
-                            </button>
-                        </div>
+                    <div class="d-flex gap-2">
+                        <button class="tek-btn tek-btn-primary" @onclick="() => TerimaPenugasan(assign)">Terima</button>
                     </div>
                 }
-                else
+                else if (status == "Diterima" || status == "Sedang Dikerjakan" || status == "Selesai" || status == "Dokumen Diunggah")
                 {
-                    <div class="alert alert-success border-0 mb-0 w-100 d-flex align-items-center gap-3">
-                        <img src="@assign.DokumentasiKegiatanFile" style="height: 50px; width: 50px; object-fit: cover; border-radius: 8px;" />
-                        <div>
-                            <div class="fw-bold">Dokumentasi Berhasil Diunggah</div>
-                            <div class="small">Menunggu verifikasi dari Admin.</div>
-                        </div>
+                    <div class="bg-light p-3 rounded border">
+                        @if (string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
+                        {
+                            var pendingProg = PendingProgress.ContainsKey(assign.IdPenugasan) ? PendingProgress[assign.IdPenugasan] : progress;
+                            <label class="form-label fw-bold small text-dark mb-2">Update Progress: @progress%</label>
+                            <div class="progress mb-3" style="height: 8px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: @(progress)%"></div>
+                            </div>
+                            <select class="form-select form-select-sm mb-3"
+                                @onchange="e => HandleProgressChange(e, assign.IdPenugasan)">
+                                <option value="25" selected="@(pendingProg == 25)">25% - Persiapan</option>
+                                <option value="40" selected="@(pendingProg == 40)">40% - Berlangsung</option>
+                                <option value="70" selected="@(pendingProg == 70)">70% - Siap Bertugas</option>
+                                <option value="100" selected="@(pendingProg == 100)">100% - Selesai</option>
+                            </select>
+
+                            <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
+                            <textarea class="form-control mb-3" style="font-size: 0.85rem;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
+
+                            @if (SavedProgressIds.Contains(assign.IdPenugasan))
+                            {
+                                <div class="save-notif mb-2">✔ Berhasil disimpan</div>
+                            }
+                            <div class="d-flex gap-2 flex-column flex-xl-row">
+                                <button class="tek-btn tek-btn-outline w-100" @onclick="() => SimpanProgress(assign)">Simpan Progress</button>
+                                <button class="tek-btn tek-btn-primary w-100" @onclick="() => OnOpenUpload.InvokeAsync(assign)">Upload Dokumentasi</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="border rounded p-3 bg-white">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <img src="@assign.DokumentasiKegiatanFile" style="height: 60px; width: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;" />
+                                    <div>
+                                        <div class="fw-bold text-success small">Dokumentasi Diunggah</div>
+                                        <div class="small text-muted">Status: Selesai</div>
+                                    </div>
+                                </div>
+                                <button class="tek-btn tek-btn-outline w-100" style="font-size:0.8rem;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">Ganti Dokumentasi</button>
+                            </div>
+                        }
                     </div>
                 }
             </div>
         </div>
     }
-    @if (MyAssignments.Count == 0)
+    @if (!MyAssignments.Any())
     {
-        <div class="text-center py-5 text-muted">
-            <span class="fs-1 d-block mb-3">✅</span>
-            <h5>Belum ada penugasan baru.</h5>
-        </div>
+        <div class="tek-card p-4 text-center text-muted">Belum ada penugasan.</div>
     }
 }
 
 @code {
-    [Parameter]
-    public string ActiveMenu { get; set; } = "dashboard";
+    [Parameter] public string ActiveMenu { get; set; } = "dashboard";
+    [Parameter] public int CurrentTeknisiId { get; set; }
+    [Parameter] public List<Penugasan> Assignments { get; set; } = new();
+    [Parameter] public List<SupportAcara> ActiveEvents { get; set; } = new();
+    [Parameter] public List<RiwayatAcara> HistoryEvents { get; set; } = new();
+    [Parameter] public List<MappingTeknisi> Technicians { get; set; } = new();
+    [Parameter] public EventCallback<Penugasan> OnOpenSignature { get; set; }
+    [Parameter] public EventCallback<Penugasan> OnOpenUpload { get; set; }
+    [Parameter] public EventCallback<Penugasan> OnUpdateProgress { get; set; }
 
-    [Parameter]
-    public int CurrentTeknisiId { get; set; }
+    private List<Penugasan> MyAssignments = new();
 
-    [Parameter]
-    public List<Penugasan> Assignments { get; set; } = new();
+    protected override async Task OnParametersSetAsync()
+    {
+        if (CurrentTeknisiId > 0)
+        {
+            var all = await DbContext.Penugasan
+                .Include(p => p.Acara).ThenInclude(a => a!.Kebutuhan)
+                .Include(p => p.Acara).ThenInclude(a => a!.Helpdesk)
+                .Include(p => p.Teknisi).ThenInclude(t => t!.User)
+                .ToListAsync();
 
-    [Parameter]
-    public List<SupportAcara> ActiveEvents { get; set; } = new();
+            MyAssignments = all
+                .Where(a => a.IdTeknisi == CurrentTeknisiId)
+                .ToList();
+        }
+    }
 
-    [Parameter]
-    public List<RiwayatAcara> HistoryEvents { get; set; } = new();
-
-    [Parameter]
-    public List<MappingTeknisi> Technicians { get; set; } = new();
-
-    [Parameter]
-    public EventCallback<Penugasan> OnOpenSignature { get; set; }
-
-    [Parameter]
-    public EventCallback<Penugasan> OnOpenUpload { get; set; }
-
-    [Parameter]
-    public EventCallback<Penugasan> OnUpdateProgress { get; set; }
-
-    private List<Penugasan> MyAssignments => 
-        Assignments.Where(a => a.IdTeknisi == CurrentTeknisiId && a.Acara?.StatusAcara != "Selesai").ToList();
-
-    private int TotalPenugasan => Assignments.Count(a => a.IdTeknisi == CurrentTeknisiId);
-    
+    // Stats
+    private int TotalPenugasan => MyAssignments.Count;
     private int PenugasanHariIni => MyAssignments.Count(a => a.Acara?.Tanggal.Date == DateTime.Today);
-    
-    private int MenungguKonfirmasi => MyAssignments.Count(a => a.WaktuKonfirmasi == null);
-    
-    private int SedangBerlangsung => MyAssignments.Count(a => a.WaktuKonfirmasi != null && string.IsNullOrEmpty(a.DokumentasiKegiatanFile));
-    
-    private int Selesai => Assignments.Count(a => a.IdTeknisi == CurrentTeknisiId && a.Acara?.StatusAcara == "Selesai") 
-                            + MyAssignments.Count(a => !string.IsNullOrEmpty(a.DokumentasiKegiatanFile));
+    private int EventAktif => MyAssignments.Count(a => a.StatusPenugasan != "Selesai" && a.StatusPenugasan != "Ditolak");
+    private int MenungguKonfirmasi => MyAssignments.Count(a => a.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(a.StatusPenugasan));
+    private int Selesai => MyAssignments.Count(a => a.StatusPenugasan == "Selesai");
 
-    private List<Penugasan> HariIni => MyAssignments.Where(a => a.Acara?.Tanggal.Date == DateTime.Today).ToList();
+    // Dashboard filter state
+    private string DashSearch = "";
+    private string DashFilterStatus = "Semua";
+    private string DashFilterWaktu = "Semua";
+
+    // Kebutuhan Acara filter
+    private string MasterSearch = "";
+
+    private IEnumerable<Penugasan> FilteredDashboard()
+    {
+        var q = MyAssignments.AsEnumerable();
+
+        if (!string.IsNullOrEmpty(DashSearch))
+            q = q.Where(a => a.Acara?.NamaAcara.Contains(DashSearch, StringComparison.OrdinalIgnoreCase) == true
+                          || a.Acara?.Lokasi.Contains(DashSearch, StringComparison.OrdinalIgnoreCase) == true);
+
+        if (DashFilterStatus != "Semua")
+            q = q.Where(a => GetStatusPenugasan(a) == DashFilterStatus);
+
+        if (DashFilterWaktu == "Hari Ini")
+            q = q.Where(a => a.Acara?.Tanggal.Date == DateTime.Today);
+        else if (DashFilterWaktu == "Minggu Ini")
+            q = q.Where(a => a.Acara?.Tanggal.Date >= DateTime.Today && a.Acara?.Tanggal.Date <= DateTime.Today.AddDays(7));
+        else if (DashFilterWaktu == "Akan Datang")
+            q = q.Where(a => a.Acara?.Tanggal.Date > DateTime.Today);
+
+        return q.OrderBy(a => a.Acara?.Tanggal);
+    }
+
+    private string GetStatusPenugasan(Penugasan p)
+    {
+        if (p.StatusPenugasan == "Ditolak") return "Ditolak";
+        if (p.StatusPenugasan == "Selesai" || p.Progress == 100) return "Selesai";
+        if (p.StatusPenugasan == "Dokumen Diunggah") return "Dokumen Diunggah";
+        if (p.StatusPenugasan == "Dikonfirmasi" || p.Progress > 0) return "Sedang Dikerjakan";
+        if (p.StatusPenugasan == "Diterima") return "Diterima";
+        return "Menunggu Konfirmasi";
+    }
+
+    private int CalculateProgress(Penugasan p)
+    {
+        if (p.Progress == 0 && p.StatusPenugasan == "Ditugaskan") return 0;
+        if (p.Progress == 0 && p.StatusPenugasan == "Diterima") return 25;
+        return p.Progress;
+    }
+
+    private string GetProgressLabel(int p)
+    {
+        if (p <= 25) return "Persiapan";
+        if (p <= 40) return "Berlangsung";
+        if (p <= 70) return "Siap Bertugas";
+        return "Selesai";
+    }
+
+    private async Task TerimaPenugasan(Penugasan p)
+    {
+        p.StatusPenugasan = "Diterima";
+        p.Progress = 25;
+        DbContext.Update(p);
+        await DbContext.SaveChangesAsync();
+        await OnParametersSetAsync();
+    }
+
+    // Pending progress state
+    private Dictionary<int, int> PendingProgress = new();
+    private HashSet<int> SavedProgressIds = new();
+    private HashSet<string> CheckedKebutuhan = new();
+
+    private void SetPendingProgress(int idPenugasan, int value)
+    {
+        PendingProgress[idPenugasan] = value;
+        SavedProgressIds.Remove(idPenugasan);
+    }
+
+    private void HandleProgressChange(ChangeEventArgs e, int idPenugasan)
+    {
+        var str = e.Value?.ToString();
+        if (int.TryParse(str, out var val))
+            SetPendingProgress(idPenugasan, val);
+        else
+            SetPendingProgress(idPenugasan, 25);
+    }
+
+    private void ToggleKebutuhan(string key)
+    {
+        if (CheckedKebutuhan.Contains(key)) CheckedKebutuhan.Remove(key);
+        else CheckedKebutuhan.Add(key);
+    }
+
+    private async Task SimpanProgress(Penugasan p)
+    {
+        if (PendingProgress.TryGetValue(p.IdPenugasan, out var newProg))
+        {
+            p.Progress = newProg;
+            PendingProgress.Remove(p.IdPenugasan);
+        }
+        if (p.Progress == 100) p.StatusPenugasan = "Selesai";
+        DbContext.Update(p);
+        await DbContext.SaveChangesAsync();
+        SavedProgressIds.Add(p.IdPenugasan);
+        _ = Task.Delay(3000).ContinueWith(_ => { SavedProgressIds.Remove(p.IdPenugasan); InvokeAsync(StateHasChanged); });
+        await OnParametersSetAsync();
+    }
 }

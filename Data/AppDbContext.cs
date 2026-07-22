@@ -17,6 +17,7 @@ namespace EventSupportApp.Data
         public DbSet<Penugasan> Penugasan => Set<Penugasan>();
         public DbSet<RiwayatAcara> RiwayatAcara => Set<RiwayatAcara>();
         public DbSet<Notification> Notifications => Set<Notification>();
+        public DbSet<DiskusiPenugasan> DiskusiPenugasan => Set<DiskusiPenugasan>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,7 +66,7 @@ namespace EventSupportApp.Data
                     JamMulai = new TimeSpan(9, 0, 0), 
                     JamSelesai = new TimeSpan(12, 0, 0), 
                     Lokasi = "Aula Utama Gedung Rektorat Lt. 3", 
-                    StatusAcara = "Belum Ditugaskan" 
+                    StatusAcara = "Ditugaskan" 
                 },
                 new SupportAcara 
                 { 
@@ -76,7 +77,7 @@ namespace EventSupportApp.Data
                     JamMulai = new TimeSpan(13, 0, 0), 
                     JamSelesai = new TimeSpan(16, 30, 0), 
                     Lokasi = "Auditorium BJ Habibie", 
-                    StatusAcara = "Belum Ditugaskan" 
+                    StatusAcara = "Ditugaskan" 
                 }
             );
 
@@ -86,6 +87,12 @@ namespace EventSupportApp.Data
                 new KebutuhanAcara { IdKebutuhan = 2, IdAcara = 1, JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Proyektor utama & Layar gantung" },
                 new KebutuhanAcara { IdKebutuhan = 3, IdAcara = 2, JenisKebutuhan = "Layar LED", Jumlah = 1, Keterangan = "Videotron latar panggung utama" },
                 new KebutuhanAcara { IdKebutuhan = 4, IdAcara = 2, JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Sound system konser outdoor / semi-indoor" }
+            );
+
+            // Seed Penugasan
+            modelBuilder.Entity<Penugasan>().HasData(
+                new Penugasan { IdPenugasan = 1, IdAcara = 1, IdTeknisi = 1, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 },
+                new Penugasan { IdPenugasan = 2, IdAcara = 2, IdTeknisi = 2, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 }
             );
         }
     }
