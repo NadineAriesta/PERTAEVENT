@@ -138,7 +138,7 @@
                                             <div class="d-flex flex-wrap gap-1">
                                                 @foreach (var need in eventItem.Kebutuhan)
                                                 {
-                                                    <span class="badge bg-light text-dark border small">@need.JenisKebutuhan (@need.Jumlah)</span>
+                                                    <span class="badge bg-light text-dark border small">@(need.JenisKebutuhan?.Replace("🔹", "").TrimStart('•', '▪', '●', '*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
                                                 }
                                             </div>
                                         </div>

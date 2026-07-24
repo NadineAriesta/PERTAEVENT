@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=eventsupport.db"));
+    options.UseSqlite("Data Source=eventsupport.db", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

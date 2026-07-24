@@ -5,6 +5,7 @@
 
 <style>
     /* Enterprise Dashboard CSS for Teknisi */
+    @@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
     .tek-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -31,6 +32,8 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
+        text-align: center;
         transition: all 0.2s ease;
     }
     .tek-stat-card:hover {
@@ -93,7 +96,7 @@
     .tek-btn-outline { background: white; border-color: #e2e8f0; color: #0f172a; }
     .tek-btn-outline:hover { background: #f8fafc; }
     .keb-checklist { list-style: none; padding: 0; margin: 0; }
-    .keb-checklist li { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; color: #334155; }
+    .keb-checklist li { display: flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; color: #334155; }
     .keb-checklist li:last-child { border-bottom: none; }
     .keb-checklist input[type=checkbox] { width: 16px; height: 16px; accent-color: #0f172a; cursor: pointer; flex-shrink: 0; }
     .keb-checklist li.checked { text-decoration: line-through; color: #94a3b8; }
@@ -145,24 +148,24 @@
     <!-- Stats Row -->
     <div class="tek-stat-row">
         <div class="tek-stat-card">
-            <div class="tek-stat-value">@TotalPenugasan</div>
-            <div class="tek-stat-label">Total Penugasan</div>
-        </div>
-        <div class="tek-stat-card">
-            <div class="tek-stat-value">@PenugasanHariIni</div>
-            <div class="tek-stat-label">Penugasan Hari Ini</div>
+            <div class="tek-stat-value">@MenungguKonfirmasi</div>
+            <div class="tek-stat-label">Menunggu<br/>Konfirmasi</div>
         </div>
         <div class="tek-stat-card">
             <div class="tek-stat-value">@EventAktif</div>
-            <div class="tek-stat-label">Event Aktif</div>
+            <div class="tek-stat-label">Event<br/>Aktif</div>
         </div>
         <div class="tek-stat-card">
-            <div class="tek-stat-value">@MenungguKonfirmasi</div>
-            <div class="tek-stat-label">Menunggu Konfirmasi</div>
+            <div class="tek-stat-value">@PenugasanHariIni</div>
+            <div class="tek-stat-label">Penugasan<br/>Hari Ini</div>
         </div>
         <div class="tek-stat-card">
             <div class="tek-stat-value">@Selesai</div>
-            <div class="tek-stat-label">Selesai</div>
+            <div class="tek-stat-label" style="display:flex; align-items:center; height:100%;">Selesai</div>
+        </div>
+        <div class="tek-stat-card">
+            <div class="tek-stat-value">@TotalPenugasan</div>
+            <div class="tek-stat-label">Total<br/>Penugasan</div>
         </div>
     </div>
 
@@ -185,6 +188,11 @@
         </select>
     </div>
 
+    <!-- Header Daftar Penugasan -->
+    <div class="d-flex align-items-center gap-2 mb-3 mt-4" style="color: #0f172a;">
+        <h5 class="mb-0 fw-bold" style="font-size: 1.25rem;">Daftar Penugasan</h5>
+    </div>
+
     <!-- All Events Card Grid -->
     <div class="tek-event-grid">
         @{
@@ -198,21 +206,53 @@
         {
             var status = GetStatusPenugasan(assign);
             var progress = CalculateProgress(assign);
-            <div class="tek-event-card">
-                <div style="flex:1; min-width:180px;">
-                    <div class="fw-bold text-dark" style="font-size:0.95rem;">@assign.Acara?.NamaAcara</div>
-                    <div class="text-muted small">@assign.Acara?.Tanggal.ToString("dd MMM yyyy") &nbsp;·&nbsp; @assign.Acara?.JamMulai.ToString(@"hh\:mm")–@assign.Acara?.JamSelesai.ToString(@"hh\:mm")</div>
-                    <div class="text-muted small">📍 @assign.Acara?.Lokasi</div>
-                </div>
-                <div style="min-width:130px; text-align:center;">
-                    <div class="text-muted" style="font-size:0.75rem; margin-bottom:2px;">@progress%</div>
-                    <div class="progress" style="height:5px; background:#e2e8f0; margin-bottom:4px;">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width:@(progress)%"></div>
+            <div class="tek-event-card" style="padding: 1.5rem;">
+                <!-- Left Side: Details -->
+                <div style="flex: 1; padding-right: 1.5rem; min-width: 250px;">
+                    <div class="fw-bold text-dark mb-3" style="font-size: 1.25rem; color: #0f172a;">@assign.Acara?.NamaAcara</div>
+                    <div class="d-flex flex-wrap align-items-center text-muted mb-2" style="font-size: 0.9rem; gap: 1.5rem;">
+                        <div class="d-flex align-items-center gap-2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>@assign.Acara?.Tanggal.ToString("dd MMM yyyy")</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>@assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")</span>
+                        </div>
                     </div>
-                    <span class="tek-badge bg-light text-dark border">@status</span>
+                    <div class="d-flex align-items-center text-muted" style="font-size: 0.9rem; gap: 8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span>@assign.Acara?.Lokasi</span>
+                    </div>
                 </div>
-                <div style="min-width:110px; text-align:right;">
-                    <button class="tek-btn tek-btn-outline" @onclick='() => ActiveMenu = "penugasan"'>Lihat Detail</button>
+
+                <!-- Right Side: Status, Progress, and Action -->
+                <div style="width: 280px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold" style="font-size: 0.85rem; color: #005CA9;">@status</span>
+                        <span class="fw-bold" style="font-size: 0.85rem; color: #0f172a;">@progress%</span>
+                    </div>
+                    <div class="progress" style="height: 8px; background: #f1f5f9; border-radius: 4px; margin-bottom: 1.2rem;">
+                        <div class="progress-bar" role="progressbar" style="width: @(progress)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 4px;"></div>
+                    </div>
+                    <button class="tek-btn" style="background-color: #0f172a; color: white; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1.2rem; border-radius: 8px;" @onclick='() => ActiveMenu = "penugasan"'>
+                        <span class="fw-bold" style="font-size: 0.9rem;">Lihat Detail</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
                 </div>
             </div>
         }
@@ -220,46 +260,63 @@
 }
 else if (ActiveMenu == "master")
 {
+    var masterFiltered = MyAssignments
+        .Where(a => string.IsNullOrEmpty(MasterSearch) || (a.Acara?.NamaAcara.Contains(MasterSearch, StringComparison.OrdinalIgnoreCase) == true))
+        .ToList();
+
     <!-- Kebutuhan Acara -->
-    <div class="tek-card mb-4">
-        <div class="p-3 border-bottom border-light d-flex gap-3 align-items-center">
-            <input type="text" class="form-control form-control-sm" style="max-width:280px;" placeholder="Cari nama event..." @bind="MasterSearch" @bind:event="oninput" />
+    
+    <!-- Search Bar -->
+    <div class="tek-card mb-4" style="padding: 1rem 1.25rem; border-radius: 10px;">
+        <div class="d-flex align-items-center gap-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="form-control border-0 shadow-none p-0" placeholder="Cari nama event..." @bind="MasterSearch" @bind:event="oninput" style="font-size: 0.95rem; color: #334155; background: transparent; flex: 1;" />
         </div>
-        <div class="table-responsive">
-            <table class="tek-table">
-                <thead>
-                    <tr>
-                        <th>Nama Event</th>
-                        <th>Peralatan</th>
-                        <th>Jumlah</th>
-                        <th>Catatan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        var masterFiltered = MyAssignments
-                            .Where(a => string.IsNullOrEmpty(MasterSearch) || (a.Acara?.NamaAcara.Contains(MasterSearch, StringComparison.OrdinalIgnoreCase) == true))
-                            .ToList();
-                    }
-                    @foreach (var assign in masterFiltered)
-                    {
-                        @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
+    </div>
+
+    <!-- Event Cards -->
+    <div class="d-flex flex-column gap-2">
+        @foreach (var assign in masterFiltered)
+        {
+            var kebutuhanList = (assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>()).ToList();
+            if (kebutuhanList.Any())
+            {
+                <div class="tek-card" style="padding: 0.85rem 1.25rem; border-radius: 8px;">
+                    <div class="mb-2" style="font-size: 0.95rem; color: #0f172a; font-weight: 600;">@assign.Acara?.NamaAcara</div>
+                    
+                    <div class="row g-3">
+                        @for (int i = 0; i < kebutuhanList.Count; i++)
                         {
-                            <tr>
-                                <td class="fw-bold">@assign.Acara?.NamaAcara</td>
-                                <td>@keb.JenisKebutuhan</td>
-                                <td>@keb.Jumlah unit</td>
-                                <td class="text-muted">@(string.IsNullOrEmpty(keb.Keterangan) ? "-" : keb.Keterangan)</td>
-                            </tr>
+                            var keb = kebutuhanList[i];
+                            bool hasBorder = i < (kebutuhanList.Count % 2 == 0 ? kebutuhanList.Count - 2 : kebutuhanList.Count - 1);
+                            string borderStyle = hasBorder ? "border-bottom: 1px solid #e2e8f0;" : "";
+                            
+                            <div class="col-md-6">
+                                <div style="padding: 0.35rem 0; display: flex; align-items: center; justify-content: space-between; @borderStyle">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div>
+                                            <div style="color: #334155; font-size: 0.9rem; margin-bottom: 2px;">@keb.JenisKebutuhan</div>
+                                            <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2;">@(string.IsNullOrEmpty(keb.Keterangan) ? "Tanpa keterangan" : keb.Keterangan)</div>
+                                        </div>
+                                    </div>
+                                    <div style="background-color: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; white-space: nowrap; margin-left: 0.2rem; border: 1px solid #e2e8f0;">
+                                        @keb.Jumlah unit
+                                    </div>
+                                </div>
+                            </div>
                         }
-                    }
-                    @if (!masterFiltered.Any() || !masterFiltered.SelectMany(a => a.Acara?.Kebutuhan ?? new List<KebutuhanAcara>()).Any())
-                    {
-                        <tr><td colspan="4" class="text-center text-muted">Belum ada data kebutuhan acara.</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        @if (!masterFiltered.Any() || !masterFiltered.SelectMany(a => a.Acara?.Kebutuhan ?? new List<KebutuhanAcara>()).Any())
+        {
+            <div class="tek-card p-4 text-center text-muted" style="border-radius: 12px;">Belum ada data kebutuhan acara.</div>
+        }
     </div>
 }
 else if (ActiveMenu == "penugasan")
@@ -270,84 +327,100 @@ else if (ActiveMenu == "penugasan")
         var status = GetStatusPenugasan(assign);
         var progress = CalculateProgress(assign);
 
-        <div class="tek-card mb-4">
-            <div class="p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <h5 class="fw-bold text-dark mb-1">@assign.Acara?.NamaAcara</h5>
-                        <div class="text-muted small">@assign.Acara?.Tanggal.ToString("dd MMM yyyy") | @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm") | @assign.Acara?.Lokasi</div>
+        <div class="tek-card mb-4" style="border-radius: 12px; padding: 1.5rem;">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h5 class="fw-bold mb-2" style="color: #072C4C; font-size: 1.25rem;">@assign.Acara?.NamaAcara</h5>
+                    <div class="text-muted d-flex align-items-center gap-3" style="font-size: 0.85rem;">
+                        <span class="d-flex align-items-center gap-1">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            @assign.Acara?.Tanggal.ToString("dd MMM yyyy")
+                        </span>
+                        <span class="d-flex align-items-center gap-1">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")
+                        </span>
+                        <span class="d-flex align-items-center gap-1">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            @assign.Acara?.Lokasi
+                        </span>
                     </div>
-                    <span class="tek-badge border">Status: @status</span>
                 </div>
+            </div>
 
-                <div class="mb-4">
-                    <h6 class="fw-bold text-dark mb-2" style="font-size: 0.85rem;">Kebutuhan Support:</h6>
-                    <ul class="keb-checklist">
-                        @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
-                        {
-                            var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
-                            var isChecked = CheckedKebutuhan.Contains(kebKey);
-                            <li class="@(isChecked ? "checked" : "")">
-                                <input type="checkbox" checked="@isChecked"
-                                    @onchange="() => ToggleKebutuhan(kebKey)" />
-                                <span>@keb.JenisKebutuhan</span>
-                                <span class="tek-badge bg-light text-dark border ms-auto">x@keb.Jumlah</span>
-                            </li>
-                        }
-                    </ul>
-                </div>
-
-                @if (status == "Menunggu Konfirmasi")
-                {
-                    <div class="d-flex gap-2">
-                        <button class="tek-btn tek-btn-primary" @onclick="() => TerimaPenugasan(assign)">Terima</button>
-                    </div>
-                }
-                else if (status == "Diterima" || status == "Sedang Dikerjakan" || status == "Selesai" || status == "Dokumen Diunggah")
-                {
-                    <div class="bg-light p-3 rounded border">
-                        @if (string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
-                        {
-                            var pendingProg = PendingProgress.ContainsKey(assign.IdPenugasan) ? PendingProgress[assign.IdPenugasan] : progress;
-                            <label class="form-label fw-bold small text-dark mb-2">Update Progress: @progress%</label>
-                            <div class="progress mb-3" style="height: 8px;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: @(progress)%"></div>
-                            </div>
-                            <select class="form-select form-select-sm mb-3"
-                                @onchange="e => HandleProgressChange(e, assign.IdPenugasan)">
-                                <option value="25" selected="@(pendingProg == 25)">25% - Persiapan</option>
-                                <option value="40" selected="@(pendingProg == 40)">40% - Berlangsung</option>
-                                <option value="70" selected="@(pendingProg == 70)">70% - Siap Bertugas</option>
-                                <option value="100" selected="@(pendingProg == 100)">100% - Selesai</option>
-                            </select>
-
-                            <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
-                            <textarea class="form-control mb-3" style="font-size: 0.85rem;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
-
-                            @if (SavedProgressIds.Contains(assign.IdPenugasan))
+            <div class="mt-4">
+                <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                    Kebutuhan Acara:
+                </h6>
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <ul class="keb-checklist" style="display: flex; flex-direction: column; gap: 6px; border: none; padding: 0;">
+                            @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
                             {
-                                <div class="save-notif mb-2">✔ Berhasil disimpan</div>
+                                var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
+                                var isChecked = CheckedKebutuhan.Contains(kebKey);
+                                <li class="@(isChecked ? "checked" : "")" style="background-color: #f8fafc; padding: 0.3rem 0.6rem; border-radius: 8px; border: 1px solid #f1f5f9; margin-bottom: 0; border-bottom: none;">
+                                    @if (status != "Menunggu Konfirmasi")
+                                    {
+                                        <input type="checkbox" checked="@isChecked" disabled="@(status == "Selesai" || status == "Dokumen Diunggah")"
+                                            @onchange="() => ToggleKebutuhan(kebKey, assign)" style="accent-color: #cbd5e1; width: 18px; height: 18px; border-radius: 4px;" />
+                                    }
+                                    <span style="color: #334155; font-size: 0.95rem;">@keb.JenisKebutuhan</span>
+                                    <span style="background-color: #e2e8f0; color: #64748b; font-size: 0.85rem; font-weight: 400; padding: 4px 8px; border-radius: 6px; margin-left: auto;">@keb.Jumlah Unit</span>
+                                </li>
                             }
-                            <div class="d-flex gap-2 flex-column flex-xl-row">
-                                <button class="tek-btn tek-btn-outline w-100" @onclick="() => SimpanProgress(assign)">Simpan Progress</button>
-                                <button class="tek-btn tek-btn-primary w-100" @onclick="() => OnOpenUpload.InvokeAsync(assign)">Upload Dokumentasi</button>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-5">
+                        @if (status == "Menunggu Konfirmasi")
+                        {
+                            <div class="d-flex h-100 align-items-center">
+                                <button class="tek-btn tek-btn-primary w-100" @onclick="() => TerimaPenugasan(assign)">Terima Penugasan</button>
                             </div>
                         }
-                        else
+                        else if (status == "Siap Bertugas" || status == "Persiapan" || status == "Berlangsung" || status == "Diterima" || status == "Sedang Dikerjakan" || status == "Selesai" || status == "Dokumen Diunggah")
                         {
-                            <div class="border rounded p-3 bg-white">
-                                <div class="d-flex align-items-center gap-3 mb-2">
-                                    <img src="@assign.DokumentasiKegiatanFile" style="height: 60px; width: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;" />
-                                    <div>
-                                        <div class="fw-bold text-success small">Dokumentasi Diunggah</div>
-                                        <div class="small text-muted">Status: Selesai</div>
+                            @if (string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
+                            {
+                                <div class="p-3" style="background: #f8fafc; border-radius: 10px; border: 1px dashed #cbd5e1;">
+                                    <label class="form-label fw-bold small text-dark mb-2">Update Progress: @progress%</label>
+                                    <div class="progress mb-3" style="height: 8px; border-radius: 4px;">
+                                        <div class="progress-bar" role="progressbar" style="width: @(progress)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 4px;"></div>
+                                    </div>
+                                    <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
+                                    <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
+                                    @if (SavedProgressIds.Contains(assign.IdPenugasan))
+                                    {
+                                        <div class="save-notif mb-2" style="position: fixed; bottom: 20px; right: 20px; background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1050; border-left: 4px solid #16a34a; font-size: 0.9rem; font-weight: bold; color: #16a34a; animation: fadeOut 0.5s ease-out forwards; animation-delay: 30s; cursor: pointer;" @onclick="() => HideNotification(assign.IdPenugasan)">
+                                            Dokumentasi berhasil diperbarui
+                                        </div>
+                                    }
+                                    <div class="d-flex gap-2">
+                                        <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" @onclick="() => SimpanProgress(assign)">Simpan Catatan</button>
+                                        <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">Upload Dokumen</button>
                                     </div>
                                 </div>
-                                <button class="tek-btn tek-btn-outline w-100" style="font-size:0.8rem;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">Ganti Dokumentasi</button>
-                            </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex flex-column h-100 pt-3">
+                                    <div class="d-flex align-items-center gap-3 mb-4">
+                                        <img src="@assign.DokumentasiKegiatanFile" style="height: 64px; width: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);" />
+                                        <div>
+                                            <div class="fw-bold" style="color: #0f172a; font-size: 0.9rem;">Dokumentasi Diunggah</div>
+                                            <div style="color: #16a34a; font-size: 0.8rem; font-weight: 600;">Status: Selesai</div>
+                                        </div>
+                                    </div>
+                                    <button class="tek-btn w-100 d-flex justify-content-center align-items-center gap-2" style="background: white; border: 1px solid #0f172a; color: #0f172a; border-radius: 8px; padding: 0.6rem; font-weight: 600;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.25 4.64"/></svg>
+                                        Ganti Dokumentasi
+                                    </button>
+                                </div>
+                            }
                         }
                     </div>
-                }
+                </div>
             </div>
         </div>
     }
@@ -383,6 +456,33 @@ else if (ActiveMenu == "penugasan")
             MyAssignments = all
                 .Where(a => a.IdTeknisi == CurrentTeknisiId)
                 .ToList();
+
+            CheckedKebutuhan.Clear();
+            foreach (var p in MyAssignments)
+            {
+                if (p.StatusPenugasan != "Menunggu Konfirmasi" && p.StatusPenugasan != "Ditugaskan" && string.IsNullOrEmpty(p.StatusPenugasan) == false)
+                {
+                    int pVal = p.Progress;
+                    if (pVal == 100) pVal = 50;
+                    int baseProg = 10;
+                    if (p.Acara?.Tanggal.Date <= DateTime.Today && pVal >= 50) baseProg += 40;
+                    
+                    int c = 0;
+                    var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
+                    if (kebutuhan.Count > 0 && pVal > baseProg)
+                    {
+                        c = (int)Math.Round((pVal - baseProg) * (double)kebutuhan.Count / 40.0);
+                        if (c > kebutuhan.Count) c = kebutuhan.Count;
+                    }
+                    if (p.StatusPenugasan == "Selesai" || !string.IsNullOrEmpty(p.DokumentasiKegiatanFile))
+                        c = kebutuhan.Count;
+
+                    for(int i = 0; i < c; i++)
+                    {
+                        CheckedKebutuhan.Add($"{p.IdPenugasan}_{kebutuhan.ElementAt(i).IdKebutuhan}");
+                    }
+                }
+            }
         }
     }
 
@@ -419,81 +519,104 @@ else if (ActiveMenu == "penugasan")
         else if (DashFilterWaktu == "Akan Datang")
             q = q.Where(a => a.Acara?.Tanggal.Date > DateTime.Today);
 
-        return q.OrderBy(a => a.Acara?.Tanggal);
+        return q.OrderByDescending(a => a.IdPenugasan);
     }
 
     private string GetStatusPenugasan(Penugasan p)
     {
         if (p.StatusPenugasan == "Ditolak") return "Ditolak";
-        if (p.StatusPenugasan == "Selesai" || p.Progress == 100) return "Selesai";
-        if (p.StatusPenugasan == "Dokumen Diunggah") return "Dokumen Diunggah";
-        if (p.StatusPenugasan == "Dikonfirmasi" || p.Progress > 0) return "Sedang Dikerjakan";
-        if (p.StatusPenugasan == "Diterima") return "Diterima";
-        return "Menunggu Konfirmasi";
+        if (p.StatusPenugasan == "Selesai" || !string.IsNullOrEmpty(p.DokumentasiKegiatanFile)) return "Selesai";
+        if (p.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(p.StatusPenugasan) || p.StatusPenugasan == "Menunggu Konfirmasi") return "Menunggu Konfirmasi";
+
+        if (p.Acara?.Tanggal.Date <= DateTime.Today) return "Berlangsung";
+
+        var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
+        bool hasChecked = kebutuhan.Any(keb => CheckedKebutuhan.Contains($"{p.IdPenugasan}_{keb.IdKebutuhan}"));
+        if (hasChecked) return "Persiapan";
+
+        return "Siap Bertugas";
     }
 
     private int CalculateProgress(Penugasan p)
     {
-        if (p.Progress == 0 && p.StatusPenugasan == "Ditugaskan") return 0;
-        if (p.Progress == 0 && p.StatusPenugasan == "Diterima") return 25;
-        return p.Progress;
-    }
+        if (p.StatusPenugasan == "Selesai" || !string.IsNullOrEmpty(p.DokumentasiKegiatanFile)) return 100;
+        if (p.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(p.StatusPenugasan) || p.StatusPenugasan == "Menunggu Konfirmasi") return 0;
+        
+        int progress = 10; // Siap Bertugas base
 
-    private string GetProgressLabel(int p)
-    {
-        if (p <= 25) return "Persiapan";
-        if (p <= 40) return "Berlangsung";
-        if (p <= 70) return "Siap Bertugas";
-        return "Selesai";
+        var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
+        int totalKeb = kebutuhan.Count;
+        if (totalKeb > 0)
+        {
+            int checkedCount = 0;
+            foreach (var keb in kebutuhan)
+            {
+                if (CheckedKebutuhan.Contains($"{p.IdPenugasan}_{keb.IdKebutuhan}"))
+                    checkedCount++;
+            }
+            progress += (int)((double)checkedCount / totalKeb * 40);
+        }
+
+        if (p.Acara?.Tanggal.Date <= DateTime.Today)
+        {
+            progress += 40; 
+        }
+
+        return progress > 99 ? 99 : progress;
     }
 
     private async Task TerimaPenugasan(Penugasan p)
     {
-        p.StatusPenugasan = "Diterima";
-        p.Progress = 25;
+        p.StatusPenugasan = "Siap Bertugas";
+        p.Progress = 10;
         DbContext.Update(p);
         await DbContext.SaveChangesAsync();
         await OnParametersSetAsync();
     }
 
-    // Pending progress state
-    private Dictionary<int, int> PendingProgress = new();
+    // Local state
     private HashSet<int> SavedProgressIds = new();
     private HashSet<string> CheckedKebutuhan = new();
 
-    private void SetPendingProgress(int idPenugasan, int value)
-    {
-        PendingProgress[idPenugasan] = value;
-        SavedProgressIds.Remove(idPenugasan);
-    }
-
-    private void HandleProgressChange(ChangeEventArgs e, int idPenugasan)
-    {
-        var str = e.Value?.ToString();
-        if (int.TryParse(str, out var val))
-            SetPendingProgress(idPenugasan, val);
-        else
-            SetPendingProgress(idPenugasan, 25);
-    }
-
-    private void ToggleKebutuhan(string key)
+    private async Task ToggleKebutuhan(string key, Penugasan p)
     {
         if (CheckedKebutuhan.Contains(key)) CheckedKebutuhan.Remove(key);
         else CheckedKebutuhan.Add(key);
+
+        p.Progress = CalculateProgress(p);
+        p.StatusPenugasan = GetStatusPenugasan(p);
+        DbContext.Update(p);
+        await DbContext.SaveChangesAsync();
+    }
+
+    private void HideNotification(int idPenugasan)
+    {
+        SavedProgressIds.Remove(idPenugasan);
+        StateHasChanged();
     }
 
     private async Task SimpanProgress(Penugasan p)
     {
-        if (PendingProgress.TryGetValue(p.IdPenugasan, out var newProg))
-        {
-            p.Progress = newProg;
-            PendingProgress.Remove(p.IdPenugasan);
-        }
-        if (p.Progress == 100) p.StatusPenugasan = "Selesai";
         DbContext.Update(p);
         await DbContext.SaveChangesAsync();
         SavedProgressIds.Add(p.IdPenugasan);
-        _ = Task.Delay(3000).ContinueWith(_ => { SavedProgressIds.Remove(p.IdPenugasan); InvokeAsync(StateHasChanged); });
-        await OnParametersSetAsync();
+        _ = Task.Delay(30000).ContinueWith(_ => { SavedProgressIds.Remove(p.IdPenugasan); InvokeAsync(StateHasChanged); });
+    }
+
+    private string GetIconForKebutuhan(string jenis)
+    {
+        if (string.IsNullOrEmpty(jenis)) return "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'></rect><line x1='8' y1='21' x2='16' y2='21'></line><line x1='12' y1='17' x2='12' y2='21'></line></svg>";
+        
+        jenis = jenis.ToLower();
+        if (jenis.Contains("sound") || jenis.Contains("mic") || jenis.Contains("audio"))
+            return "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07'></path></svg>";
+        
+        if (jenis.Contains("proyektor") || jenis.Contains("screen") || jenis.Contains("layar"))
+            return "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='7' width='20' height='15' rx='2' ry='2'></rect><polyline points='17 2 12 7 7 2'></polyline></svg>";
+            
+        if (jenis.Contains("kabel") || jenis.Contains("listrik"))
+            return "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'></polygon></svg>";
+
+        return "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><line x1='12' y1='8' x2='12' y2='12'></line><line x1='12' y1='16' x2='12.01' y2='16'></line></svg>"; // fallback info icon
     }
 }

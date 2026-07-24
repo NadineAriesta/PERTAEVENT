@@ -154,8 +154,8 @@ namespace EventSupportApp.Data
         [MaxLength(500)]
         public string? CatatanTeknisi { get; set; }
 
-        [MaxLength(500)]
-        public string? AlasanPenolakan { get; set; }
+        //[MaxLength(500)]
+        //public string? AlasanPenolakan { get; set; }
 
         public virtual ICollection<DiskusiPenugasan> DiskusiList { get; set; } = new List<DiskusiPenugasan>();
     }
