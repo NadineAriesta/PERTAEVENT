@@ -84,7 +84,7 @@
 
                         @if (NewNeedsList.Count == 0)
                         {
-                            <div class="text-center py-3 text-muted border rounded bg-light">
+                            <div class="text-center py-2 text-muted border rounded bg-light">
                                 Belum ada kebutuhan ditambahkan. Klik tombol di atas untuk menambah kebutuhan.
                             </div>
                         }
@@ -118,7 +118,7 @@
                         }
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3" style="font-family: 'Outfit'; font-size: 1.05rem;">
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-3" style="font-family: 'Outfit'; font-size: 1.05rem;">
                         💾 Simpan Acara Baru
                     </button>
                 </EditForm>
@@ -167,10 +167,19 @@
                                             <div class="small fw-semibold text-primary">📍 @eventItem.Lokasi</div>
                                         </td>
                                         <td>
-                                            <div class="d-flex flex-wrap gap-1">
+                                            <div class="kebutuhan-badge-wrapper">
                                                 @foreach (var need in eventItem.Kebutuhan)
                                                 {
-                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem;">@(need.JenisKebutuhan?.Replace("🔹", "").TrimStart('•', '▪', '●', '*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
+                                                    var clName = UIHelpers.GetNeedBaseClass(need.JenisKebutuhan);
+                                                    var icon = UIHelpers.GetNeedIcon(need.JenisKebutuhan);
+                                                    var cleanedName = UIHelpers.CleanNeedName(need.JenisKebutuhan);
+                                                    <span class="kebutuhan-badge-item @clName">
+                                                        <span class="badge-icon">@icon</span>
+                                                        @cleanedName
+                                                        <span class="kebutuhan-qty-pill">
+                                                            <span>@need.Jumlah</span>
+                                                        </span>
+                                                    </span>
                                                 }
                                             </div>
                                         </td>

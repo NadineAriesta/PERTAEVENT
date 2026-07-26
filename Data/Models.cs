@@ -224,4 +224,42 @@ namespace EventSupportApp.Data
         
         public DateTime WaktuSelesai { get; set; } = DateTime.Now;
     }
+
+    public static class UIHelpers
+    {
+        public static string GetNeedBaseClass(string? needName)
+        {
+            var name = needName?.ToLower() ?? "";
+            if (name.Contains("proyektor") || name.Contains("screen") || name.Contains("layar"))
+                return "cat-blue";
+            if (name.Contains("sound") || name.Contains("mic") || name.Contains("audio") || name.Contains("speaker") || name.Contains("wireless"))
+                return "cat-purple";
+            if (name.Contains("laptop") || name.Contains("pc") || name.Contains("multimedia") || name.Contains("komputer"))
+                return "cat-green";
+            if (name.Contains("kabel") || name.Contains("listrik") || name.Contains("roll") || name.Contains("colokan") || name.Contains("kelistrikan"))
+                return "cat-orange";
+            return "cat-default";
+        }
+
+        public static string GetNeedIcon(string? needName)
+        {
+            var name = needName?.ToLower() ?? "";
+            if (name.Contains("proyektor")) return "📹";
+            if (name.Contains("layar") || name.Contains("screen")) return "🖥️";
+            if (name.Contains("sound") || name.Contains("speaker")) return "🔊";
+            if (name.Contains("mic") || name.Contains("wireless")) return "🎤";
+            if (name.Contains("laptop") || name.Contains("pc") || name.Contains("komputer")) return "💻";
+            if (name.Contains("kabel") || name.Contains("listrik") || name.Contains("roll") || name.Contains("colokan")) return "🔌";
+            return "🛠️";
+        }
+
+        public static string CleanNeedName(string? needName)
+        {
+            if (string.IsNullOrEmpty(needName)) return string.Empty;
+            return needName
+                .Replace("🔹", "")
+                .Replace("🔸", "")
+                .TrimStart('•', '▪', '●', '*', ' ', '-', '•', '▪', '●');
+        }
+    }
 }

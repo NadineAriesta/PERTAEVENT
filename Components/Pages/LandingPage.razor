@@ -31,13 +31,13 @@
                     {
                         <div class="position-absolute bg-white py-2" style="left: 50%; transform: translateX(-50%); top: calc(100% + 10px); min-width: 160px; z-index: 2000; border: 1px solid #E2E8F0; border-radius: 14px; box-shadow: 0 12px 32px rgba(0,0,0,0.12);">
                             <button class="dropdown-item py-2 px-3 fw-medium d-flex align-items-center" style="font-size: 0.9rem;" @onclick='async () => { ShowDropdown = false; await OnPrefillLogin.InvokeAsync("admin"); }'>
-                                <i class="bi bi-person-workspace me-2 text-danger"></i>Admin
+                                <i class="bi bi-person-workspace me-2 text-primary" style="color: #005CA9 !important;"></i>Admin
                             </button>
                             <button class="dropdown-item py-2 px-3 fw-medium d-flex align-items-center" style="font-size: 0.9rem;" @onclick='async () => { ShowDropdown = false; await OnPrefillLogin.InvokeAsync("helpdesk"); }'>
-                                <i class="bi bi-headset me-2 text-primary"></i>Help Desk
+                                <i class="bi bi-headset me-2 text-danger" style="color: #E31E24 !important;"></i>Help Desk
                             </button>
                             <button class="dropdown-item py-2 px-3 fw-medium d-flex align-items-center" style="font-size: 0.9rem;" @onclick='async () => { ShowDropdown = false; await OnPrefillLogin.InvokeAsync("pak_joko"); }'>
-                                <i class="bi bi-tools me-2 text-success"></i>Teknisi
+                                <i class="bi bi-tools me-2 text-success" style="color: #15803D !important;"></i>Teknisi
                             </button>
                         </div>
                         <!-- Backdrop untuk tutup dropdown saat klik di luar -->
@@ -61,22 +61,23 @@
             color: #475569;
             padding: 0.45rem 1.15rem;
             border-radius: 20px;
-            border: 1px solid transparent;
-            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            border: none !important;
+            transition: color 0.2s ease, background-color 0.2s ease;
             background: transparent;
             box-shadow: none !important;
             outline: none !important;
             text-decoration: none !important;
+            -webkit-tap-highlight-color: transparent !important;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            white-space: nowrap;
+            
         }
         .nav-pill-btn:hover,
         .nav-pill-btn:focus:hover {
-            color: #E31E24 !important;
-            background: rgba(227, 30, 36, 0.05) !important;
-            border: 1px solid transparent !important;
+            color: #005CA9 !important;
+            background: transparent !important;
+            border: none !important;
             box-shadow: none !important;
             outline: none !important;
             text-decoration: none !important;
@@ -84,11 +85,11 @@
         .nav-pill-btn.nav-pill-active,
         .nav-pill-btn.nav-pill-active:focus,
         .nav-pill-btn.nav-pill-active:active {
-            color: #E31E24 !important;
-            font-weight: 600 !important;
-            background: #FEE2E2 !important;
-            border: 1px solid rgba(227, 30, 36, 0.25) !important;
-            box-shadow: 0 2px 6px rgba(227, 30, 36, 0.1) !important;
+            color: #005CA9 !important;
+            font-weight: 700 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
             outline: none !important;
             text-decoration: none !important;
         }
@@ -210,9 +211,9 @@
                 <div class="col-md-3">
                     <h6 class="fw-bold text-uppercase mb-4" style="color: #94A3B8; letter-spacing: 1px; font-size: 0.85rem;">Dokumentasi</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Panduan Pengguna</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">FAQ</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Bantuan</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none" @onclick:preventDefault @onclick='() => SelectNav("help-section")'>Panduan Pengguna</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none" @onclick:preventDefault @onclick='() => SelectNav("help-section")'>FAQ</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none" @onclick:preventDefault @onclick='() => SelectNav("help-section")'>Bantuan</a></li>
                     </ul>
                 </div>
 
