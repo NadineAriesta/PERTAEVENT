@@ -8,7 +8,7 @@
 
 <style>
     /* Custom style injection to bypass cached app.css */
-    .btn-premium-red {
+   .btn-premium-red {
         border-radius: 10px !important;
         background: linear-gradient(135deg, #E31E24, #B91C1C) !important;
         border: none !important;
@@ -27,19 +27,19 @@
         justify-content: center !important;
     }
 
-    .btn-premium-red:hover {
+   .btn-premium-red:hover {
         background: linear-gradient(135deg, #ff2d34, #E31E24) !important;
         box-shadow: 0 6px 16px rgba(237, 28, 36, 0.4) !important;
         transform: translateY(-2px) !important;
         color: white !important;
     }
 
-    .btn-premium-red:active {
+   .btn-premium-red:active {
         transform: translateY(1px) scale(0.95) !important;
         box-shadow: 0 2px 6px rgba(237, 28, 36, 0.15) !important;
     }
 
-    .btn-premium-red-sm {
+   .btn-premium-red-sm {
         border-radius: 8px !important;
         background: linear-gradient(135deg, #E31E24, #B91C1C) !important;
         border: none !important;
@@ -58,20 +58,20 @@
         justify-content: center !important;
     }
 
-    .btn-premium-red-sm:hover {
+   .btn-premium-red-sm:hover {
         background: linear-gradient(135deg, #ff2d34, #E31E24) !important;
         box-shadow: 0 4px 12px rgba(237, 28, 36, 0.3) !important;
         transform: translateY(-1.5px) !important;
         color: white !important;
     }
 
-    .btn-premium-red-sm:active {
+   .btn-premium-red-sm:active {
         transform: translateY(1px) scale(0.95) !important;
         box-shadow: 0 1px 4px rgba(237, 28, 36, 0.12) !important;
     }
 
     /* Premium pill-style status indicators */
-    .premium-pill-badge {
+   .premium-pill-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -82,32 +82,32 @@
         line-height: 1 !important;
         white-space: nowrap !important;
     }
-    .premium-pill-badge.badge-red {
-        background-color: #FFF5F5 !important;
+   .premium-pill-badge.badge-red {
+        background-color: #FEF2F2 !important;
         color: #E31E24 !important;
         border: 1px solid #FCA5A5 !important;
     }
-    .premium-pill-badge.badge-yellow {
+   .premium-pill-badge.badge-yellow {
         background-color: #FFFDF5 !important;
-        color: #DF8A00 !important;
-        border: 1px solid #FCD34D !important;
+        color: #D97706 !important;
+        border: 1px solid #FDE68A !important;
     }
-    .premium-pill-badge.badge-green {
+   .premium-pill-badge.badge-green {
         background-color: #F0FDF4 !important;
-        color: #15803D !important;
-        border: 1px solid #86EFAC !important;
+        color: #09A537 !important;
+        border: 1px solid #BBF7D0 !important;
     }
-    .premium-pill-badge.badge-blue {
+   .premium-pill-badge.badge-blue {
         background-color: #EFF6FF !important;
-        color: #1D4ED8 !important;
-        border: 1px solid #93C5FD !important;
+        color: #005CA9 !important;
+        border: 1px solid #BFDBFE !important;
     }
-    .premium-pill-badge.badge-gray {
+   .premium-pill-badge.badge-gray {
         background-color: #F8FAFC !important;
         color: #64748B !important;
         border: 1px solid #CBD5E1 !important;
     }
-    .form-input-premium {
+   .form-input-premium {
         border-radius: 8px !important;
         border: 1px solid #cbd5e1 !important;
         padding: 0.65rem 1rem !important;
@@ -116,13 +116,13 @@
         color: #1e293b !important;
         transition: all 0.15s ease-in-out !important;
     }
-    .form-input-premium:focus {
+   .form-input-premium:focus {
         background-color: #ffffff !important;
         border-color: #005CA9 !important;
         box-shadow: 0 0 0 3px rgba(0, 92, 169, 0.15) !important;
         outline: none !important;
     }
-    .btn-delete-premium {
+   .btn-delete-premium {
         background: none;
         border: none;
         color: #ef4444;
@@ -134,7 +134,7 @@
         transition: all 0.2s;
         cursor: pointer;
     }
-    .btn-delete-premium:hover {
+   .btn-delete-premium:hover {
         background-color: #fee2e2;
         color: #dc2626;
     }
@@ -157,15 +157,12 @@
                         <div class="p-5 text-center">
                             <!-- Pertamina Logo -->
                             <div class="mb-4 d-flex justify-content-center align-items-center">
-                                <img src="images/pertamina-logo.png" alt="Pertamina Logo" style="height: 50px; width: auto; object-fit: contain;" />
+                                <img src="images/pertamina-logo.png" alt="Pertamina Logo" style="height: 95px; width: auto; object-fit: contain;" />
                             </div>
 
                             @if (!string.IsNullOrEmpty(SelectedLoginRole))
                             {
-                                <p class="text-muted mb-1" style="font-size: 0.95rem;">Gunakan akun untuk login sebagai <strong class="text-dark">@SelectedLoginRole</strong></p>
-                                <div class="mb-4">
-                                    <button type="button" class="btn btn-link p-0 text-decoration-none" style="font-size: 0.85rem; color: #005CA9;" @onclick="OpenEmptyLoginModal">&larr; Ganti Peran</button>
-                                </div>
+                                <p class="text-muted mb-4" style="font-size: 0.95rem;">Gunakan akun untuk login sebagai <strong class="text-dark">@SelectedLoginRole</strong></p>
                             }
                             else
                             {
@@ -196,7 +193,7 @@
                                     <input type="password" class="form-control border-start-0 ps-0 shadow-none" style="border-radius: 0 6px 6px 0; border-color: #ced4da;" @bind="InputPassword" placeholder="Password" required />
                                 </div>
 
-                                <button type="submit" class="btn w-100 py-2 fw-bold text-white login-btn" style="background-color: #10b981; border-radius: 6px; font-size: 1rem;">Login</button>
+                                <button type="submit" class="btn w-100 py-2 fw-bold text-white login-btn" style="background-color: #acc32a; border-radius: 6px; font-size: 1rem;">Login</button>
                             </form>
                         </div>
                     </div>
@@ -223,7 +220,14 @@ else
             {
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "mapping" ? "menu-active" : "")" @onclick='() => ActiveMenu = "mapping"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Mapping Teknisi</button>
             }
-            <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></span> Penugasan Teknisi</button>
+            @if (CurrentRole == "Admin")
+            {
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "pengguna" ? "menu-active" : "")" @onclick='() => ActiveMenu = "pengguna"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Manajemen Pengguna</button>
+            }
+            @if (CurrentRole == "Admin" || CurrentRole == "Teknisi")
+            {
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span> Penugasan Teknisi</button>
+            }
         </div>
         
         <div class="dash-sidebar-section" style="margin-top:auto; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
@@ -453,14 +457,14 @@ else
                 </div>
 
                 <div class="table-responsive" style="min-height: 250px;">
-                    <table class="table align-middle m-0" style="table-layout: fixed; width: 100%;">
+                    <table class="table align-middle m-0" style="width: 100%;">
                         <thead>
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
-                                <th class="border-0 py-4 ps-4" style="width: 28%; white-space: nowrap;">NAMA ACARA</th>
-                                <th class="border-0 py-4" style="width: 18%; white-space: nowrap;">JADWAL</th>
-                                <th class="border-0 py-4" style="width: 16%; white-space: nowrap;">DIAJUKAN OLEH</th>
-                                <th class="border-0 py-4" style="width: 22%; white-space: nowrap;">STATUS</th>
-                                <th class="border-0 py-4 text-center pe-4" style="width: 16%; white-space: nowrap;">AKSI</th>
+                                <th class="border-0 py-2 ps-3" style="width: 28%; ">NAMA ACARA</th>
+                                <th class="border-0 py-2" style="width: 18%; ">JADWAL</th>
+                                <th class="border-0 py-2" style="width: 16%; ">DIAJUKAN OLEH</th>
+                                <th class="border-0 py-2" style="width: 22%; ">STATUS</th>
+                                <th class="border-0 py-2 text-center pe-4" style="width: 16%; ">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -479,18 +483,18 @@ else
                                 @foreach (var eventItem in filteredEvents)
                                 {
                                     <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
-                                        <td class="py-4 ps-4">
+                                        <td class="py-2 ps-3">
                                             <div class="fw-bold" style="color: #0f172a; font-size: 0.95rem;">@eventItem.NamaAcara</div>
                                             <div class="text-muted" style="font-size: 0.85rem;">@eventItem.Lokasi</div>
                                         </td>
-                                        <td class="py-4">
+                                        <td class="py-2">
                                             <div style="color: #64748b; font-size: 0.9rem;">@eventItem.Tanggal.ToString("dd MMM yyyy")</div>
                                             <div style="color: #64748b; font-size: 0.9rem;">@eventItem.JamMulai.ToString(@"hh\:mm")-@eventItem.JamSelesai.ToString(@"hh\:mm")</div>
                                         </td>
-                                        <td class="py-4">
+                                        <td class="py-2">
                                             <div style="color: #64748b; font-size: 0.9rem;">Anda</div>
                                         </td>
-                                        <td class="py-4">
+                                        <td class="py-2">
                                             @if (eventItem.StatusAcara == "Belum Ditugaskan") { 
                                                 <span class="status-badge red">
                                                     Belum ditugaskan
@@ -517,8 +521,8 @@ else
                                                 </span> 
                                             }
                                         </td>
-                                        <td class="py-4 text-center pe-4">
-                                            <button class="btn btn-sm px-4 py-2 fw-bold" style="border-radius: 8px; color: #005CA9; background: #EBF3FC; border: none; transition: all 0.2s;" onmouseover="this.style.background='#005CA9'; this.style.color='#fff';" onmouseout="this.style.background='#EBF3FC'; this.style.color='#005CA9';" @onclick='() => OpenEditModal(eventItem)'>Edit kebutuhan</button>
+                                        <td class="py-2 text-center pe-4">
+                                            <button class="btn btn-sm px-3 py-2 fw-bold" style="border-radius: 8px; color: #005CA9; background: #EBF3FC; border: none; transition: all 0.2s;" onmouseover="this.style.background='#005CA9'; this.style.color='#fff';" onmouseout="this.style.background='#EBF3FC'; this.style.color='#005CA9';" @onclick='() => OpenEditModal(eventItem)'>Edit kebutuhan</button>
                                         </td>
                                     </tr>
                                 }
@@ -552,15 +556,15 @@ else
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table align-middle" style="table-layout: fixed; width: 100%;">
+                    <table class="table align-middle" style="width: 100%;">
                         <thead style="background-color: #F8FAFC;">
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-                                <th class="border-0 py-3 ps-4" style="width: 24%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; white-space: nowrap;">NAMA ACARA</th>
-                                <th class="border-0 py-3" style="width: 16%; white-space: nowrap;">TANGGAL &amp; JAM</th>
-                                <th class="border-0 py-3" style="width: 16%; white-space: nowrap;">LOKASI</th>
-                                <th class="border-0 py-3" style="width: 16%; white-space: nowrap;">DIAJUKAN OLEH</th>
-                                <th class="border-0 py-3" style="width: 12%; white-space: nowrap;">STATUS</th>
-                                <th class="border-0 py-3 text-start" style="width: 16%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 2rem;">AKSI</th>
+                                <th class="border-0 py-2 ps-3" style="width: 24%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; ">NAMA ACARA</th>
+                                <th class="border-0 py-2" style="width: 16%; ">TANGGAL &amp; JAM</th>
+                                <th class="border-0 py-2" style="width: 16%; ">LOKASI</th>
+                                <th class="border-0 py-2" style="width: 16%; ">DIAJUKAN OLEH</th>
+                                <th class="border-0 py-2" style="width: 12%; ">STATUS</th>
+                                <th class="border-0 py-2 text-start" style="width: 16%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 2rem;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -573,18 +577,18 @@ else
                                 if (!matchFilter) continue;
                                 
                                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <td class="fw-bold py-4 ps-4" style="color: #072C4C; font-size: 0.95rem;">@ev.NamaAcara</td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">@ev.Tanggal.ToString("dd MMM yyyy") · @ev.JamMulai.ToString(@"hh\:mm")-@ev.JamSelesai.ToString(@"hh\:mm")</td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">@ev.Lokasi</td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">@(ev.Helpdesk?.Username ?? "Helpdesk")</td>
-                                    <td class="py-4">
+                                    <td class="fw-bold py-2 ps-3" style="color: #072C4C; font-size: 0.95rem;">@ev.NamaAcara</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@ev.Tanggal.ToString("dd MMM yyyy") · @ev.JamMulai.ToString(@"hh\:mm")-@ev.JamSelesai.ToString(@"hh\:mm")</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@ev.Lokasi</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@(ev.Helpdesk?.Username ?? "Helpdesk")</td>
+                                    <td class="py-2">
                                         @if (ev.StatusAcara == "Belum Ditugaskan") { <span class="premium-pill-badge badge-red">Belum ditugaskan</span> }
                                         else if (ev.StatusAcara == "Ditugaskan") { <span class="premium-pill-badge badge-yellow">Ditugaskan</span> }
                                         else if (ev.StatusAcara == "Dikonfirmasi") { <span class="premium-pill-badge badge-green">Dikonfirmasi</span> }
                                         else if (ev.StatusAcara == "Dokumen Diunggah") { <span class="premium-pill-badge badge-blue">Dok. Diunggah</span> }
                                         else { <span class="premium-pill-badge badge-gray">Selesai</span> }
                                     </td>
-                                    <td class="text-start py-4" style="padding-left: 2rem;">
+                                    <td class="text-start py-2" style="padding-left: 2rem;">
                                         <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" @onclick='() => OpenEditModal(ev)'>@(ev.StatusAcara == "Selesai" ? "Lihat" : "Edit")</button>
                                     </td>
                                 </tr>
@@ -640,7 +644,7 @@ else
                             
                             @if (NewNeedsList.Count == 0)
                             {
-                                <div class="text-center py-4 text-muted border rounded" style="background-color: #f8fafc; border-style: dashed !important; border-color: #cbd5e1 !important; font-size: 0.9rem;">
+                                <div class="text-center py-2 text-muted border rounded" style="background-color: #f8fafc; border-style: dashed !important; border-color: #cbd5e1 !important; font-size: 0.9rem;">
                                     Belum ada kebutuhan IT yang ditambahkan. Silakan klik "+ Tambah".
                                 </div>
                             }
@@ -682,10 +686,10 @@ else
                         </div>
 
                         <div class="d-flex gap-3 justify-content-end mt-4 pt-3" style="border-top: 1px solid #e2e8f0;">
-                            <button type="button" class="btn btn-light px-4 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.9rem;" @onclick='() => ActiveMenu = "semua_acara"'>
+                            <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.9rem;" @onclick='() => ActiveMenu = "semua_acara"'>
                                 Batal
                             </button>
-                            <button type="submit" class="btn-premium-red px-4 py-2 fw-bold rounded-pill" style="min-width: 180px; font-size: 0.9rem;">
+                            <button type="submit" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 180px; font-size: 0.9rem;">
                                 Ajukan Acara Baru
                             </button>
                         </div>
@@ -706,7 +710,10 @@ else
                             <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
                             <input type="text" class="form-control" placeholder="Cari acara..." style="border-radius: 10px; border: 1px solid #e2e8f0; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
                         </div>
-                        <button type="button" class="btn btn-premium-red" @onclick='() => ActiveMenu = "form_acara"'>+ Tambah</button>
+                        @if (CurrentRole == "Admin" || CurrentRole == "Helpdesk")
+                        {
+                            <button type="button" class="btn btn-premium-red" @onclick='() => ActiveMenu = "form_acara"'>+ Tambah</button>
+                        }
                     </div>
                 </div>
 
@@ -759,13 +766,13 @@ else
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0" style="table-layout: fixed; width: 100%;">
+                    <table class="table align-middle mb-0" style="width: 100%;">
                         <thead style="background-color: #F8FAFC;">
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-                                <th class="border-0 py-3 ps-4" style="width: 30%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; white-space: nowrap;">NAMA PENGGUNA</th>
-                                <th class="border-0 py-3" style="width: 25%; white-space: nowrap;">ROLE</th>
-                                <th class="border-0 py-3" style="width: 20%; white-space: nowrap;">STATUS AKTIF</th>
-                                <th class="border-0 py-3 text-center pe-4" style="width: 25%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; white-space: nowrap;">AKSI</th>
+                                <th class="border-0 py-2 ps-3" style="width: 30%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; ">NAMA PENGGUNA</th>
+                                <th class="border-0 py-2" style="width: 25%; ">ROLE</th>
+                                <th class="border-0 py-2" style="width: 20%; ">STATUS AKTIF</th>
+                                <th class="border-0 py-2 text-center pe-4" style="width: 25%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; ">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -779,7 +786,7 @@ else
                                 var roleName = user.UserRoles.FirstOrDefault()?.Role?.NamaRole ?? "Teknisi";
                                 
                                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <td class="fw-bold py-4 ps-4 text-dark" style="font-size: 0.95rem;">
+                                    <td class="fw-bold py-2 ps-3 text-dark" style="font-size: 0.95rem;">
                                         <div class="d-flex align-items-center gap-3">
                                             <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #072C4C, #005CA9); font-size: 0.9rem;">
                                                 @(user.Username[0].ToString().ToUpper())
@@ -787,27 +794,27 @@ else
                                             <span>@user.Username</span>
                                         </div>
                                     </td>
-                                    <td class="py-4">
+                                    <td class="py-2">
                                         @if (roleName == "Admin")
                                         {
                                             <span class="premium-pill-badge badge-blue">Admin</span>
                                         }
                                         else if (roleName == "Helpdesk")
                                         {
-                                            <span class="premium-pill-badge badge-yellow">Helpdesk</span>
+                                            <span class="premium-pill-badge badge-red">Helpdesk</span>
                                         }
                                         else
                                         {
                                             <span class="premium-pill-badge badge-green">Teknisi</span>
                                         }
                                     </td>
-                                    <td class="py-4">
+                                    <td class="py-2">
                                         <div class="form-check form-switch m-0">
                                             <input class="form-check-input" type="checkbox" role="switch" checked="@user.StatusAktif" @onclick="() => ToggleUserStatus(user)" style="cursor: pointer;" />
                                             <label class="form-check-label small text-muted" style="margin-left: 0.25rem;">@(user.StatusAktif ? "Aktif" : "Nonaktif")</label>
                                         </div>
                                     </td>
-                                    <td class="text-center py-4 pe-4">
+                                    <td class="text-center py-2 pe-4">
                                         <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" @onclick="() => OpenEditUserModal(user)">Edit</button>
                                     </td>
                                 </tr>
@@ -832,14 +839,14 @@ else
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0" style="table-layout: fixed; width: 100%;">
+                    <table class="table align-middle mb-0" style="width: 100%;">
                         <thead style="background-color: #F8FAFC;">
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-                                <th class="border-0 py-3 ps-4" style="width: 25%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; white-space: nowrap;">NAMA TEKNISI</th>
-                                <th class="border-0 py-3" style="width: 30%; white-space: nowrap;">SPESIALISASI</th>
-                                <th class="border-0 py-3" style="width: 15%; white-space: nowrap;">TUGAS AKTIF</th>
-                                <th class="border-0 py-3" style="width: 20%; white-space: nowrap;">STATUS</th>
-                                <th class="border-0 py-3 text-center pe-4" style="width: 10%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; white-space: nowrap;">AKSI</th>
+                                <th class="border-0 py-2 ps-3" style="width: 25%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; ">NAMA TEKNISI</th>
+                                <th class="border-0 py-2" style="width: 30%; ">SPESIALISASI</th>
+                                <th class="border-0 py-2" style="width: 15%; ">TUGAS AKTIF</th>
+                                <th class="border-0 py-2" style="width: 20%; ">STATUS</th>
+                                <th class="border-0 py-2 text-center pe-4" style="width: 10%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; ">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -847,7 +854,7 @@ else
                             {
                                 var activeTasks = GetAssignmentsForTechnician(tek.IdTeknisi).Count;
                                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <td class="fw-bold py-4 ps-4 text-dark" style="font-size: 0.95rem;">
+                                    <td class="fw-bold py-2 ps-3 text-dark" style="font-size: 0.95rem;">
                                         <div class="d-flex align-items-center gap-3">
                                             <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #005CA9, #063d6b); font-size: 0.9rem;">
                                                 @((tek.User?.Username ?? "T")[0].ToString().ToUpper())
@@ -855,8 +862,8 @@ else
                                             <span>@tek.User?.Username</span>
                                         </div>
                                     </td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">@tek.Spesialisasi</td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@tek.Spesialisasi</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">
                                         @if(activeTasks > 0)
                                         {
                                             <span class="fw-bold" style="color: #0284c7;">@activeTasks Acara</span>
@@ -866,17 +873,17 @@ else
                                             <span>-</span>
                                         }
                                     </td>
-                                    <td class="py-4">
+                                    <td class="py-2">
                                         @if (tek.StatusKetersediaan == "Tersedia")
                                         {
                                             <span class="premium-pill-badge badge-green">Tersedia</span>
                                         }
                                         else
                                         {
-                                            <span class="premium-pill-badge badge-yellow">Sedang Bertugas</span>
+                                            <span class="premium-pill-badge badge-blue">Sedang Bertugas</span>
                                         }
                                     </td>
-                                    <td class="text-center py-4 pe-4">
+                                    <td class="text-center py-2 pe-4">
                                         <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" title="Edit Spesialisasi" @onclick="() => OpenEditTeknisiModal(tek)">Edit</button>
                                     </td>
                                 </tr>
@@ -901,13 +908,13 @@ else
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0" style="table-layout: fixed; width: 100%;">
+                    <table class="table align-middle mb-0" style="width: 100%;">
                         <thead style="background-color: #F8FAFC;">
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-                                <th class="border-0 py-3 ps-4" style="width: 35%; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">ACARA</th>
-                                <th class="border-0 py-3" style="width: 25%;">TEKNISI</th>
-                                <th class="border-0 py-3" style="width: 20%;">STATUS</th>
-                                <th class="border-0 py-3 pe-4 text-end" style="width: 20%; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">WAKTU KONFIRMASI</th>
+                                <th class="border-0 py-2 ps-3" style="width: 35%; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">ACARA</th>
+                                <th class="border-0 py-2" style="width: 25%;">TEKNISI</th>
+                                <th class="border-0 py-2" style="width: 20%;">STATUS</th>
+                                <th class="border-0 py-2 pe-4 text-end" style="width: 20%; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">WAKTU KONFIRMASI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -915,16 +922,16 @@ else
                             {
                                 var assignment = GetAssignmentForEvent(ev.IdAcara);
                                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <td class="fw-bold py-4 ps-4" style="color: #072C4C; font-size: 0.95rem;">@ev.NamaAcara</td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">@(assignment?.Teknisi?.User?.Username ?? "—")</td>
-                                    <td class="py-4">
+                                    <td class="fw-bold py-2 ps-3" style="color: #072C4C; font-size: 0.95rem;">@ev.NamaAcara</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@(assignment?.Teknisi?.User?.Username ?? "—")</td>
+                                    <td class="py-2">
                                         @if (ev.StatusAcara == "Belum Ditugaskan") { <span class="premium-pill-badge badge-red">Belum ditugaskan</span> }
                                         else if (ev.StatusAcara == "Ditugaskan") { <span class="premium-pill-badge badge-yellow">Belum Sign</span> }
                                         else if (ev.StatusAcara == "Dikonfirmasi") { <span class="premium-pill-badge badge-green">Dikonfirmasi</span> }
                                         else if (ev.StatusAcara == "Dokumen Diunggah") { <span class="premium-pill-badge badge-blue">Dok. Diunggah</span> }
                                         else { <span class="premium-pill-badge badge-gray">Selesai</span> }
                                     </td>
-                                    <td class="text-muted py-4 pe-4 text-end" style="font-size: 0.9rem;">
+                                    <td class="text-muted py-2 pe-4 text-end" style="font-size: 0.9rem;">
                                         @if (ev.StatusAcara == "Belum Ditugaskan" || ev.StatusAcara == "Ditugaskan") { <span>—</span> }
                                         else if (ev.StatusAcara == "Selesai") { <span>Ditandai otomatis</span> }
                                         else { <span>@(assignment?.WaktuKonfirmasi?.ToString("dd Jul, HH.mm") ?? "12 Jul, 10.20")</span> }
@@ -973,15 +980,15 @@ else
             </div>
 
             <div class="table-responsive" style="min-height: 250px;">
-                <table class="table align-middle mb-0" style="table-layout: fixed; width: 100%;">
+                <table class="table align-middle mb-0" style="width: 100%;">
                     <thead style="background-color: #F8FAFC;">
                         <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-                            <th class="border-0 py-3 ps-4" style="width: 22%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; white-space: nowrap;">NAMA ACARA</th>
-                            <th class="border-0 py-3" style="width: 16%; white-space: nowrap;">TANGGAL &amp; JAM</th>
-                            <th class="border-0 py-3" style="width: 16%; white-space: nowrap;">LOKASI</th>
-                            <th class="border-0 py-3" style="width: 16%; white-space: nowrap;">KEBUTUHAN IT</th>
-                            <th class="border-0 py-3" style="width: 14%; white-space: nowrap;">STATUS / TEKNISI</th>
-                            <th class="border-0 py-3 text-start" style="width: 16%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 1rem; white-space: nowrap;">AKSI</th>
+                            <th class="border-0 py-2 ps-3" style="width: 22%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; ">NAMA ACARA</th>
+                            <th class="border-0 py-2" style="width: 16%; ">TANGGAL &amp; JAM</th>
+                            <th class="border-0 py-2" style="width: 16%; ">LOKASI</th>
+                            <th class="border-0 py-2" style="width: 16%; ">KEBUTUHAN IT</th>
+                            <th class="border-0 py-2" style="width: 14%; ">STATUS / TEKNISI</th>
+                            <th class="border-0 py-2 text-start" style="width: 16%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 1rem; ">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1002,13 +1009,13 @@ else
                                 var assignment = GetAssignmentForEvent(eventItem.IdAcara);
 
                                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <td class="fw-bold py-4 ps-4" style="color: #072C4C; font-size: 0.95rem;">@eventItem.NamaAcara</td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">
+                                    <td class="fw-bold py-2 ps-3" style="color: #072C4C; font-size: 0.95rem;">@eventItem.NamaAcara</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">
                                         <div>@eventItem.Tanggal.ToString("dd MMM yyyy")</div>
                                         <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">@eventItem.JamMulai.ToString(@"hh\:mm")-@eventItem.JamSelesai.ToString(@"hh\:mm")</div>
                                     </td>
-                                    <td class="text-muted py-4" style="font-size: 0.9rem;">@eventItem.Lokasi</td>
-                                    <td class="py-4">
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@eventItem.Lokasi</td>
+                                    <td class="py-2">
                                         <div class="d-flex flex-wrap gap-1">
                                             @if(eventItem.Kebutuhan != null && eventItem.Kebutuhan.Any())
                                             {
@@ -1023,7 +1030,7 @@ else
                                             }
                                         </div>
                                     </td>
-                                    <td class="py-4">
+                                    <td class="py-2">
                                         @if (eventItem.StatusAcara == "Belum Ditugaskan")
                                         {
                                             <span class="premium-pill-badge badge-red">Belum ditugaskan</span>
@@ -1045,7 +1052,7 @@ else
                                             <span class="premium-pill-badge badge-gray">Selesai</span>
                                         }
                                     </td>
-                                    <td class="py-4 text-start" style="padding-left: 1rem;">
+                                    <td class="py-2 text-start" style="padding-left: 1rem;">
                                         <div class="d-flex flex-wrap justify-content-start gap-2">
                                             @if (eventItem.StatusAcara == "Belum Ditugaskan")
                                             {
@@ -1076,14 +1083,14 @@ else
                             @foreach (var hist in HistoryEvents.Take(3))
                             {
                                 <tr style="border-bottom: 1px solid #f1f5f9; background-color: #fafafa; opacity: 0.8;">
-                                    <td class="py-3 ps-4 fw-bold" style="color: #64748b; font-size: 0.95rem;">@hist.NamaAcara</td>
-                                    <td class="py-3 text-muted" style="font-size: 0.9rem;">@hist.TanggalAcara.ToString("dd MMM yyyy")</td>
-                                    <td class="py-3 text-muted" style="font-size: 0.9rem;">-</td>
-                                    <td class="py-3 text-muted" style="font-size: 0.9rem;">-</td>
-                                    <td class="py-3">
+                                    <td class="py-2 ps-3 fw-bold" style="color: #64748b; font-size: 0.95rem;">@hist.NamaAcara</td>
+                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">@hist.TanggalAcara.ToString("dd MMM yyyy")</td>
+                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">-</td>
+                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">-</td>
+                                    <td class="py-2">
                                         <span class="premium-pill-badge badge-gray">Selesai · @hist.NamaTeknisi</span>
                                     </td>
-                                    <td class="py-3 text-start text-muted" style="font-size: 0.8rem; font-style: italic; padding-left: 1rem;">
+                                    <td class="py-2 text-start text-muted" style="font-size: 0.8rem; font-style: italic; padding-left: 1rem;">
                                         Telah diselesaikan
                                     </td>
                                 </tr>
@@ -1105,6 +1112,7 @@ else
             Technicians="Technicians"
             OnOpenSignature="HandleOpenSignature" 
             OnOpenUpload="HandleOpenUpload" 
+            OnRejectAssignment="HandleRejectAssignment"
             OnUpdateProgress="HandleUpdateProgress" />
     }
 
@@ -1175,7 +1183,7 @@ else
                 <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">@(EditEvent.StatusAcara == "Selesai" ? "Detail Acara" : "Edit Acara & Kebutuhan")</h4>
                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="CloseEditModal" aria-label="Close"></button>
             </div>
-            <div class="modal-body px-4 py-3" style="max-height: 70vh; overflow-y: auto;">
+            <div class="modal-body px-3 py-2" style="max-height: 70vh; overflow-y: auto;">
                 <EditForm Model="EditEvent" OnValidSubmit="HandleSubmitEditEvent">
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
@@ -1254,7 +1262,7 @@ else
                             
                             @if (EditNeedsList.Count == 0)
                             {
-                                <div class="text-center py-4 text-muted border rounded" style="background-color: #f8fafc; border-style: dashed !important; border-color: #cbd5e1 !important; font-size: 0.9rem;">
+                                <div class="text-center py-2 text-muted border rounded" style="background-color: #f8fafc; border-style: dashed !important; border-color: #cbd5e1 !important; font-size: 0.9rem;">
                                     Belum ada kebutuhan IT yang ditambahkan.
                                 </div>
                             }
@@ -1262,10 +1270,10 @@ else
                     </div>
 
                     <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
-                        <button type="button" class="btn btn-light px-4 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="CloseEditModal">Batal</button>
+                        <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="CloseEditModal">Batal</button>
                         @if (EditEvent.StatusAcara != "Selesai")
                         {
-                            <button type="submit" class="btn-premium-red px-4 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;">
+                            <button type="submit" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;">
                                 Simpan Perubahan
                             </button>
                         }
@@ -1285,7 +1293,7 @@ else
                 <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">Penugasan Teknisi</h4>
                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="CloseAssignModal" aria-label="Close"></button>
             </div>
-            <div class="modal-body px-4 py-3">
+            <div class="modal-body px-3 py-2">
                 <h6 class="fw-bold mb-2 text-dark" style="font-size: 0.88rem;">Detail Acara:</h6>
                 <div class="p-3 mb-3 small" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; line-height: 1.5; color: #475569;">
                     <strong>Nama Acara:</strong> @SelectedEventForAssign.NamaAcara <br/>
@@ -1308,8 +1316,8 @@ else
                 </div>
             </div>
             <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                <button type="button" class="btn btn-light px-4 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="CloseAssignModal">Batal</button>
-                <button type="button" class="btn-premium-red px-4 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleAssignTeknisi" disabled="@(SelectedTeknisiIdForAssign == 0)">
+                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="CloseAssignModal">Batal</button>
+                <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleAssignTeknisi" disabled="@(SelectedTeknisiIdForAssign == 0)">
                     Tugaskan Teknisi
                 </button>
             </div>
@@ -1326,7 +1334,7 @@ else
                 <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">Edit Profil Teknisi</h4>
                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="CloseEditTeknisiModal" aria-label="Close"></button>
             </div>
-            <div class="modal-body px-4 py-3">
+            <div class="modal-body px-3 py-2">
                 <div class="mb-3">
                     <label class="form-label fw-bold text-dark" style="font-size: 0.85rem; margin-bottom: 0.5rem;">Nama Teknisi</label>
                     <input type="text" class="form-control form-input-premium" value="@EditTeknisi.User?.Username" style="background-color: #f1f5f9 !important; color: #64748b !important; cursor: not-allowed;" disabled />
@@ -1344,8 +1352,8 @@ else
                 </div>
             </div>
             <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                <button type="button" class="btn btn-light px-4 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="CloseEditTeknisiModal">Batal</button>
-                <button type="button" class="btn-premium-red px-4 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitEditTeknisi">
+                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="CloseEditTeknisiModal">Batal</button>
+                <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitEditTeknisi">
                     Simpan Perubahan
                 </button>
             </div>
@@ -1362,7 +1370,7 @@ else
                 <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">Tanda Tangan Konfirmasi</h4>
                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowSignatureModal = false" aria-label="Close"></button>
             </div>
-            <div class="modal-body px-4 py-3 text-center">
+            <div class="modal-body px-3 py-2 text-center">
                 <p class="text-dark mb-4" style="font-size: 0.95rem; line-height: 1.5;">
                     Silakan tanda tangan di dalam kotak di bawah ini untuk mengonfirmasi penugasan support <strong>@ActiveAssignmentForAction.Acara?.NamaAcara</strong>.
                 </p>
@@ -1390,8 +1398,8 @@ else
                 </div>
             </div>
             <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                <button type="button" class="btn btn-light px-4 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowSignatureModal = false">Batal</button>
-                <button type="button" class="btn-premium-red px-4 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitSignature" disabled="@(string.IsNullOrEmpty(TechnicianNameInput))">
+                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowSignatureModal = false">Batal</button>
+                <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitSignature" disabled="@(string.IsNullOrEmpty(TechnicianNameInput))">
                     Kirim Tanda Tangan
                 </button>
             </div>
@@ -1408,12 +1416,18 @@ else
                 <h4 class="modal-title m-0 fw-bold" style="color: #000000; font-family: 'Outfit'; font-size: 1.25rem;">Unggah Dokumentasi Setup</h4>
                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowUploadModal = false" aria-label="Close"></button>
             </div>
-            <div class="modal-body px-4 py-3 text-center">
+            <div class="modal-body px-3 py-2 text-center">
                 <p class="text-dark mb-4" style="font-size: 0.95rem; line-height: 1.5;">
                     Silahkan unggah dokumentasi <strong>@ActiveAssignmentForAction.Acara?.NamaAcara</strong>
                 </p>
 
                 <div class="mb-4">
+                    <button type="button" class="btn btn-outline-primary w-100 py-2 mb-3 fw-bold" style="border-radius: 10px; border-style: dashed; font-size: 0.9rem;" @onclick="SimulateCameraUpload">
+                        Ambil Gambar dari Kamera Kamera HP (Simulasi)
+                    </button>
+                    
+                    <div class="text-muted mb-3" style="font-size: 0.75rem; letter-spacing: 0.05em; font-weight: 700;">ATAU PILIH FILE DARI MEMORI HP</div>
+                    
                     <InputFile OnChange="HandleFileSelection" class="form-control form-input-premium" accept="image/*" />
                 </div>
 
@@ -1426,8 +1440,8 @@ else
                 }
             </div>
             <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                <button type="button" class="btn btn-light px-4 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUploadModal = false">Batal</button>
-                <button type="button" class="btn-premium-red px-4 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitUpload" disabled="@(string.IsNullOrEmpty(PreviewUploadUrl))">
+                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUploadModal = false">Batal</button>
+                <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitUpload" disabled="@(string.IsNullOrEmpty(PreviewUploadUrl))">
                     Kirim Dokumentasi
                 </button>
             </div>
@@ -1460,7 +1474,7 @@ else
                  <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">@UserModalTitle</h4>
                  <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowUserModal = false" aria-label="Close"></button>
              </div>
-             <div class="modal-body px-4 py-3">
+             <div class="modal-body px-3 py-2">
                  <div class="mb-3">
                      <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Username</label>
                      <input type="text" class="form-control form-input-premium" @bind="EditingUser.Username" placeholder="Contoh: pak_eko" required />
@@ -1492,8 +1506,8 @@ else
                  </div>
              </div>
              <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                 <button type="button" class="btn btn-light px-4 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUserModal = false">Batal</button>
-                 <button type="button" class="btn-premium-red px-4 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSaveUser">
+                 <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUserModal = false">Batal</button>
+                 <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSaveUser">
                      Simpan Pengguna
                  </button>
              </div>
@@ -1670,12 +1684,12 @@ else
     private async Task LoadDataAsync()
     {
         var rawEventsQuery = DbContext.SupportAcara
-            .Include(e => e.Helpdesk)
-            .Include(e => e.Kebutuhan)
-            .Include(e => e.PenugasanList)
-            .ThenInclude(p => p.Teknisi)
-            .ThenInclude(t => t!.User)
-            .AsQueryable();
+           .Include(e => e.Helpdesk)
+           .Include(e => e.Kebutuhan)
+           .Include(e => e.PenugasanList)
+           .ThenInclude(p => p.Teknisi)
+           .ThenInclude(t => t!.User)
+           .AsQueryable();
 
         if (IsLoggedIn && CurrentRole == "Helpdesk" && LoggedInUser != null)
         {
@@ -1685,52 +1699,52 @@ else
         var rawEvents = await rawEventsQuery.ToListAsync();
 
         AllSupportAcara = rawEvents
-            .OrderByDescending(e => e.Tanggal)
-            .ThenByDescending(e => e.JamMulai)
-            .ToList();
+           .OrderByDescending(e => e.Tanggal)
+           .ThenByDescending(e => e.JamMulai)
+           .ToList();
 
         ActiveEvents = rawEvents
-            .Where(e => e.StatusAcara != "Selesai")
-            .OrderBy(e => e.Tanggal)
-            .ThenBy(e => e.JamMulai)
-            .ToList();
+           .Where(e => e.StatusAcara != "Selesai")
+           .OrderBy(e => e.Tanggal)
+           .ThenBy(e => e.JamMulai)
+           .ToList();
 
         Technicians = await DbContext.MappingTeknisi
-            .Include(t => t.User)
-            .ToListAsync();
+           .Include(t => t.User)
+           .ToListAsync();
 
         Assignments = await DbContext.Penugasan
-            .Include(p => p.Acara)
-            .Include(p => p.Teknisi)
-            .ThenInclude(t => t!.User)
-            .ToListAsync();
+           .Include(p => p.Acara)
+           .Include(p => p.Teknisi)
+           .ThenInclude(t => t!.User)
+           .ToListAsync();
 
         if (IsLoggedIn && CurrentRole == "Helpdesk" && LoggedInUser != null)
         {
             HistoryEvents = await DbContext.RiwayatAcara
-                .Where(r => DbContext.SupportAcara.Any(s => s.IdAcara == r.IdAcara && s.IdUserHelpdesk == LoggedInUser.IdUser))
-                .OrderByDescending(r => r.WaktuSelesai)
-                .ToListAsync();
+               .Where(r => DbContext.SupportAcara.Any(s => s.IdAcara == r.IdAcara && s.IdUserHelpdesk == LoggedInUser.IdUser))
+               .OrderByDescending(r => r.WaktuSelesai)
+               .ToListAsync();
         }
         else
         {
             HistoryEvents = await DbContext.RiwayatAcara
-                .OrderByDescending(r => r.WaktuSelesai)
-                .ToListAsync();
+               .OrderByDescending(r => r.WaktuSelesai)
+               .ToListAsync();
         }
 
         if (IsLoggedIn && LoggedInUser != null)
         {
             UserNotifications = await DbContext.Notifications
-                .Where(n => n.IdUser == LoggedInUser.IdUser)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
+               .Where(n => n.IdUser == LoggedInUser.IdUser)
+               .OrderByDescending(n => n.CreatedAt)
+               .ToListAsync();
         }
 
         AllUsers = await DbContext.Users
-            .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
-            .ToListAsync();
+           .Include(u => u.UserRoles)
+           .ThenInclude(ur => ur.Role)
+           .ToListAsync();
     }
 
     private async Task HandleLogin()
@@ -1743,9 +1757,9 @@ else
         }
 
         var user = await DbContext.Users
-            .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.Username.ToLower() == InputUsername.ToLower() && u.Password == InputPassword && u.StatusAktif);
+           .Include(u => u.UserRoles)
+           .ThenInclude(ur => ur.Role)
+           .FirstOrDefaultAsync(u => u.Username.ToLower() == InputUsername.ToLower() && u.Password == InputPassword && u.StatusAktif);
 
         if (user == null)
         {
@@ -1820,7 +1834,7 @@ else
         LoggedInUser = null;
         CurrentRole = "Guest";
         ActiveMenu = "dashboard";
-        SystemNotification = "Anda telah berhasil keluar dari sistem.";
+        ShowNotificationWithTimer("Anda telah berhasil keluar dari sistem.");
         ShowNotificationsDropdown = false;
     }
 
@@ -1838,8 +1852,8 @@ else
             if (LoggedInUser != null)
             {
                 var unreadNotifs = await DbContext.Notifications
-                    .Where(n => n.IdUser == LoggedInUser.IdUser && n.Status == "Unread")
-                    .ToListAsync();
+                   .Where(n => n.IdUser == LoggedInUser.IdUser && n.Status == "Unread")
+                   .ToListAsync();
                 
                 foreach (var n in unreadNotifs)
                 {
@@ -1853,7 +1867,7 @@ else
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal menandai notifikasi: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal menandai notifikasi: {ex.Message}");
         }
     }
 
@@ -1873,11 +1887,16 @@ else
 
     private string GetUserDisplayName()
     {
-        if (!IsLoggedIn) return "Tamu";
-        if (CurrentRole == "Admin") return "Pak Adit";
-        if (CurrentRole == "Helpdesk") return "Staff Helpdesk IT";
-        if (CurrentRole == "Teknisi") return $"Pak {GetTeknisiName(CurrentTeknisiId)}";
-        return LoggedInUser?.Username ?? "Pengguna";
+        if (!IsLoggedIn || LoggedInUser == null) return "Tamu";
+        var name = LoggedInUser.Username;
+        if (string.IsNullOrEmpty(name)) return "Pengguna";
+        var parts = name.Split('_');
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (parts[i].Length > 0)
+                parts[i] = char.ToUpper(parts[i][0]) + parts[i].Substring(1);
+        }
+        return string.Join(" ", parts);
     }
 
     private string GetTeknisiName(int id)
@@ -1930,7 +1949,7 @@ else
             DbContext.SupportAcara.Add(NewEvent);
             await DbContext.SaveChangesAsync();
 
-            SystemNotification = $"Acara '{NewEvent.NamaAcara}' berhasil disimpan dan berstatus 'Belum Ditugaskan' (Merah).";
+            ShowNotificationWithTimer($"Acara '{NewEvent.NamaAcara}' berhasil disimpan.");
             
             // Reset form
             NewEvent = new SupportAcara();
@@ -1947,7 +1966,7 @@ else
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal menyimpan acara: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal menyimpan acara: {ex.Message}");
         }
     }
 
@@ -1996,8 +2015,8 @@ else
         try
         {
             var existingEvent = await DbContext.SupportAcara
-                .Include(e => e.Kebutuhan)
-                .FirstOrDefaultAsync(e => e.IdAcara == EditEvent.IdAcara);
+               .Include(e => e.Kebutuhan)
+               .FirstOrDefaultAsync(e => e.IdAcara == EditEvent.IdAcara);
 
             if (existingEvent != null)
             {
@@ -2036,7 +2055,7 @@ else
                 }
 
                 await DbContext.SaveChangesAsync();
-                SystemNotification = $"Acara '{existingEvent.NamaAcara}' berhasil diperbarui.";
+                ShowNotificationWithTimer($"Acara '{existingEvent.NamaAcara}' berhasil diperbarui.");
             }
 
             ShowEditModal = false;
@@ -2044,7 +2063,7 @@ else
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal memperbarui acara: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal memperbarui acara: {ex.Message}");
         }
     }
 
@@ -2092,14 +2111,14 @@ else
                 tek.Spesialisasi = EditTeknisi.Spesialisasi;
                 tek.StatusKetersediaan = EditTeknisi.StatusKetersediaan;
                 await DbContext.SaveChangesAsync();
-                SystemNotification = $"Data teknisi '{tek.User?.Username}' berhasil diperbarui.";
+                ShowNotificationWithTimer($"Data teknisi '{tek.User?.Username}' berhasil diperbarui.");
             }
             ShowEditTeknisiModal = false;
             await LoadDataAsync();
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal memperbarui teknisi: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal memperbarui teknisi: {ex.Message}");
         }
     }
 
@@ -2139,14 +2158,14 @@ else
 
                 await DbContext.SaveChangesAsync();
                 
-                SystemNotification = $"Teknisi berhasil ditugaskan. Status acara berubah menjadi 'Ditugaskan/Belum Sign' (Kuning).";
+                ShowNotificationWithTimer($"Teknisi berhasil ditugaskan. Status acara berubah menjadi 'Ditugaskan/Belum Sign'.");
                 ShowAssignModal = false;
                 await LoadDataAsync();
             }
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal menugaskan teknisi: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal menugaskan teknisi: {ex.Message}");
         }
     }
 
@@ -2172,8 +2191,8 @@ else
         try
         {
             var penugasan = await DbContext.Penugasan
-                .Include(p => p.Acara)
-                .FirstOrDefaultAsync(p => p.IdPenugasan == ActiveAssignmentForAction.IdPenugasan);
+               .Include(p => p.Acara)
+               .FirstOrDefaultAsync(p => p.IdPenugasan == ActiveAssignmentForAction.IdPenugasan);
 
             if (penugasan != null)
             {
@@ -2186,18 +2205,58 @@ else
                 }
 
                 await DbContext.SaveChangesAsync();
-                SystemNotification = $"Tanda tangan berhasil disimpan! Status penugasan Anda sekarang 'Dikonfirmasi' (Hijau).";
+                ShowNotificationWithTimer($"Tanda tangan berhasil disimpan! Status penugasan Anda sekarang 'Dikonfirmasi'.");
                 ShowSignatureModal = false;
                 await LoadDataAsync();
             }
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal menyimpan tanda tangan: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal menyimpan tanda tangan: {ex.Message}");
         }
     }
 
     // Technician Photo Upload Handlers
+    private async Task HandleRejectAssignment(Penugasan assignment)
+    {
+        try
+        {
+            var penugasan = await DbContext.Penugasan
+               .Include(p => p.Acara)
+               .Include(p => p.Teknisi)
+               .FirstOrDefaultAsync(p => p.IdPenugasan == assignment.IdPenugasan);
+
+            if (penugasan != null)
+            {
+                if (penugasan.Acara != null)
+                {
+                    penugasan.Acara.StatusAcara = "Belum Ditugaskan";
+                }
+                if (penugasan.Teknisi != null)
+                {
+                    penugasan.Teknisi.StatusKetersediaan = "Tersedia";
+                }
+
+                DbContext.Penugasan.Remove(penugasan);
+
+                DbContext.Notifications.Add(new Notification
+                {
+                    IdUser = 1, // Admin Id
+                    Message = $"Penugasan ditolak oleh Teknisi untuk Event {penugasan.Acara?.NamaAcara}.",
+                    Status = "Unread"
+                });
+
+                await DbContext.SaveChangesAsync();
+                ShowNotificationWithTimer($"Penugasan ditolak. Status acara kembali menjadi 'Belum Ditugaskan'.");
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowNotificationWithTimer($"Gagal menolak penugasan: {ex.Message}");
+        }
+    }
+
     private void HandleOpenUpload(Penugasan assignment)
     {
         ActiveAssignmentForAction = assignment;
@@ -2232,7 +2291,7 @@ else
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal membaca file: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal membaca file: {ex.Message}");
         }
     }
 
@@ -2243,8 +2302,8 @@ else
         try
         {
             var penugasan = await DbContext.Penugasan
-                .Include(p => p.Acara)
-                .FirstOrDefaultAsync(p => p.IdPenugasan == ActiveAssignmentForAction.IdPenugasan);
+               .Include(p => p.Acara)
+               .FirstOrDefaultAsync(p => p.IdPenugasan == ActiveAssignmentForAction.IdPenugasan);
 
             if (penugasan != null)
             {
@@ -2271,15 +2330,14 @@ else
                 });
 
                 await DbContext.SaveChangesAsync();
-                SystemNotification = "Dokumentasi berhasil diupload";
-                _ = Task.Delay(30000).ContinueWith(_ => { if (SystemNotification == "Dokumentasi berhasil diupload") { SystemNotification = string.Empty; InvokeAsync(StateHasChanged); } });
+                ShowNotificationWithTimer($"Foto bukti setup berhasil diunggah! Status berubah menjadi 'Dokumen Diunggah'.");
                 ShowUploadModal = false;
                 await LoadDataAsync();
             }
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal menyimpan foto bukti: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal menyimpan foto bukti: {ex.Message}");
         }
     }
 
@@ -2302,13 +2360,13 @@ else
                 });
 
                 await DbContext.SaveChangesAsync();
-                SystemNotification = "Progress dan Catatan Teknisi berhasil disimpan.";
+                ShowNotificationWithTimer("Progress dan Catatan Teknisi berhasil disimpan.");
                 await LoadDataAsync();
             }
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal mengupdate progress: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal mengupdate progress: {ex.Message}");
         }
     }
 
@@ -2318,11 +2376,11 @@ else
         try
         {
             var fullEvent = await DbContext.SupportAcara
-                .Include(e => e.Kebutuhan)
-                .Include(e => e.PenugasanList)
-                .ThenInclude(p => p.Teknisi)
-                .ThenInclude(t => t!.User)
-                .FirstOrDefaultAsync(e => e.IdAcara == eventItem.IdAcara);
+               .Include(e => e.Kebutuhan)
+               .Include(e => e.PenugasanList)
+               .ThenInclude(p => p.Teknisi)
+               .ThenInclude(t => t!.User)
+               .FirstOrDefaultAsync(e => e.IdAcara == eventItem.IdAcara);
 
             if (fullEvent != null)
             {
@@ -2353,13 +2411,13 @@ else
 
                 await DbContext.SaveChangesAsync();
 
-                SystemNotification = $"Acara '{fullEvent.NamaAcara}' resmi dituntaskan dan dipindahkan ke Riwayat Acara (Abu-abu).";
+                ShowNotificationWithTimer($"Acara '{fullEvent.NamaAcara}' resmi dituntaskan dan dipindahkan ke Riwayat Acara.");
                 await LoadDataAsync();
             }
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal menuntaskan acara: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal menuntaskan acara: {ex.Message}");
         }
     }
 
@@ -2416,7 +2474,7 @@ else
     {
         if (string.IsNullOrWhiteSpace(EditingUser.Username))
         {
-            SystemNotification = "Username tidak boleh kosong!";
+            ShowNotificationWithTimer("Username tidak boleh kosong!");
             return;
         }
 
@@ -2426,14 +2484,14 @@ else
             {
                 if (string.IsNullOrWhiteSpace(UserModalPassword))
                 {
-                    SystemNotification = "Password tidak boleh kosong untuk pengguna baru!";
+                    ShowNotificationWithTimer("Password tidak boleh kosong untuk pengguna baru!");
                     return;
                 }
 
                 var duplicate = await DbContext.Users.AnyAsync(u => u.Username.ToLower() == EditingUser.Username.ToLower());
                 if (duplicate)
                 {
-                    SystemNotification = $"Username '{EditingUser.Username}' sudah terdaftar!";
+                    ShowNotificationWithTimer($"Username '{EditingUser.Username}' sudah terdaftar!");
                     return;
                 }
 
@@ -2456,13 +2514,13 @@ else
                 }
 
                 await DbContext.SaveChangesAsync();
-                SystemNotification = $"Pengguna '{EditingUser.Username}' berhasil ditambahkan!";
+                ShowNotificationWithTimer($"Pengguna '{EditingUser.Username}' berhasil ditambahkan!");
             }
             else
             {
                 var dbUser = await DbContext.Users
-                    .Include(u => u.UserRoles)
-                    .FirstOrDefaultAsync(u => u.IdUser == EditingUser.IdUser);
+                   .Include(u => u.UserRoles)
+                   .FirstOrDefaultAsync(u => u.IdUser == EditingUser.IdUser);
                 if (dbUser != null)
                 {
                     dbUser.Username = EditingUser.Username;
@@ -2515,7 +2573,7 @@ else
                     }
 
                     await DbContext.SaveChangesAsync();
-                    SystemNotification = $"Pengguna '{EditingUser.Username}' berhasil diperbarui!";
+                    ShowNotificationWithTimer($"Pengguna '{EditingUser.Username}' berhasil diperbarui!");
                 }
             }
 
@@ -2524,7 +2582,7 @@ else
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal menyimpan pengguna: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal menyimpan pengguna: {ex.Message}");
         }
     }
 
@@ -2537,22 +2595,34 @@ else
             {
                 dbUser.StatusAktif = !dbUser.StatusAktif;
                 await DbContext.SaveChangesAsync();
-                SystemNotification = $"Status pengguna '{dbUser.Username}' berhasil diubah!";
+                ShowNotificationWithTimer($"Status pengguna '{dbUser.Username}' berhasil diubah!");
                 await LoadDataAsync();
             }
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal mengubah status: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal mengubah status: {ex.Message}");
         }
     }
 
     private void ShowFeatureComingSoon(string featureName)
     {
-        SystemNotification = $"Fitur '{featureName}' masih dalam tahap pengembangan (Coming Soon).";
+        ShowNotificationWithTimer($"Fitur '{featureName}' masih dalam tahap pengembangan (Coming Soon).");
     }
 
     private void ClearNotification() => SystemNotification = string.Empty;
+
+    private async void ShowNotificationWithTimer(string message)
+    {
+        SystemNotification = message;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(5000);
+        if (SystemNotification == message)
+        {
+            SystemNotification = string.Empty;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 
     // Helper functions for statuses
     private Penugasan? GetAssignmentForEvent(int eventId)
@@ -2660,12 +2730,12 @@ else
             );
 
             await DbContext.SaveChangesAsync();
-            SystemNotification = "Database demo berhasil di-reset ke kondisi awal!";
+            ShowNotificationWithTimer("Database demo berhasil di-reset ke kondisi awal!");
             await LoadDataAsync();
         }
         catch (Exception ex)
         {
-            SystemNotification = $"Gagal reset database: {ex.Message}";
+            ShowNotificationWithTimer($"Gagal reset database: {ex.Message}");
         }
     }
 }

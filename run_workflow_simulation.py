@@ -22,10 +22,47 @@ def print_current_state(cursor, event_id):
     print("-" * 50)
 
 def main():
-    conn = sqlite3.connect('eventsupport.db')
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect('eventsupport.db')
+        cursor = conn.cursor()
+    except Exception as e:
+        print("ERROR: Tidak dapat membuka database 'eventsupport.db'.")
+        print("Periksa apakah berkas database tersebut ada.")
+        return
+        
     event_id = 1
     
+    # Periksa apakah event_id ada di database
+    try:
+        cursor.execute("SELECT COUNT(*) FROM SupportAcara WHERE IdAcara = ?", (event_id,))
+        if cursor.fetchone()[0] == 0:
+            print("ERROR: Event dengan ID 1 ('Rapat Pleno Senat Universitas') tidak ditemukan di database.")
+            print("Solusi: Silakan hapus file 'eventsupport.db' lalu jalankan (run) proyek .NET Anda kembali agar database di-seed ulang secara otomatis.")
+            conn.close()
+            return
+    except sqlite3.OperationalError:
+        print("ERROR: Struktur tabel database belum siap atau table 'SupportAcara' tidak ditemukan.")
+        print("Solusi: Silakan jalankan (run) proyek .NET Anda terlebih dahulu agar Entity Framework membuat strukturnya.")
+        conn.close()
+        return
+
+    # Periksa serta buat penugasan secara otomatis jika belum ada (self-healing)
+    cursor.execute("SELECT COUNT(*) FROM Penugasan WHERE IdAcara = ?", (event_id,))
+    if cursor.fetchone()[0] == 0:
+        print("[INFO] Penugasan untuk Event ID 1 belum ada. Menginisialisasi penugasan otomatis...")
+        cursor.execute("UPDATE SupportAcara SET StatusAcara = 'Ditugaskan' WHERE IdAcara = ?", (event_id,))
+        cursor.execute("""
+            INSERT INTO Penugasan (IdAcara, IdTeknisi, IdUserAdmin, StatusPenugasan, Progress)
+            VALUES (?, 1, 1, 'Ditugaskan', 0)
+        """, (event_id,))
+        cursor.execute("UPDATE MappingTeknisi SET StatusKetersediaan = 'Sibuk' WHERE IdTeknisi = 1")
+        now_str = datetime.now().isoformat()
+        cursor.execute("""
+            INSERT INTO Notifications (IdUser, Message, CreatedAt, Status)
+            VALUES (3, 'Penugasan baru untuk Event Rapat Pleno Senat Universitas.', ?, 'Unread')
+        """, (now_str,))
+        conn.commit()
+
     print("=" * 60)
     print("SIMULASI INTEGRASI ALUR KERJA (WORKFLOW) PERTAEVENT")
     print("=" * 60)
@@ -81,11 +118,19 @@ def main():
     cursor.execute("SELECT IdPenugasan FROM Penugasan WHERE IdAcara = ?", (event_id,))
     pen_info = cursor.fetchone()
     
-    # Insert to RiwayatAcara
-    cursor.execute("""
-        INSERT INTO RiwayatAcara (IdAcara, IdPenugasan, NamaAcara, NamaTeknisi, TanggalAcara, DokumentasiKegiatanFile, WaktuSelesai)
-        VALUES (?, ?, ?, 'joko', ?, ?, ?)
-    """, (event_id, pen_info[0], ev_info[0], ev_info[1], img_path, now_str))
+    # Insert to RiwayatAcara (Check if already exists to avoid duplicates)
+    cursor.execute("SELECT COUNT(*) FROM RiwayatAcara WHERE IdAcara = ?", (event_id,))
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("""
+            INSERT INTO RiwayatAcara (IdAcara, IdPenugasan, NamaAcara, NamaTeknisi, TanggalAcara, DokumentasiKegiatanFile, WaktuSelesai)
+            VALUES (?, ?, ?, 'joko', ?, ?, ?)
+        """, (event_id, pen_info[0], ev_info[0], ev_info[1], img_path, now_str))
+    else:
+        cursor.execute("""
+            UPDATE RiwayatAcara 
+            SET IdPenugasan = ?, NamaAcara = ?, NamaTeknisi = 'joko', TanggalAcara = ?, DokumentasiKegiatanFile = ?, WaktuSelesai = ?
+            WHERE IdAcara = ?
+        """, (pen_info[0], ev_info[0], ev_info[1], img_path, now_str, event_id))
     
     # Update event status to 'Selesai'
     cursor.execute("UPDATE SupportAcara SET StatusAcara = 'Selesai' WHERE IdAcara = ?", (event_id,))
