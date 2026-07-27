@@ -94,6 +94,37 @@ namespace EventSupportApp.Data
                 new Penugasan { IdPenugasan = 1, IdAcara = 1, IdTeknisi = 1, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 },
                 new Penugasan { IdPenugasan = 2, IdAcara = 2, IdTeknisi = 2, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 }
             );
+
+            // Avoid multiple cascade paths on SQL Server
+            modelBuilder.Entity<Penugasan>()
+                .HasOne(p => p.Acara)
+                .WithMany()
+                .HasForeignKey(p => p.IdAcara)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Penugasan>()
+                .HasOne(p => p.Admin)
+                .WithMany()
+                .HasForeignKey(p => p.IdUserAdmin)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Penugasan>()
+                .HasOne(p => p.Teknisi)
+                .WithMany()
+                .HasForeignKey(p => p.IdTeknisi)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DiskusiPenugasan>()
+                .HasOne(d => d.Penugasan)
+                .WithMany(p => p.DiskusiList)
+                .HasForeignKey(d => d.IdPenugasan)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DiskusiPenugasan>()
+                .HasOne(d => d.Pengirim)
+                .WithMany()
+                .HasForeignKey(d => d.IdUserPengirim)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

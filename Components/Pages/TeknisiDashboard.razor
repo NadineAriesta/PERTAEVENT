@@ -1,7 +1,6 @@
-﻿@using EventSupportApp.Data
+@using EventSupportApp.Data
 @using Microsoft.EntityFrameworkCore
-@namespace EventSupportApp.Components.Pages
-@inject AppDbContext DbContext
+@inject IDbContextFactory<AppDbContext> DbFactory
 
 <style>
     /* Enterprise Dashboard CSS for Teknisi */
@@ -169,53 +168,6 @@
         </div>
     </div>
 
-    <!-- Jadwal Hari Ini -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <h5 class="fw-bold text-dark mb-4">Jadwal Hari Ini</h5>
-        <div class="table-responsive">
-            <table class="table align-middle m-0" style="width: 100%;">
-                <thead>
-                    <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
-                        <th class="border-0 py-2 ps-3" style="width: 30%;">NAMA EVENT</th>
-                        <th class="border-0 py-2" style="width: 25%;">LOKASI</th>
-                        <th class="border-0 py-2" style="width: 25%;">WAKTU</th>
-                        <th class="border-0 py-2 pe-4" style="width: 20%;">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var assign in HariIni)
-                    {
-                        <tr>
-                            <td class="fw-bold py-2 ps-3 text-dark">@assign.Acara?.NamaAcara</td>
-                            <td class="text-muted py-2">@assign.Acara?.Lokasi</td>
-                            <td class="text-muted py-2">@assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")</td>
-                            <td class="py-2 pe-4">
-                                @if (string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) && assign.WaktuKonfirmasi == null)
-                                {
-                                    <span class="status-dot st-yellow">Menunggu Konfirmasi</span>
-                                }
-                                else if (assign.WaktuKonfirmasi != null && string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
-                                {
-                                    <span class="status-dot st-blue">Berlangsung</span>
-                                }
-                                else
-                                {
-                                    <span class="status-dot st-green">Selesai</span>
-                                }
-                            </td>
-                        </tr>
-                    }
-                    @if (HariIni.Count == 0)
-                    {
-                        <tr>
-                            <td colspan="4" class="text-center py-2 text-muted">Tidak ada jadwal hari ini.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-
     <!-- Filter Bar -->
     <div class="tek-filter-bar">
         <input type="text" placeholder="Cari nama event atau lokasi..." style="min-width:220px; flex:1;"
@@ -259,7 +211,7 @@
                     <div class="fw-bold text-dark mb-3" style="font-size: 1.25rem; color: #0f172a;">@assign.Acara?.NamaAcara</div>
                     <div class="d-flex flex-wrap align-items-center text-muted mb-2" style="font-size: 0.9rem; gap: 1.5rem;">
                         <div class="d-flex align-items-center gap-2">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#005CA9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -268,7 +220,7 @@
                             <span>@assign.Acara?.Tanggal.ToString("dd MMM yyyy")</span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E31E24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
@@ -276,7 +228,7 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center text-muted" style="font-size: 0.9rem; gap: 8px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#09A537" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                             <circle cx="12" cy="10" r="3"></circle>
                         </svg>
@@ -380,15 +332,15 @@ else if (ActiveMenu == "penugasan")
                     <h5 class="fw-bold mb-2" style="color: #072C4C; font-size: 1.25rem;">@assign.Acara?.NamaAcara</h5>
                     <div class="text-muted d-flex align-items-center gap-3" style="font-size: 0.85rem;">
                         <span class="d-flex align-items-center gap-1">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#005CA9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             @assign.Acara?.Tanggal.ToString("dd MMM yyyy")
                         </span>
                         <span class="d-flex align-items-center gap-1">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E31E24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                             @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")
                         </span>
                         <span class="d-flex align-items-center gap-1">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#09A537" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                             @assign.Acara?.Lokasi
                         </span>
                     </div>
@@ -495,7 +447,8 @@ else if (ActiveMenu == "penugasan")
     {
         if (CurrentTeknisiId > 0)
         {
-            var all = await DbContext.Penugasan
+            using var context = DbFactory.CreateDbContext();
+            var all = await context.Penugasan
                 .Include(p => p.Acara).ThenInclude(a => a!.Kebutuhan)
                 .Include(p => p.Acara).ThenInclude(a => a!.Helpdesk)
                 .Include(p => p.Teknisi).ThenInclude(t => t!.User)
@@ -618,8 +571,9 @@ else if (ActiveMenu == "penugasan")
     {
         p.StatusPenugasan = "Siap Bertugas";
         p.Progress = 10;
-        DbContext.Update(p);
-        await DbContext.SaveChangesAsync();
+        using var context = DbFactory.CreateDbContext();
+        context.Update(p);
+        await context.SaveChangesAsync();
         await OnParametersSetAsync();
     }
 
@@ -634,8 +588,9 @@ else if (ActiveMenu == "penugasan")
 
         p.Progress = CalculateProgress(p);
         p.StatusPenugasan = GetStatusPenugasan(p);
-        DbContext.Update(p);
-        await DbContext.SaveChangesAsync();
+        using var context = DbFactory.CreateDbContext();
+        context.Update(p);
+        await context.SaveChangesAsync();
     }
 
     private void HideNotification(int idPenugasan)
@@ -646,8 +601,9 @@ else if (ActiveMenu == "penugasan")
 
     private async Task SimpanProgress(Penugasan p)
     {
-        DbContext.Update(p);
-        await DbContext.SaveChangesAsync();
+        using var context = DbFactory.CreateDbContext();
+        context.Update(p);
+        await context.SaveChangesAsync();
         SavedProgressIds.Add(p.IdPenugasan);
         _ = Task.Delay(30000).ContinueWith(_ => { SavedProgressIds.Remove(p.IdPenugasan); InvokeAsync(StateHasChanged); });
     }

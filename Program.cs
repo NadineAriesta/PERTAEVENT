@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add DbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=eventsupport.db", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+// Add DbContext Factory for Blazor Server concurrency safety
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
+    options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=PERTAEVENT;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -14,7 +14,7 @@ builder.Services.AddRazorComponents()
 
 var app = builder.Build();
 
-// Auto-create SQLite database
+// Auto-migrate SQL Server database
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
