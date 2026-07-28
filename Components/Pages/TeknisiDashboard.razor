@@ -348,27 +348,55 @@ else if (ActiveMenu == "penugasan")
             </div>
 
             <div class="mt-4">
-                <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                    Kebutuhan Acara:
-                </h6>
                 <div class="row g-4">
                     <div class="col-md-7">
-                        <ul class="keb-checklist" style="display: flex; flex-direction: column; gap: 6px; border: none; padding: 0;">
+                        <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                            Kebutuhan Acara:
+                        </h6>
+                        <ul class="keb-checklist mb-4" style="display: flex; flex-direction: column; gap: 6px; border: none; padding: 0;">
                             @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
                             {
                                 var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
                                 var isChecked = CheckedKebutuhan.Contains(kebKey);
-                                <li class="@(isChecked ? "checked" : "")" style="background-color: #f8fafc; padding: 0.3rem 0.6rem; border-radius: 8px; border: 1px solid #f1f5f9; margin-bottom: 0; border-bottom: none;">
-                                    @if (status != "Menunggu Konfirmasi")
+                                bool isEventDayOrPast = assign.Acara != null && assign.Acara.Tanggal.Date <= DateTime.Today;
+                                bool disableUncheck = isEventDayOrPast && isChecked;
+
+                                <li class="@(isChecked ? "checked" : "")" style="background-color: #f8fafc; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 0;">
+                                    @if (status != "Menunggu Konfirmasi" && status != "Selesai")
                                     {
-                                        <input type="checkbox" checked="@isChecked" disabled="@(status == "Selesai" || status == "Dokumen Diunggah")"
-                                            @onchange="() => ToggleKebutuhan(kebKey, assign)" style="accent-color: #cbd5e1; width: 18px; height: 18px; border-radius: 4px;" />
+                                        <input type="checkbox" checked="@isChecked" disabled="@disableUncheck"
+                                            @onchange="() => ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 18px; height: 18px; border-radius: 4px; cursor: @(disableUncheck ? "not-allowed" : "pointer");" />
                                     }
-                                    <span style="color: #334155; font-size: 0.95rem;">@keb.JenisKebutuhan</span>
-                                    <span style="background-color: #e2e8f0; color: #64748b; font-size: 0.85rem; font-weight: 400; padding: 4px 8px; border-radius: 6px; margin-left: auto;">@keb.Jumlah Unit</span>
+                                    <span style="color: #000000; font-size: 0.9rem; font-weight: 500;">@keb.JenisKebutuhan</span>
+                                    <span style="background-color: #e2e8f0; color: #000000; font-size: 0.8rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-left: auto;">@keb.Jumlah Unit</span>
                                 </li>
                             }
                         </ul>
+
+                        @if (assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                        {
+                            <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                                Pengembalian Barang Yang Dipinjam:
+                            </h6>
+                            <ul class="keb-checklist" style="display: flex; flex-direction: column; gap: 6px; border: none; padding: 0;">
+                                @foreach (var keb in assign.Acara.Kebutuhan.Where(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                                {
+                                    <li style="background-color: #f8fafc; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 0;">
+                                        @if (status != "Menunggu Konfirmasi" && status != "Selesai")
+                                        {
+                                            <input type="checkbox" checked="@keb.IsKembali"
+                                                @onchange="() => TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 18px; height: 18px; border-radius: 4px; cursor: pointer;" />
+                                        }
+                                        <span style="color: #000000; font-size: 0.9rem; font-weight: 600; text-decoration: @(keb.IsKembali ? "line-through" : "none");">
+                                            @keb.JenisKebutuhan (@keb.Jumlah Unit)
+                                        </span>
+                                        <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="margin-left: auto; font-size: 0.75rem;">
+                                            @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        }
                     </div>
                     
                     <div class="col-md-5">
@@ -378,45 +406,34 @@ else if (ActiveMenu == "penugasan")
                                 <button class="tek-btn tek-btn-primary w-100" @onclick="() => TerimaPenugasan(assign)">Terima Penugasan</button>
                             </div>
                         }
-                        else if (status == "Siap Bertugas" || status == "Persiapan" || status == "Berlangsung" || status == "Diterima" || status == "Sedang Dikerjakan" || status == "Selesai" || status == "Dokumen Diunggah")
+                        else
                         {
-                            @if (string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
-                            {
-                                <div class="p-3" style="background: #f8fafc; border-radius: 10px; border: 1px dashed #cbd5e1;">
-                                    <label class="form-label fw-bold small text-dark mb-2">Update Progress: @progress%</label>
-                                    <div class="progress mb-3" style="height: 8px; border-radius: 4px;">
-                                        <div class="progress-bar" role="progressbar" style="width: @(progress)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 4px;"></div>
-                                    </div>
-                                    <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
-                                    <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
-                                    @if (SavedProgressIds.Contains(assign.IdPenugasan))
+                            <div class="p-3" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label fw-bold small text-dark m-0">Progress Acara: @progress%</label>
+                                    @if (progress == 100)
                                     {
-                                        <div class="save-notif mb-2" style="position: fixed; bottom: 20px; right: 20px; background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1050; border-left: 4px solid #16a34a; font-size: 0.9rem; font-weight: bold; color: #16a34a; animation: fadeOut 0.5s ease-out forwards; animation-delay: 30s; cursor: pointer;" @onclick="() => HideNotification(assign.IdPenugasan)">
-                                            Dokumentasi berhasil diperbarui
-                                        </div>
+                                        <span class="badge bg-success" style="font-size: 0.75rem;">100% Selesai</span>
                                     }
-                                    <div class="d-flex gap-2">
-                                        <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" @onclick="() => SimpanProgress(assign)">Simpan Catatan</button>
-                                        <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">Upload Dokumen</button>
-                                    </div>
                                 </div>
-                            }
-                            else
-                            {
-                                <div class="d-flex flex-column h-100 pt-3">
-                                    <div class="d-flex align-items-center gap-3 mb-4">
-                                        <img src="@assign.DokumentasiKegiatanFile" style="height: 64px; width: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);" />
-                                        <div>
-                                            <div class="fw-bold" style="color: #0f172a; font-size: 0.9rem;">Dokumentasi Diunggah</div>
-                                            <div style="color: #16a34a; font-size: 0.8rem; font-weight: 600;">Status: Selesai</div>
-                                        </div>
+                                <div class="progress mb-3" style="height: 10px; border-radius: 6px;">
+                                    <div class="progress-bar" role="progressbar" style="width: @(progress)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 6px;"></div>
+                                </div>
+                                <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
+                                <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
+                                @if (SavedProgressIds.Contains(assign.IdPenugasan))
+                                {
+                                    <div class="save-notif mb-2" style="position: fixed; bottom: 20px; right: 20px; background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1050; border-left: 4px solid #16a34a; font-size: 0.9rem; font-weight: bold; color: #16a34a; cursor: pointer;" @onclick="() => HideNotification(assign.IdPenugasan)">
+                                        Data penugasan berhasil disimpan
                                     </div>
-                                    <button class="tek-btn w-100 d-flex justify-content-center align-items-center gap-2" style="background: white; border: 1px solid #0f172a; color: #0f172a; border-radius: 8px; padding: 0.6rem; font-weight: 600;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.25 4.64"/></svg>
-                                        Ganti Dokumentasi
+                                }
+                                <div class="d-flex gap-2">
+                                    <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" @onclick="() => SimpanProgress(assign)">Simpan Catatan</button>
+                                    <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">
+                                        @(string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) ? "Upload Foto (Opsional)" : "Lihat / Edit Foto")
                                     </button>
                                 </div>
-                            }
+                            </div>
                         }
                     </div>
                 </div>
@@ -458,29 +475,17 @@ else if (ActiveMenu == "penugasan")
                 .Where(a => a.IdTeknisi == CurrentTeknisiId)
                 .ToList();
 
-            CheckedKebutuhan.Clear();
             foreach (var p in MyAssignments)
             {
-                if (p.StatusPenugasan != "Menunggu Konfirmasi" && p.StatusPenugasan != "Ditugaskan" && string.IsNullOrEmpty(p.StatusPenugasan) == false)
+                if (p.StatusPenugasan != "Menunggu Konfirmasi" && p.StatusPenugasan != "Ditugaskan" && !string.IsNullOrEmpty(p.StatusPenugasan))
                 {
-                    int pVal = p.Progress;
-                    if (pVal == 100) pVal = 50;
-                    int baseProg = 10;
-                    if (p.Acara?.Tanggal.Date <= DateTime.Today && pVal >= 50) baseProg += 40;
-                    
-                    int c = 0;
                     var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
-                    if (kebutuhan.Count > 0 && pVal > baseProg)
+                    foreach (var k in kebutuhan)
                     {
-                        c = (int)Math.Round((pVal - baseProg) * (double)kebutuhan.Count / 40.0);
-                        if (c > kebutuhan.Count) c = kebutuhan.Count;
-                    }
-                    if (p.StatusPenugasan == "Selesai" || !string.IsNullOrEmpty(p.DokumentasiKegiatanFile))
-                        c = kebutuhan.Count;
-
-                    for(int i = 0; i < c; i++)
-                    {
-                        CheckedKebutuhan.Add($"{p.IdPenugasan}_{kebutuhan.ElementAt(i).IdKebutuhan}");
+                        if (k.IsKembali)
+                        {
+                            CheckedKebutuhan.Add($"{p.IdPenugasan}_{k.IdKebutuhan}");
+                        }
                     }
                 }
             }
@@ -527,8 +532,11 @@ else if (ActiveMenu == "penugasan")
     private string GetStatusPenugasan(Penugasan p)
     {
         if (p.StatusPenugasan == "Ditolak") return "Ditolak";
-        if (p.StatusPenugasan == "Selesai" || !string.IsNullOrEmpty(p.DokumentasiKegiatanFile)) return "Selesai";
+        if (p.StatusPenugasan == "Selesai") return "Selesai";
         if (p.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(p.StatusPenugasan) || p.StatusPenugasan == "Menunggu Konfirmasi") return "Menunggu Konfirmasi";
+
+        int prog = CalculateProgress(p);
+        if (prog == 100) return "Selesai";
 
         if (p.Acara?.Tanggal.Date <= DateTime.Today) return "Berlangsung";
 
@@ -541,28 +549,36 @@ else if (ActiveMenu == "penugasan")
 
     private int CalculateProgress(Penugasan p)
     {
-        if (p.StatusPenugasan == "Selesai" || !string.IsNullOrEmpty(p.DokumentasiKegiatanFile)) return 100;
+        if (p.StatusPenugasan == "Ditolak") return 0;
         if (p.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(p.StatusPenugasan) || p.StatusPenugasan == "Menunggu Konfirmasi") return 0;
         
-        int progress = 10; // Siap Bertugas base
+        var kebutuhan = (p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>()).ToList();
+        var checkedItems = kebutuhan.Where(k => CheckedKebutuhan.Contains($"{p.IdPenugasan}_{k.IdKebutuhan}")).ToList();
 
-        var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
-        int totalKeb = kebutuhan.Count;
-        if (totalKeb > 0)
+        // 1. If no items were requested/checked, documentation & active date give up to 90%
+        if (!checkedItems.Any())
         {
-            int checkedCount = 0;
-            foreach (var keb in kebutuhan)
-            {
-                if (CheckedKebutuhan.Contains($"{p.IdPenugasan}_{keb.IdKebutuhan}"))
-                    checkedCount++;
-            }
-            progress += (int)((double)checkedCount / totalKeb * 40);
+            if (p.StatusPenugasan == "Selesai") return 100;
+            return 50;
         }
 
-        if (p.Acara?.Tanggal.Date <= DateTime.Today)
+        // 2. Check returns status of borrowed items
+        int totalBorrowed = checkedItems.Count;
+        int totalReturned = checkedItems.Count(k => k.IsKembali);
+
+        if (totalReturned == totalBorrowed && totalBorrowed > 0)
         {
-            progress += 40; 
+            return 100;
         }
+
+        // Base progress when accepted: 20%
+        int progress = 20;
+
+        // Adding progress based on items taken (up to 40%)
+        progress += (int)((double)checkedItems.Count / (kebutuhan.Count > 0 ? kebutuhan.Count : 1) * 30);
+
+        // Adding progress based on returned items (up to 45%)
+        progress += (int)((double)totalReturned / totalBorrowed * 45);
 
         return progress > 99 ? 99 : progress;
     }
@@ -570,7 +586,7 @@ else if (ActiveMenu == "penugasan")
     private async Task TerimaPenugasan(Penugasan p)
     {
         p.StatusPenugasan = "Siap Bertugas";
-        p.Progress = 10;
+        p.Progress = 20;
         using var context = DbFactory.CreateDbContext();
         context.Update(p);
         await context.SaveChangesAsync();
@@ -581,16 +597,54 @@ else if (ActiveMenu == "penugasan")
     private HashSet<int> SavedProgressIds = new();
     private HashSet<string> CheckedKebutuhan = new();
 
-    private async Task ToggleKebutuhan(string key, Penugasan p)
+    private async Task ToggleKebutuhan(string key, Penugasan p, KebutuhanAcara keb)
     {
-        if (CheckedKebutuhan.Contains(key)) CheckedKebutuhan.Remove(key);
-        else CheckedKebutuhan.Add(key);
+        if (CheckedKebutuhan.Contains(key)) 
+        {
+            CheckedKebutuhan.Remove(key);
+            keb.IsKembali = false;
+        }
+        else 
+        {
+            CheckedKebutuhan.Add(key);
+        }
 
-        p.Progress = CalculateProgress(p);
-        p.StatusPenugasan = GetStatusPenugasan(p);
+        await UpdatePenugasanAndKebutuhan(p, keb);
+    }
+
+    private async Task TogglePengembalianBarang(KebutuhanAcara keb, Penugasan p)
+    {
+        keb.IsKembali = !keb.IsKembali;
+        await UpdatePenugasanAndKebutuhan(p, keb);
+    }
+
+    private async Task UpdatePenugasanAndKebutuhan(Penugasan p, KebutuhanAcara keb)
+    {
+        int newProgress = CalculateProgress(p);
+        p.Progress = newProgress;
+
+        if (newProgress == 100)
+        {
+            p.StatusPenugasan = "Selesai";
+            if (p.Acara != null)
+            {
+                p.Acara.StatusAcara = "Selesai";
+            }
+        }
+        else
+        {
+            p.StatusPenugasan = GetStatusPenugasan(p);
+        }
+
         using var context = DbFactory.CreateDbContext();
+        context.Update(keb);
         context.Update(p);
+        if (p.Acara != null)
+        {
+            context.Update(p.Acara);
+        }
         await context.SaveChangesAsync();
+        StateHasChanged();
     }
 
     private void HideNotification(int idPenugasan)

@@ -10,7 +10,6 @@ namespace EventSupportApp.Data
 
         public DbSet<User> Users => Set<User>();
         public DbSet<Role> Roles => Set<Role>();
-        public DbSet<UserRole> UserRoles => Set<UserRole>();
         public DbSet<MappingTeknisi> MappingTeknisi => Set<MappingTeknisi>();
         public DbSet<SupportAcara> SupportAcara => Set<SupportAcara>();
         public DbSet<KebutuhanAcara> KebutuhanAcara => Set<KebutuhanAcara>();
@@ -30,22 +29,13 @@ namespace EventSupportApp.Data
                 new Role { IdRole = 3, NamaRole = "Teknisi", Deskripsi = "Staff teknis lapangan yang bertugas mensupport acara" }
             );
 
-            // Seed Users
+            // Seed Users (IdRole: 1=Admin, 2=Helpdesk, 3=Teknisi)
             modelBuilder.Entity<User>().HasData(
-                new User { IdUser = 1, Username = "admin", Password = "123", StatusAktif = true },
-                new User { IdUser = 2, Username = "helpdesk", Password = "123", StatusAktif = true },
-                new User { IdUser = 3, Username = "pak_joko", Password = "123", StatusAktif = true },
-                new User { IdUser = 4, Username = "pak_budi", Password = "123", StatusAktif = true },
-                new User { IdUser = 5, Username = "pak_bambang", Password = "123", StatusAktif = true }
-            );
-
-            // Seed UserRoles
-            modelBuilder.Entity<UserRole>().HasData(
-                new UserRole { IdUserRole = 1, IdUser = 1, IdRole = 1 }, // admin -> Admin
-                new UserRole { IdUserRole = 2, IdUser = 2, IdRole = 2 }, // helpdesk -> Helpdesk
-                new UserRole { IdUserRole = 3, IdUser = 3, IdRole = 3 }, // pak_joko -> Teknisi
-                new UserRole { IdUserRole = 4, IdUser = 4, IdRole = 3 }, // pak_budi -> Teknisi
-                new UserRole { IdUserRole = 5, IdUser = 5, IdRole = 3 }  // pak_bambang -> Teknisi
+                new User { IdUser = 1, Username = "admin",      Password = "123", StatusAktif = true, IdRole = 1 },
+                new User { IdUser = 2, Username = "helpdesk",   Password = "123", StatusAktif = true, IdRole = 2 },
+                new User { IdUser = 3, Username = "pak_joko",   Password = "123", StatusAktif = true, IdRole = 3 },
+                new User { IdUser = 4, Username = "pak_budi",   Password = "123", StatusAktif = true, IdRole = 3 },
+                new User { IdUser = 5, Username = "pak_bambang",Password = "123", StatusAktif = true, IdRole = 3 }
             );
 
             // Seed MappingTeknisi
@@ -94,6 +84,13 @@ namespace EventSupportApp.Data
                 new Penugasan { IdPenugasan = 1, IdAcara = 1, IdTeknisi = 1, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 },
                 new Penugasan { IdPenugasan = 2, IdAcara = 2, IdTeknisi = 2, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 }
             );
+
+            // User -> Role relation
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role)
+                .WithMany()
+                .HasForeignKey(u => u.IdRole)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Avoid multiple cascade paths on SQL Server
             modelBuilder.Entity<Penugasan>()

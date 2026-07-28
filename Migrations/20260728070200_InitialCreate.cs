@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EventSupportApp.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDiskusiPenugasan : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,15 +17,15 @@ namespace EventSupportApp.Migrations
                 name: "RiwayatAcara",
                 columns: table => new
                 {
-                    IdRiwayat = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdAcara = table.Column<int>(type: "INTEGER", nullable: false),
-                    IdPenugasan = table.Column<int>(type: "INTEGER", nullable: false),
-                    NamaAcara = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    NamaTeknisi = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    TanggalAcara = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    DokumentasiKegiatanFile = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    WaktuSelesai = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    IdRiwayat = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAcara = table.Column<int>(type: "int", nullable: false),
+                    IdPenugasan = table.Column<int>(type: "int", nullable: false),
+                    NamaAcara = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    NamaTeknisi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TanggalAcara = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DokumentasiKegiatanFile = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    WaktuSelesai = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,10 +36,10 @@ namespace EventSupportApp.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    IdRole = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    NamaRole = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Deskripsi = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false)
+                    IdRole = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NamaRole = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Deskripsi = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,26 +50,33 @@ namespace EventSupportApp.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    IdUser = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Username = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Password = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    StatusAktif = table.Column<bool>(type: "INTEGER", nullable: false)
+                    IdUser = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    StatusAktif = table.Column<bool>(type: "bit", nullable: false),
+                    IdRole = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.IdUser);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_IdRole",
+                        column: x => x.IdRole,
+                        principalTable: "Roles",
+                        principalColumn: "IdRole",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "MappingTeknisi",
                 columns: table => new
                 {
-                    IdTeknisi = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdUser = table.Column<int>(type: "INTEGER", nullable: false),
-                    Spesialisasi = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
-                    StatusKetersediaan = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                    IdTeknisi = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUser = table.Column<int>(type: "int", nullable: false),
+                    Spesialisasi = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    StatusKetersediaan = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,12 +93,12 @@ namespace EventSupportApp.Migrations
                 name: "Notifications",
                 columns: table => new
                 {
-                    IdNotification = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdUser = table.Column<int>(type: "INTEGER", nullable: false),
-                    Message = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false)
+                    IdNotification = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUser = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -108,15 +115,15 @@ namespace EventSupportApp.Migrations
                 name: "SupportAcara",
                 columns: table => new
                 {
-                    IdAcara = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdUserHelpdesk = table.Column<int>(type: "INTEGER", nullable: false),
-                    NamaAcara = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Tanggal = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    JamMulai = table.Column<TimeSpan>(type: "TEXT", nullable: false),
-                    JamSelesai = table.Column<TimeSpan>(type: "TEXT", nullable: false),
-                    Lokasi = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    StatusAcara = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                    IdAcara = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUserHelpdesk = table.Column<int>(type: "int", nullable: false),
+                    NamaAcara = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Tanggal = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    JamMulai = table.Column<TimeSpan>(type: "time", nullable: false),
+                    JamSelesai = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Lokasi = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    StatusAcara = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,41 +137,16 @@ namespace EventSupportApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserRoles",
-                columns: table => new
-                {
-                    IdUserRole = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdUser = table.Column<int>(type: "INTEGER", nullable: false),
-                    IdRole = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRoles", x => x.IdUserRole);
-                    table.ForeignKey(
-                        name: "FK_UserRoles_Roles_IdRole",
-                        column: x => x.IdRole,
-                        principalTable: "Roles",
-                        principalColumn: "IdRole",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserRoles_Users_IdUser",
-                        column: x => x.IdUser,
-                        principalTable: "Users",
-                        principalColumn: "IdUser",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "KebutuhanAcara",
                 columns: table => new
                 {
-                    IdKebutuhan = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdAcara = table.Column<int>(type: "INTEGER", nullable: false),
-                    JenisKebutuhan = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Jumlah = table.Column<int>(type: "INTEGER", nullable: false),
-                    Keterangan = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false)
+                    IdKebutuhan = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAcara = table.Column<int>(type: "int", nullable: false),
+                    JenisKebutuhan = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Jumlah = table.Column<int>(type: "int", nullable: false),
+                    Keterangan = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    IsKembali = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,18 +163,18 @@ namespace EventSupportApp.Migrations
                 name: "Penugasan",
                 columns: table => new
                 {
-                    IdPenugasan = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdAcara = table.Column<int>(type: "INTEGER", nullable: false),
-                    IdTeknisi = table.Column<int>(type: "INTEGER", nullable: false),
-                    IdUserAdmin = table.Column<int>(type: "INTEGER", nullable: false),
-                    StatusPenugasan = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    WaktuKonfirmasi = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    DokumentasiKegiatanFile = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    WaktuUpload = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Progress = table.Column<int>(type: "INTEGER", nullable: false),
-                    CatatanTeknisi = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    AlasanPenolakan = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true)
+                    IdPenugasan = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAcara = table.Column<int>(type: "int", nullable: false),
+                    IdTeknisi = table.Column<int>(type: "int", nullable: false),
+                    IdUserAdmin = table.Column<int>(type: "int", nullable: false),
+                    StatusPenugasan = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    WaktuKonfirmasi = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DokumentasiKegiatanFile = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WaktuUpload = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Progress = table.Column<int>(type: "int", nullable: false),
+                    CatatanTeknisi = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    SupportAcaraIdAcara = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -202,31 +184,36 @@ namespace EventSupportApp.Migrations
                         column: x => x.IdTeknisi,
                         principalTable: "MappingTeknisi",
                         principalColumn: "IdTeknisi",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Penugasan_SupportAcara_IdAcara",
                         column: x => x.IdAcara,
                         principalTable: "SupportAcara",
                         principalColumn: "IdAcara",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Penugasan_SupportAcara_SupportAcaraIdAcara",
+                        column: x => x.SupportAcaraIdAcara,
+                        principalTable: "SupportAcara",
+                        principalColumn: "IdAcara");
                     table.ForeignKey(
                         name: "FK_Penugasan_Users_IdUserAdmin",
                         column: x => x.IdUserAdmin,
                         principalTable: "Users",
                         principalColumn: "IdUser",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "DiskusiPenugasan",
                 columns: table => new
                 {
-                    IdDiskusi = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IdPenugasan = table.Column<int>(type: "INTEGER", nullable: false),
-                    IdUserPengirim = table.Column<int>(type: "INTEGER", nullable: false),
-                    Pesan = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
-                    WaktuKirim = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    IdDiskusi = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdPenugasan = table.Column<int>(type: "int", nullable: false),
+                    IdUserPengirim = table.Column<int>(type: "int", nullable: false),
+                    Pesan = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    WaktuKirim = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -236,13 +223,13 @@ namespace EventSupportApp.Migrations
                         column: x => x.IdPenugasan,
                         principalTable: "Penugasan",
                         principalColumn: "IdPenugasan",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_DiskusiPenugasan_Users_IdUserPengirim",
                         column: x => x.IdUserPengirim,
                         principalTable: "Users",
                         principalColumn: "IdUser",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -257,14 +244,14 @@ namespace EventSupportApp.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "IdUser", "Password", "StatusAktif", "Username" },
+                columns: new[] { "IdUser", "IdRole", "Password", "StatusAktif", "Username" },
                 values: new object[,]
                 {
-                    { 1, "123", true, "admin" },
-                    { 2, "123", true, "helpdesk" },
-                    { 3, "123", true, "pak_joko" },
-                    { 4, "123", true, "pak_budi" },
-                    { 5, "123", true, "pak_bambang" }
+                    { 1, 1, "123", true, "admin" },
+                    { 2, 2, "123", true, "helpdesk" },
+                    { 3, 3, "123", true, "pak_joko" },
+                    { 4, 3, "123", true, "pak_budi" },
+                    { 5, 3, "123", true, "pak_bambang" }
                 });
 
             migrationBuilder.InsertData(
@@ -282,31 +269,28 @@ namespace EventSupportApp.Migrations
                 columns: new[] { "IdAcara", "IdUserHelpdesk", "JamMulai", "JamSelesai", "Lokasi", "NamaAcara", "StatusAcara", "Tanggal" },
                 values: new object[,]
                 {
-                    { 1, 2, new TimeSpan(0, 9, 0, 0, 0), new TimeSpan(0, 12, 0, 0, 0), "Aula Utama Gedung Rektorat Lt. 3", "Rapat Pleno Senat Universitas", "Belum Ditugaskan", new DateTime(2026, 7, 19, 0, 0, 0, 0, DateTimeKind.Local) },
-                    { 2, 2, new TimeSpan(0, 13, 0, 0, 0), new TimeSpan(0, 16, 30, 0, 0), "Auditorium BJ Habibie", "Seminar Nasional IT & AI", "Belum Ditugaskan", new DateTime(2026, 7, 20, 0, 0, 0, 0, DateTimeKind.Local) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "UserRoles",
-                columns: new[] { "IdUserRole", "IdRole", "IdUser" },
-                values: new object[,]
-                {
-                    { 1, 1, 1 },
-                    { 2, 2, 2 },
-                    { 3, 3, 3 },
-                    { 4, 3, 4 },
-                    { 5, 3, 5 }
+                    { 1, 2, new TimeSpan(0, 9, 0, 0, 0), new TimeSpan(0, 12, 0, 0, 0), "Aula Utama Gedung Rektorat Lt. 3", "Rapat Pleno Senat Universitas", "Ditugaskan", new DateTime(2026, 7, 28, 0, 0, 0, 0, DateTimeKind.Local) },
+                    { 2, 2, new TimeSpan(0, 13, 0, 0, 0), new TimeSpan(0, 16, 30, 0, 0), "Auditorium BJ Habibie", "Seminar Nasional IT & AI", "Ditugaskan", new DateTime(2026, 7, 29, 0, 0, 0, 0, DateTimeKind.Local) }
                 });
 
             migrationBuilder.InsertData(
                 table: "KebutuhanAcara",
-                columns: new[] { "IdKebutuhan", "IdAcara", "JenisKebutuhan", "Jumlah", "Keterangan" },
+                columns: new[] { "IdKebutuhan", "IdAcara", "IsKembali", "JenisKebutuhan", "Jumlah", "Keterangan" },
                 values: new object[,]
                 {
-                    { 1, 1, "Sound System", 1, "Microphone wireless 4 buah & Audio Mixer" },
-                    { 2, 1, "Proyektor", 1, "Proyektor utama & Layar gantung" },
-                    { 3, 2, "Layar LED", 1, "Videotron latar panggung utama" },
-                    { 4, 2, "Sound System", 1, "Sound system konser outdoor / semi-indoor" }
+                    { 1, 1, false, "Sound System", 1, "Microphone wireless 4 buah & Audio Mixer" },
+                    { 2, 1, false, "Proyektor", 1, "Proyektor utama & Layar gantung" },
+                    { 3, 2, false, "Layar LED", 1, "Videotron latar panggung utama" },
+                    { 4, 2, false, "Sound System", 1, "Sound system konser outdoor / semi-indoor" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Penugasan",
+                columns: new[] { "IdPenugasan", "CatatanTeknisi", "DokumentasiKegiatanFile", "IdAcara", "IdTeknisi", "IdUserAdmin", "Progress", "StatusPenugasan", "SupportAcaraIdAcara", "WaktuKonfirmasi", "WaktuUpload" },
+                values: new object[,]
+                {
+                    { 1, null, null, 1, 1, 1, 0, "Ditugaskan", null, null, null },
+                    { 2, null, null, 2, 2, 1, 0, "Ditugaskan", null, null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -350,19 +334,19 @@ namespace EventSupportApp.Migrations
                 column: "IdUserAdmin");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Penugasan_SupportAcaraIdAcara",
+                table: "Penugasan",
+                column: "SupportAcaraIdAcara");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SupportAcara_IdUserHelpdesk",
                 table: "SupportAcara",
                 column: "IdUserHelpdesk");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_IdRole",
-                table: "UserRoles",
+                name: "IX_Users_IdRole",
+                table: "Users",
                 column: "IdRole");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_IdUser",
-                table: "UserRoles",
-                column: "IdUser");
         }
 
         /// <inheritdoc />
@@ -381,13 +365,7 @@ namespace EventSupportApp.Migrations
                 name: "RiwayatAcara");
 
             migrationBuilder.DropTable(
-                name: "UserRoles");
-
-            migrationBuilder.DropTable(
                 name: "Penugasan");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "MappingTeknisi");
@@ -397,6 +375,9 @@ namespace EventSupportApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

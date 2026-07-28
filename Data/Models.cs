@@ -20,7 +20,9 @@ namespace EventSupportApp.Data
         
         public bool StatusAktif { get; set; } = true;
 
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        public int IdRole { get; set; } = 0;
+        [ForeignKey("IdRole")]
+        public virtual Role? Role { get; set; }
     }
 
     public class Role
@@ -34,20 +36,6 @@ namespace EventSupportApp.Data
         
         [MaxLength(250)]
         public string Deskripsi { get; set; } = string.Empty;
-    }
-
-    public class UserRole
-    {
-        [Key]
-        public int IdUserRole { get; set; }
-        
-        public int IdUser { get; set; }
-        [ForeignKey("IdUser")]
-        public virtual User? User { get; set; }
-        
-        public int IdRole { get; set; }
-        [ForeignKey("IdRole")]
-        public virtual Role? Role { get; set; }
     }
 
     public class MappingTeknisi
@@ -119,6 +107,8 @@ namespace EventSupportApp.Data
         
         [MaxLength(250)]
         public string Keterangan { get; set; } = string.Empty;
+
+        public bool IsKembali { get; set; } = false;
     }
 
     public class Penugasan
@@ -144,7 +134,6 @@ namespace EventSupportApp.Data
         
         public DateTime? WaktuKonfirmasi { get; set; }
         
-        [MaxLength(500)]
         public string? DokumentasiKegiatanFile { get; set; } // Path/Base64 untuk demo
         
         public DateTime? WaktuUpload { get; set; }
