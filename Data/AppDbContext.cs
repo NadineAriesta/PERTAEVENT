@@ -18,6 +18,7 @@ namespace EventSupportApp.Data
         public DbSet<RiwayatAcara> RiwayatAcara => Set<RiwayatAcara>();
         public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<DiskusiPenugasan> DiskusiPenugasan => Set<DiskusiPenugasan>();
+        public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

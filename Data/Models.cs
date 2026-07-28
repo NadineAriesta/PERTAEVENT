@@ -262,4 +262,22 @@ namespace EventSupportApp.Data
                 .TrimStart('•', '▪', '●', '*', ' ', '-', '•', '▪', '●');
         }
     }
+
+    [Table("AuditLogs")]
+    public class AuditLog
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int IdLog { get; set; }
+        
+        public DateTime Waktu { get; set; } = DateTime.Now;
+        
+        [StringLength(100)]
+        public string Username { get; set; } = string.Empty;
+        
+        [StringLength(200)]
+        public string Aksi { get; set; } = string.Empty;
+        
+        public string Detail { get; set; } = string.Empty;
+    }
 }
