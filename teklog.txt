@@ -1,0 +1,7 @@
+f024b3c tambah db
+9400d3a Merge and finalize Teknisi dashboard layout and bug fixes
+0af2438 revisi teknisi
+fe2323e perubahan teknisi
+d6b7498 Update role dan landing page
+8c42610 Update teknisi
+e41b77d Add new components

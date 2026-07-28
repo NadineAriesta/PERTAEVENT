@@ -1,0 +1,16 @@
+commit fe2323ead2c7b231909a87c5404e2215fe73f0f1
+Author: wati1406 <watirustati@gmail.com>
+Date:   Wed Jul 22 09:09:34 2026 +0700
+
+    perubahan teknisi
+
+ .gitignore                                         |  14 +-
+ Components/Pages/Home.razor                        |  94 +--
+ Components/Pages/TeknisiDashboard.razor            | 718 ++++++++++++---------
+ Components/Pages/Weather.razor                     |   2 +-
+ Data/AppDbContext.cs                               |  11 +-
+ Data/Models.cs                                     |  25 +
+ .../20260719070415_AddDiskusiPenugasan.Designer.cs | 629 ++++++++++++++++++
+ Migrations/20260719070415_AddDiskusiPenugasan.cs   | 402 ++++++++++++
+ Migrations/AppDbContextModelSnapshot.cs            | 626 ++++++++++++++++++
+ 9 files changed, 2186 insertions(+), 335 deletions(-)

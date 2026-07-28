@@ -18,7 +18,6 @@ namespace EventSupportApp.Data
         public DbSet<RiwayatAcara> RiwayatAcara => Set<RiwayatAcara>();
         public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<DiskusiPenugasan> DiskusiPenugasan => Set<DiskusiPenugasan>();
-        public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,52 +61,38 @@ namespace EventSupportApp.Data
                 { 
                     IdAcara = 1, 
                     IdUserHelpdesk = 2, 
-                    NamaAcara = "abc", 
-                    Tanggal = new DateTime(2026, 7, 23), 
-                    JamMulai = new TimeSpan(8, 0, 0), 
-                    JamSelesai = new TimeSpan(17, 0, 0), 
-                    Lokasi = "gedung lt 1", 
-                    StatusAcara = "Selesai"
-                },
-                new SupportAcara 
-                { 
-                    IdAcara = 2, 
-                    IdUserHelpdesk = 2, 
-                    NamaAcara = "seminar", 
-                    Tanggal = new DateTime(2026, 7, 23), 
-                    JamMulai = new TimeSpan(8, 0, 0), 
-                    JamSelesai = new TimeSpan(12, 0, 0), 
-                    Lokasi = "lt 1", 
-                    StatusAcara = "Ditugaskan" 
-                },
-                new SupportAcara 
-                { 
-                    IdAcara = 3, 
-                    IdUserHelpdesk = 2, 
                     NamaAcara = "Rapat Pleno Senat Universitas", 
                     Tanggal = DateTime.Today, 
                     JamMulai = new TimeSpan(9, 0, 0), 
                     JamSelesai = new TimeSpan(12, 0, 0), 
                     Lokasi = "Aula Utama Gedung Rektorat Lt. 3", 
                     StatusAcara = "Ditugaskan" 
+                },
+                new SupportAcara 
+                { 
+                    IdAcara = 2, 
+                    IdUserHelpdesk = 2, 
+                    NamaAcara = "Seminar Nasional IT & AI", 
+                    Tanggal = DateTime.Today.AddDays(1), 
+                    JamMulai = new TimeSpan(13, 0, 0), 
+                    JamSelesai = new TimeSpan(16, 30, 0), 
+                    Lokasi = "Auditorium BJ Habibie", 
+                    StatusAcara = "Ditugaskan" 
                 }
             );
 
             // Seed KebutuhanAcara
             modelBuilder.Entity<KebutuhanAcara>().HasData(
-                new KebutuhanAcara { IdKebutuhan = 1, IdAcara = 1, JenisKebutuhan = "Proyektor", Jumlah = 10, Keterangan = "" },
-                new KebutuhanAcara { IdKebutuhan = 2, IdAcara = 1, JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "" },
-                new KebutuhanAcara { IdKebutuhan = 3, IdAcara = 1, JenisKebutuhan = "Mic Wireless", Jumlah = 1, Keterangan = "Tanpa keterangan" },
-                new KebutuhanAcara { IdKebutuhan = 4, IdAcara = 2, JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "" },
-                new KebutuhanAcara { IdKebutuhan = 5, IdAcara = 2, JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "" },
-                new KebutuhanAcara { IdKebutuhan = 6, IdAcara = 3, JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Proyektor utama & Layar gantung" }
+                new KebutuhanAcara { IdKebutuhan = 1, IdAcara = 1, JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Microphone wireless 4 buah & Audio Mixer" },
+                new KebutuhanAcara { IdKebutuhan = 2, IdAcara = 1, JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Proyektor utama & Layar gantung" },
+                new KebutuhanAcara { IdKebutuhan = 3, IdAcara = 2, JenisKebutuhan = "Layar LED", Jumlah = 1, Keterangan = "Videotron latar panggung utama" },
+                new KebutuhanAcara { IdKebutuhan = 4, IdAcara = 2, JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Sound system konser outdoor / semi-indoor" }
             );
 
             // Seed Penugasan
             modelBuilder.Entity<Penugasan>().HasData(
-                new Penugasan { IdPenugasan = 1, IdAcara = 1, IdTeknisi = 1, IdUserAdmin = 1, StatusPenugasan = "Selesai", Progress = 100, DokumentasiKegiatanFile = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=300&h=300&fit=crop" },
-                new Penugasan { IdPenugasan = 2, IdAcara = 2, IdTeknisi = 1, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 },
-                new Penugasan { IdPenugasan = 3, IdAcara = 3, IdTeknisi = 2, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 }
+                new Penugasan { IdPenugasan = 1, IdAcara = 1, IdTeknisi = 1, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 },
+                new Penugasan { IdPenugasan = 2, IdAcara = 2, IdTeknisi = 2, IdUserAdmin = 1, StatusPenugasan = "Ditugaskan", Progress = 0 }
             );
 
             // Avoid multiple cascade paths on SQL Server

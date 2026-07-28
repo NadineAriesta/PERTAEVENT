@@ -1,0 +1,13 @@
+commit 0af2438b23aa1edd1f65574b47c03c94e9f16551
+Merge: fe2323e d6b7498
+Author: wati1406 <watirustati@gmail.com>
+Date:   Fri Jul 24 10:25:10 2026 +0700
+
+    revisi teknisi
+
+Components/Pages/Home.razor
+Components/Pages/TeknisiDashboard.razor
+Data/Models.cs
+eventsupport.db
+wwwroot/app.css
+wwwroot/images/Logo-SetLogin.png
