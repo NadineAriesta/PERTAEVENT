@@ -5,11 +5,44 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventSupportApp.Data
 {
+    public class MasterLokasi
+    {
+        [Key]
+        public int IdLokasi { get; set; }
+        
+        [Required]
+        [MaxLength(200)]
+        public string NamaLokasi { get; set; } = string.Empty;
+        
+        [MaxLength(500)]
+        public string? Keterangan { get; set; }
+    }
+
+    public class MasterBarang
+    {
+        [Key]
+        public int IdBarang { get; set; }
+        
+        [Required]
+        [MaxLength(100)]
+        public string NamaBarang { get; set; } = string.Empty;
+        
+        [MaxLength(50)]
+        public string Kategori { get; set; } = string.Empty; // e.g., Audio, Video, Kelistrikan
+        
+        [MaxLength(50)]
+        public string Icon { get; set; } = "🛠️";
+    }
+
     public class User
     {
         [Key]
         public int IdUser { get; set; }
-        
+
+        public int IdRole { get; set; } = 0;
+        [ForeignKey("IdRole")]
+        public virtual Role? Role { get; set; }
+
         [Required]
         [MaxLength(100)]
         public string Username { get; set; } = string.Empty;
@@ -19,10 +52,6 @@ namespace EventSupportApp.Data
         public string Password { get; set; } = string.Empty;
         
         public bool StatusAktif { get; set; } = true;
-
-        public int IdRole { get; set; } = 0;
-        [ForeignKey("IdRole")]
-        public virtual Role? Role { get; set; }
     }
 
     public class Role
@@ -33,9 +62,6 @@ namespace EventSupportApp.Data
         [Required]
         [MaxLength(50)]
         public string NamaRole { get; set; } = string.Empty; // Admin, Helpdesk, Teknisi
-        
-        [MaxLength(250)]
-        public string Deskripsi { get; set; } = string.Empty;
     }
 
     public class MappingTeknisi
@@ -49,7 +75,7 @@ namespace EventSupportApp.Data
         
         [Required]
         [MaxLength(150)]
-        public string Spesialisasi { get; set; } = string.Empty; // e.g., Sound System, Layar/Proyektor
+        public string Spesialisasi { get; set; } = string.Empty;
         
         [Required]
         [MaxLength(50)]
@@ -61,9 +87,9 @@ namespace EventSupportApp.Data
         [Key]
         public int IdAcara { get; set; }
         
-        public int IdUserHelpdesk { get; set; }
-        [ForeignKey("IdUserHelpdesk")]
-        public virtual User? Helpdesk { get; set; }
+        public int IdPembuatAcara { get; set; }
+        [ForeignKey("IdPembuatAcara")]
+        public virtual User? PembuatAcara { get; set; }
         
         [Required]
         [MaxLength(200)]
@@ -79,17 +105,20 @@ namespace EventSupportApp.Data
         public TimeSpan JamSelesai { get; set; } = new TimeSpan(17, 0, 0);
         
         [Required]
-        [MaxLength(200)]
-        public string Lokasi { get; set; } = string.Empty;
+        public int IdLokasi { get; set; }
+        [ForeignKey("IdLokasi")]
+        public virtual MasterLokasi? LokasiNavigation { get; set; }
         
         [Required]
         [MaxLength(50)]
-        public string StatusAcara { get; set; } = "Belum Ditugaskan"; // Belum Ditugaskan, Ditugaskan, Dikonfirmasi, Dokumen Diunggah, Selesai
+        // Belum Ditugaskan, Ditugaskan, Diterima, Berlangsung, Selesai
+        public string StatusAcara { get; set; } = "Belum Ditugaskan";
 
         public virtual ICollection<KebutuhanAcara> Kebutuhan { get; set; } = new List<KebutuhanAcara>();
         public virtual ICollection<Penugasan> PenugasanList { get; set; } = new List<Penugasan>();
     }
 
+    // Tabel ini menyimpan barang/peralatan yang dibutuhkan untuk suatu acara
     public class KebutuhanAcara
     {
         [Key]
@@ -99,15 +128,19 @@ namespace EventSupportApp.Data
         [ForeignKey("IdAcara")]
         public virtual SupportAcara? Acara { get; set; }
         
-        [Required]
-        [MaxLength(100)]
-        public string JenisKebutuhan { get; set; } = string.Empty; // Proyektor, Sound System, Layar, dll.
+        public int IdBarang { get; set; }
+        [ForeignKey("IdBarang")]
+        public virtual MasterBarang? Barang { get; set; }
         
         public int Jumlah { get; set; } = 1;
         
         [MaxLength(250)]
         public string Keterangan { get; set; } = string.Empty;
 
+        // Status pengambilan barang oleh teknisi
+        public bool IsAmbil { get; set; } = false;
+
+        // Status pengembalian barang setelah acara selesai
         public bool IsKembali { get; set; } = false;
     }
 
@@ -124,51 +157,28 @@ namespace EventSupportApp.Data
         [ForeignKey("IdTeknisi")]
         public virtual MappingTeknisi? Teknisi { get; set; }
         
-        public int IdUserAdmin { get; set; } // Admin yang menugaskan
-        [ForeignKey("IdUserAdmin")]
-        public virtual User? Admin { get; set; }
+        // Siapa yang menugaskan teknisi ini (bisa Admin atau Helpdesk)
+        public int IdPenugasTeknisi { get; set; }
+        [ForeignKey("IdPenugasTeknisi")]
+        public virtual User? PenugasTeknisi { get; set; }
         
         [Required]
         [MaxLength(50)]
-        public string StatusPenugasan { get; set; } = "Ditugaskan"; // Ditugaskan (Kuning), Dikonfirmasi (Hijau), Dokumen Diunggah (Biru), Selesai (Abu-abu)
+        // Ditugaskan, Diterima, Berlangsung, Selesai
+        public string StatusPenugasan { get; set; } = "Ditugaskan";
         
         public DateTime? WaktuKonfirmasi { get; set; }
         
-        public string? DokumentasiKegiatanFile { get; set; } // Path/Base64 untuk demo
+        public string? DokumentasiKegiatanFile { get; set; }
         
         public DateTime? WaktuUpload { get; set; }
 
-        public int Progress { get; set; } = 0; // e.g. 0 to 100
+        public int Progress { get; set; } = 0;
         
         [MaxLength(500)]
         public string? CatatanTeknisi { get; set; }
 
-        //[MaxLength(500)]
-        //public string? AlasanPenolakan { get; set; }
-
-        public virtual ICollection<DiskusiPenugasan> DiskusiList { get; set; } = new List<DiskusiPenugasan>();
     }
-
-    public class DiskusiPenugasan
-    {
-        [Key]
-        public int IdDiskusi { get; set; }
-        
-        public int IdPenugasan { get; set; }
-        [ForeignKey("IdPenugasan")]
-        public virtual Penugasan? Penugasan { get; set; }
-
-        public int IdUserPengirim { get; set; }
-        [ForeignKey("IdUserPengirim")]
-        public virtual User? Pengirim { get; set; }
-
-        [Required]
-        [MaxLength(1000)]
-        public string Pesan { get; set; } = string.Empty;
-
-        public DateTime WaktuKirim { get; set; } = DateTime.Now;
-    }
-
     public class Notification
     {
         [Key]
@@ -182,36 +192,15 @@ namespace EventSupportApp.Data
         [MaxLength(250)]
         public string Message { get; set; } = string.Empty;
         
+        // Nama acara yang bersangkutan agar penerima tahu notif dari acara mana
+        [MaxLength(200)]
+        public string? NamaAcara { get; set; }
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         
         [Required]
         [MaxLength(20)]
         public string Status { get; set; } = "Unread"; // Unread, Read
-    }
-
-    public class RiwayatAcara
-    {
-        [Key]
-        public int IdRiwayat { get; set; }
-        
-        public int IdAcara { get; set; }
-        
-        public int IdPenugasan { get; set; }
-        
-        [Required]
-        [MaxLength(200)]
-        public string NamaAcara { get; set; } = string.Empty;
-        
-        [Required]
-        [MaxLength(100)]
-        public string NamaTeknisi { get; set; } = string.Empty;
-        
-        public DateTime TanggalAcara { get; set; }
-        
-        [MaxLength(500)]
-        public string? DokumentasiKegiatanFile { get; set; }
-        
-        public DateTime WaktuSelesai { get; set; } = DateTime.Now;
     }
 
     public static class UIHelpers
@@ -250,5 +239,23 @@ namespace EventSupportApp.Data
                 .Replace("🔸", "")
                 .TrimStart('•', '▪', '●', '*', ' ', '-', '•', '▪', '●');
         }
+    }
+
+    [Table("AuditLogs")]
+    public class AuditLog
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int IdLog { get; set; }
+        
+        public DateTime Waktu { get; set; } = DateTime.Now;
+        
+        [StringLength(100)]
+        public string Username { get; set; } = string.Empty;
+        
+        [StringLength(200)]
+        public string Aksi { get; set; } = string.Empty;
+        
+        public string Detail { get; set; } = string.Empty;
     }
 }

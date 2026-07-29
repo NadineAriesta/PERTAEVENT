@@ -232,7 +232,7 @@
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                             <circle cx="12" cy="10" r="3"></circle>
                         </svg>
-                        <span>@assign.Acara?.Lokasi</span>
+                        <span>@assign.Acara?.LokasiNavigation?.NamaLokasi</span>
                     </div>
                 </div>
 
@@ -245,7 +245,7 @@
                     <div class="progress" style="height: 8px; background: #f1f5f9; border-radius: 4px; margin-bottom: 1.2rem;">
                         <div class="progress-bar" role="progressbar" style="width: @(progress)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 4px;"></div>
                     </div>
-                    <button class="tek-btn" style="background-color: #0f172a; color: white; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1.2rem; border-radius: 8px;" @onclick='() => ActiveMenu = "penugasan"'>
+                    <button class="tek-btn" style="background-color: #0f172a; color: white; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1.2rem; border-radius: 8px;" @onclick='async () => await OnMenuChange.InvokeAsync("penugasan")'>
                         <span class="fw-bold" style="font-size: 0.9rem;">Lihat Detail</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -297,7 +297,7 @@ else if (ActiveMenu == "master")
                                 <div style="padding: 0.35rem 0; display: flex; align-items: center; justify-content: space-between; @borderStyle">
                                     <div class="d-flex align-items-center gap-2">
                                         <div>
-                                            <div style="color: #334155; font-size: 0.9rem; margin-bottom: 2px;">@keb.JenisKebutuhan</div>
+                                            <div style="color: #334155; font-size: 0.9rem; margin-bottom: 2px;">@keb.Barang?.NamaBarang</div>
                                             <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2;">@(string.IsNullOrEmpty(keb.Keterangan) ? "Tanpa keterangan" : keb.Keterangan)</div>
                                         </div>
                                     </div>
@@ -341,7 +341,7 @@ else if (ActiveMenu == "penugasan")
                         </span>
                         <span class="d-flex align-items-center gap-1">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#09A537" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                            @assign.Acara?.Lokasi
+                            @assign.Acara?.LokasiNavigation?.NamaLokasi
                         </span>
                     </div>
                 </div>
@@ -367,7 +367,7 @@ else if (ActiveMenu == "penugasan")
                                         <input type="checkbox" checked="@isChecked" disabled="@disableUncheck"
                                             @onchange="() => ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 18px; height: 18px; border-radius: 4px; cursor: @(disableUncheck ? "not-allowed" : "pointer");" />
                                     }
-                                    <span style="color: #000000; font-size: 0.9rem; font-weight: 500;">@keb.JenisKebutuhan</span>
+                                    <span style="color: #000000; font-size: 0.9rem; font-weight: 500;">@keb.Barang?.NamaBarang</span>
                                     <span style="background-color: #e2e8f0; color: #000000; font-size: 0.8rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-left: auto;">@keb.Jumlah Unit</span>
                                 </li>
                             }
@@ -385,10 +385,10 @@ else if (ActiveMenu == "penugasan")
                                         @if (status != "Menunggu Konfirmasi" && status != "Selesai")
                                         {
                                             <input type="checkbox" checked="@keb.IsKembali"
-                                                @onchange="() => TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 18px; height: 18px; border-radius: 4px; cursor: pointer;" />
+                                                @onchange="async (ChangeEventArgs e) => { keb.IsKembali = (bool)(e.Value ?? false); await UpdatePenugasanAndKebutuhan(assign, keb); }" style="accent-color: #09A537; width: 18px; height: 18px; border-radius: 4px; cursor: pointer;" />
                                         }
                                         <span style="color: #000000; font-size: 0.9rem; font-weight: 600; text-decoration: @(keb.IsKembali ? "line-through" : "none");">
-                                            @keb.JenisKebutuhan (@keb.Jumlah Unit)
+                                            @keb.Barang?.NamaBarang (@keb.Jumlah Unit)
                                         </span>
                                         <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="margin-left: auto; font-size: 0.75rem;">
                                             @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
@@ -448,10 +448,10 @@ else if (ActiveMenu == "penugasan")
 
 @code {
     [Parameter] public string ActiveMenu { get; set; } = "dashboard";
+    [Parameter] public EventCallback<string> OnMenuChange { get; set; }
     [Parameter] public int CurrentTeknisiId { get; set; }
     [Parameter] public List<Penugasan> Assignments { get; set; } = new();
     [Parameter] public List<SupportAcara> ActiveEvents { get; set; } = new();
-    [Parameter] public List<RiwayatAcara> HistoryEvents { get; set; } = new();
     [Parameter] public List<MappingTeknisi> Technicians { get; set; } = new();
     [Parameter] public EventCallback<Penugasan> OnOpenSignature { get; set; }
     [Parameter] public EventCallback<Penugasan> OnOpenUpload { get; set; }
@@ -466,8 +466,9 @@ else if (ActiveMenu == "penugasan")
         {
             using var context = DbFactory.CreateDbContext();
             var all = await context.Penugasan
-                .Include(p => p.Acara).ThenInclude(a => a!.Kebutuhan)
-                .Include(p => p.Acara).ThenInclude(a => a!.Helpdesk)
+                .Include(p => p.Acara).ThenInclude(a => a!.Kebutuhan).ThenInclude(k => k.Barang)
+                .Include(p => p.Acara).ThenInclude(a => a!.LokasiNavigation)
+                .Include(p => p.Acara).ThenInclude(a => a!.PembuatAcara)
                 .Include(p => p.Teknisi).ThenInclude(t => t!.User)
                 .ToListAsync();
 
@@ -514,7 +515,7 @@ else if (ActiveMenu == "penugasan")
 
         if (!string.IsNullOrEmpty(DashSearch))
             q = q.Where(a => a.Acara?.NamaAcara.Contains(DashSearch, StringComparison.OrdinalIgnoreCase) == true
-                          || a.Acara?.Lokasi.Contains(DashSearch, StringComparison.OrdinalIgnoreCase) == true);
+                          || a.Acara?.LokasiNavigation?.NamaLokasi?.Contains(DashSearch, StringComparison.OrdinalIgnoreCase) == true);
 
         if (DashFilterStatus != "Semua")
             q = q.Where(a => GetStatusPenugasan(a) == DashFilterStatus);
@@ -679,3 +680,4 @@ else if (ActiveMenu == "penugasan")
         return "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><line x1='12' y1='8' x2='12' y2='12'></line><line x1='12' y1='16' x2='12.01' y2='16'></line></svg>"; // fallback info icon
     }
 }
+

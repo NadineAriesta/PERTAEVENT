@@ -202,14 +202,17 @@ else
             {
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "mapping" ? "menu-active" : "")" @onclick='() => ActiveMenu = "mapping"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Mapping Teknisi</button>
             }
+            @if (CurrentRole == "Teknisi")
+            {
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg></span> Penugasan Teknisi</button>
+            }
             @if (CurrentRole == "Admin")
             {
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 14l2 2 4-4"></path></svg></span> Daftar Penugasan</button>
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "pengguna" ? "menu-active" : "")" @onclick='() => ActiveMenu = "pengguna"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Manajemen Pengguna</button>
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "auditlog" ? "menu-active" : "")" @onclick='() => ActiveMenu = "auditlog"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span> Log Aktivitas</button>
             }
-            @if (CurrentRole == "Admin" || CurrentRole == "Teknisi")
-            {
-                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span> Penugasan Teknisi</button>
-            }
+
         </div>
         
         <div class="dash-sidebar-section" style="margin-top:auto; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
@@ -363,7 +366,7 @@ else
                 <div class="dash-stat-card">
                     <div class="dash-stat-icon bg-blue"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
                     <div>
-                        <div class="dash-stat-value">@HistoryEvents.Count</div>
+                        <div class="dash-stat-value">@AllSupportAcara.Count(e => e.StatusAcara == "Selesai")</div>
                         <div class="dash-stat-label">Total Selesai</div>
                     </div>
                 </div>
@@ -403,7 +406,7 @@ else
                 <div class="dash-stat-card">
                     <div class="dash-stat-icon bg-green"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
                     <div>
-                        <div class="dash-stat-value">@HistoryEvents.Count(h => h.WaktuSelesai.Month == DateTime.Now.Month && h.WaktuSelesai.Year == DateTime.Now.Year)</div>
+                        <div class="dash-stat-value">@AllSupportAcara.Count(e => e.StatusAcara == "Selesai" && e.Tanggal.Month == DateTime.Now.Month && e.Tanggal.Year == DateTime.Now.Year)</div>
                         <div class="dash-stat-label">Selesai (Bulan ini)</div>
                     </div>
                 </div>
@@ -414,8 +417,8 @@ else
                     var filteredEvents = ActiveEvents.Where(e => {
                         if (!IsDateMatch(e.Tanggal)) return false;
                         var matchFilter = string.IsNullOrEmpty(SearchFilter) || 
-                            e.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
-                            e.Lokasi.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase);
+                            (e.NamaAcara?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (e.LokasiNavigation?.NamaLokasi?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false);
                         return matchFilter;
                     }).ToList();
                 }
@@ -454,7 +457,7 @@ else
                             {
                                 <tr>
                                     <td colspan="5" class="text-center py-5 text-muted">
-                                        <span class="fs-2 d-block mb-2">📅</span>
+                                        <span class="fs-2 d-block mb-2">Ã°Å¸â€œâ€¦</span>
                                         <div class="fw-semibold">Tidak ada acara untuk filter ini</div>
                                         <div class="small">Silakan pilih filter tanggal lainnya atau cari kata kunci lain.</div>
                                     </td>
@@ -467,7 +470,7 @@ else
                                     <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
                                         <td class="py-2 ps-3">
                                             <div class="fw-bold" style="color: #0f172a; font-size: 0.95rem;">@eventItem.NamaAcara</div>
-                                            <div class="text-muted" style="font-size: 0.85rem;">@eventItem.Lokasi</div>
+                                            <div class="text-muted" style="font-size: 0.85rem;">@eventItem.LokasiNavigation?.NamaLokasi</div>
                                         </td>
                                         <td class="py-2">
                                             <div style="color: #64748b; font-size: 0.9rem;">@eventItem.Tanggal.ToString("dd MMM yyyy")</div>
@@ -554,15 +557,15 @@ else
                             {
                                 var matchFilter = string.IsNullOrEmpty(SearchFilter) || 
                                     ev.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
-                                    ev.Lokasi.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase);
+                                    (ev.LokasiNavigation?.NamaLokasi?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false);
 
                                 if (!matchFilter) continue;
                                 
                                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
                                     <td class="fw-bold py-2 ps-3" style="color: #072C4C; font-size: 0.95rem;">@ev.NamaAcara</td>
-                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@ev.Tanggal.ToString("dd MMM yyyy") · @ev.JamMulai.ToString(@"hh\:mm")-@ev.JamSelesai.ToString(@"hh\:mm")</td>
-                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@ev.Lokasi</td>
-                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@(ev.Helpdesk?.Username ?? "Helpdesk")</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@ev.Tanggal.ToString("dd MMM yyyy") &middot; @ev.JamMulai.ToString(@"hh\:mm")-@ev.JamSelesai.ToString(@"hh\:mm")</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@ev.LokasiNavigation?.NamaLokasi</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@(ev.PembuatAcara?.Username ?? "Helpdesk")</td>
                                     <td class="py-2">
                                         @if (ev.StatusAcara == "Belum Ditugaskan") { <span class="premium-pill-badge badge-red">Belum ditugaskan</span> }
                                         else if (ev.StatusAcara == "Ditugaskan") { <span class="premium-pill-badge badge-yellow">Ditugaskan</span> }
@@ -597,7 +600,16 @@ else
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Lokasi Ruangan</label>
-                                <input type="text" class="form-control form-input-premium" @bind="NewEvent.Lokasi" placeholder="Contoh: Gedung A Lt.2" required />
+                                <select class="form-select form-input-premium" @bind="NewEvent.IdLokasi" required>
+                                    <option value="">-- Pilih Lokasi --</option>
+                                    @if(MasterLokasiList != null)
+                                    {
+                                        @foreach (var lok in MasterLokasiList)
+                                        {
+                                            <option value="@lok.IdLokasi">@lok.NamaLokasi</option>
+                                        }
+                                    }
+                                </select>
                             </div>
                         </div>
                         <div class="row g-3 mb-4">
@@ -637,13 +649,14 @@ else
                                     var index = i;
                                     <div class="row g-2 mb-2 align-items-center">
                                         <div class="col-5">
-                                            <select class="form-select form-input-premium" @bind="NewNeedsList[index].JenisKebutuhan">
-                                                <option value="Proyektor">Proyektor</option>
-                                                <option value="Sound System">Sound System</option>
-                                                <option value="Layar / Screen">Layar / Screen</option>
-                                                <option value="Multimedia Laptop">Multimedia Laptop</option>
-                                                <option value="Kabel Roll &amp; Kelistrikan">Kabel &amp; Listrik</option>
-                                                <option value="Lainnya">Lainnya</option>
+                                            <select class="form-select form-input-premium" @bind="NewNeedsList[index].IdBarang">
+                                                @if(MasterBarangList != null)
+                                                {
+                                                    @foreach (var brg in MasterBarangList)
+                                                    {
+                                                        <option value="@brg.IdBarang">@brg.NamaBarang</option>
+                                                    }
+                                                }
                                             </select>
                                         </div>
                                         <div class="col-3">
@@ -679,7 +692,7 @@ else
                 </div>
             </div>
         }
-        else if (ActiveMenu == "master")
+        else if (ActiveMenu == "master" && CurrentRole != "Teknisi")
         {
             <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
                 <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
@@ -692,10 +705,7 @@ else
                             <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
                             <input type="text" class="form-control" placeholder="Cari acara..." style="border-radius: 10px; border: 1px solid #e2e8f0; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
                         </div>
-                        @if (CurrentRole == "Admin" || CurrentRole == "Helpdesk")
-                        {
-                            <button type="button" class="btn btn-premium-red" @onclick='() => ActiveMenu = "form_acara"'>+ Tambah</button>
-                        }
+
                     </div>
                 </div>
 
@@ -714,7 +724,7 @@ else
                                     @foreach (var keb in ev.Kebutuhan)
                                     {
                                         <span class="badge text-dark px-3 py-2 fw-normal" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; color: #334155 !important;">
-                                            @(keb.JenisKebutuhan?.Replace("🔹", "").TrimStart('•', '▪', '●', '*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 6px;">&times;@keb.Jumlah</strong>
+                                            @(keb.Barang?.NamaBarang?.Replace("🔹", "").TrimStart('*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 6px;">&times;@keb.Jumlah</strong>
                                         </span>
                                     }
                                     @if (ev.Kebutuhan.Count == 0)
@@ -797,7 +807,10 @@ else
                                         </div>
                                     </td>
                                     <td class="text-center py-2 pe-4">
-                                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" @onclick="() => OpenEditUserModal(user)">Edit</button>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditUserModal(user)">Edit</button>
+                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteUser(user)">Hapus</button>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -875,7 +888,7 @@ else
                 </div>
             </div>
         }
-        else if (ActiveMenu == "penugasan")
+        else if (ActiveMenu == "penugasan" && CurrentRole != "Teknisi")
         {
 
             <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
@@ -902,6 +915,10 @@ else
                         <tbody>
                             @foreach (var ev in AllSupportAcara)
                             {
+                                var matchSearch = string.IsNullOrEmpty(SearchFilter) ||
+                                    ev.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                                    (GetAssignmentForEvent(ev.IdAcara)?.Teknisi?.User?.Username?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false);
+                                if (!matchSearch) continue;
                                 var assignment = GetAssignmentForEvent(ev.IdAcara);
                                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
                                     <td class="fw-bold py-2 ps-3" style="color: #072C4C; font-size: 0.95rem;">@ev.NamaAcara</td>
@@ -924,6 +941,126 @@ else
                     </table>
                 </div>
             </div>
+
+            <!-- Laporan Progres Teknisi (di bawah tabel penugasan) -->
+            <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
+                <div class="d-flex align-items-center p-4" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
+                    <div>
+                        <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Laporan Progres Teknisi</h5>
+                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Progress, catatan, dan dokumentasi kegiatan yang dilaporkan teknisi</p>
+                    </div>
+                </div>
+                <div class="p-4">
+                    @if (!Assignments.Any())
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <span class="fs-2 d-block mb-2">📋</span>
+                            <div class="fw-semibold">Belum ada data penugasan</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row g-3">
+                        @foreach (var assign in Assignments.OrderByDescending(a => a.Progress))
+                        {
+                            var pct = assign.Progress;
+                            var statusColor = pct >= 100 ? "#16a34a" : pct >= 50 ? "#f59e0b" : "#E31E24";
+                            var statusLabel = assign.StatusPenugasan;
+                            <div class="col-12">
+                                <div class="p-4" style="background:#f8fafc; border-radius:12px; border: 1px solid #e2e8f0;">
+                                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                                        <div>
+                                            <div class="fw-bold mb-1" style="color:#072C4C; font-size:1.05rem;">@assign.Acara?.NamaAcara</div>
+                                            <div class="text-muted d-flex align-items-center gap-3" style="font-size:0.82rem;">
+                                                <span>📅 @assign.Acara?.Tanggal.ToString("dd MMM yyyy")</span>
+                                                <span>📍 @assign.Acara?.LokasiNavigation?.NamaLokasi</span>
+                                                <span>👤 @(assign.Teknisi?.User?.Username ?? "—")</span>
+                                            </div>
+                                        </div>
+                                        <span class="badge fw-normal px-3 py-2" style="background:@(statusLabel == "Selesai" ? "#dcfce7" : statusLabel == "Dokumen Diunggah" ? "#e0f2fe" : "#fef9c3"); color:@(statusLabel == "Selesai" ? "#166534" : statusLabel == "Dokumen Diunggah" ? "#0369a1" : "#854d0e"); border-radius:8px; font-size:0.8rem;">@statusLabel</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span class="fw-bold" style="font-size:0.8rem; color:#0f172a;">Update Progress</span>
+                                            <span class="fw-bold" style="font-size:0.8rem; color:@statusColor;">@pct%</span>
+                                        </div>
+                                        <div class="progress" style="height:8px; border-radius:4px; background:#e2e8f0;">
+                                            <div class="progress-bar" role="progressbar" style="width:@(pct)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius:4px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 p-3" style="background:white; border-radius:8px; border:1px solid #e2e8f0;">
+                                        <div class="fw-bold mb-1" style="font-size:0.8rem; color:#64748b;">CATATAN TEKNISI</div>
+                                        @if (!string.IsNullOrEmpty(assign.CatatanTeknisi))
+                                        {
+                                            <div style="font-size:0.9rem; color:#334155;">@assign.CatatanTeknisi</div>
+                                        }
+                                        else
+                                        {
+                                            <div style="font-size:0.85rem; color:#94a3b8; font-style:italic;">Belum ada catatan dari teknisi.</div>
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
+                                    {
+                                        <div class="d-flex align-items-center gap-3 p-3" style="background:white; border-radius:8px; border:1px solid #e2e8f0;">
+                                            <img src="@assign.DokumentasiKegiatanFile" style="height:56px; width:56px; object-fit:cover; border-radius:6px; border:1px solid #e2e8f0;" />
+                                            <div>
+                                                <div class="fw-bold" style="color:#0f172a; font-size:0.9rem;">Dokumentasi Kegiatan</div>
+                                                <div style="color:#16a34a; font-size:0.8rem; font-weight:600;">✅ Sudah Diunggah</div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted" style="font-size:0.8rem; font-style:italic;">📁 Belum ada dokumentasi yang diunggah</div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else if (ActiveMenu == "auditlog")
+        {
+            <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
+                <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
+                    <div>
+                        <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Log Aktivitas Sistem</h5>
+                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Riwayat perubahan data dan jejak audit (Audit Trail)</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0" style="width: 100%;">
+                        <thead style="background-color: #F8FAFC;">
+                            <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
+                                <th class="border-0 py-2 ps-3" style="width: 20%; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">WAKTU</th>
+                                <th class="border-0 py-2" style="width: 20%;">PENGGUNA</th>
+                                <th class="border-0 py-2" style="width: 20%;">AKSI</th>
+                                <th class="border-0 py-2 pe-4" style="width: 40%; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">DETAIL PERUBAHAN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (SystemLogs.Count == 0)
+                            {
+                                <tr><td colspan="4" class="text-center py-4 text-muted">Belum ada riwayat aktivitas yang tercatat.</td></tr>
+                            }
+                            else
+                            {
+                                @foreach (var log in SystemLogs)
+                                {
+                                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                                        <td class="text-muted py-2 ps-3" style="font-size: 0.9rem;">@log.Waktu.ToString("dd MMM yyyy, HH:mm")</td>
+                                        <td class="fw-bold py-2" style="font-size: 0.9rem; color: #334155;">@log.Username</td>
+                                        <td class="py-2"><span class="badge" style="background:#e0f2fe; color:#0369a1; border-radius:6px; font-weight: normal;">@log.Aksi</span></td>
+                                        <td class="text-muted py-2 pe-4" style="font-size: 0.85rem; font-style: italic;">@log.Detail</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         }
     }
 
@@ -939,7 +1076,7 @@ else
                     if (!IsDateMatch(e.Tanggal)) return false;
                     var matchFilter = string.IsNullOrEmpty(SearchFilter) || 
                         e.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
-                        e.Lokasi.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase);
+                        (e.LokasiNavigation?.NamaLokasi?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false);
                     return matchFilter;
                 }).ToList();
             }
@@ -996,14 +1133,14 @@ else
                                         <div>@eventItem.Tanggal.ToString("dd MMM yyyy")</div>
                                         <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">@eventItem.JamMulai.ToString(@"hh\:mm")-@eventItem.JamSelesai.ToString(@"hh\:mm")</div>
                                     </td>
-                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@eventItem.Lokasi</td>
+                                    <td class="text-muted py-2" style="font-size: 0.9rem;">@eventItem.LokasiNavigation?.NamaLokasi</td>
                                     <td class="py-2">
                                         <div class="d-flex flex-wrap gap-1">
                                             @if(eventItem.Kebutuhan != null && eventItem.Kebutuhan.Any())
                                             {
                                                 @foreach (var need in eventItem.Kebutuhan)
                                                 {
-                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem;">@(need.JenisKebutuhan?.Replace("🔹", "").TrimStart('•', '▪', '●', '*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
+                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem;">@(need.Barang?.NamaBarang?.Replace("🔹", "").TrimStart('*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
                                                 }
                                             }
                                             else
@@ -1019,15 +1156,15 @@ else
                                         }
                                         else if (eventItem.StatusAcara == "Ditugaskan")
                                         {
-                                            <span class="premium-pill-badge badge-yellow">Belum Sign · @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
+                                            <span class="premium-pill-badge badge-yellow">Belum Sign &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
                                         }
                                         else if (eventItem.StatusAcara == "Dikonfirmasi")
                                         {
-                                            <span class="premium-pill-badge badge-green">Siap · @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
+                                            <span class="premium-pill-badge badge-green">Siap &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
                                         }
                                         else if (eventItem.StatusAcara == "Dokumen Diunggah")
                                         {
-                                            <span class="premium-pill-badge badge-blue">Setup selesai · @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
+                                            <span class="premium-pill-badge badge-blue">Setup selesai &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
                                         }
                                         else
                                         {
@@ -1060,17 +1197,17 @@ else
                         }
 
                         <!-- Completed Events (shown inline if any) -->
-                        @if (HistoryEvents.Count > 0)
+                        @if (AllSupportAcara.Count(e => e.StatusAcara == "Selesai") > 0)
                         {
-                            @foreach (var hist in HistoryEvents.Take(3))
+                            @foreach (var hist in AllSupportAcara.Where(e => e.StatusAcara == "Selesai").Take(3))
                             {
                                 <tr style="border-bottom: 1px solid #f1f5f9; background-color: #fafafa; opacity: 0.8;">
                                     <td class="py-2 ps-3 fw-bold" style="color: #64748b; font-size: 0.95rem;">@hist.NamaAcara</td>
-                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">@hist.TanggalAcara.ToString("dd MMM yyyy")</td>
+                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">@hist.Tanggal.ToString("dd MMM yyyy")</td>
                                     <td class="py-2 text-muted" style="font-size: 0.9rem;">-</td>
                                     <td class="py-2 text-muted" style="font-size: 0.9rem;">-</td>
                                     <td class="py-2">
-                                        <span class="premium-pill-badge badge-gray">Selesai · @hist.NamaTeknisi</span>
+                                        <span class="premium-pill-badge badge-gray">Selesai &middot; @(hist.PenugasanList?.FirstOrDefault()?.Teknisi?.User?.Username ?? "Selesai")</span>
                                     </td>
                                     <td class="py-2 text-start text-muted" style="font-size: 0.8rem; font-style: italic; padding-left: 1rem;">
                                         Telah diselesaikan
@@ -1087,10 +1224,10 @@ else
     {
         <TeknisiDashboard 
             ActiveMenu="@ActiveMenu"
+            OnMenuChange="HandleMenuChange"
             CurrentTeknisiId="CurrentTeknisiId" 
             Assignments="Assignments" 
             ActiveEvents="ActiveEvents"
-            HistoryEvents="HistoryEvents"
             Technicians="Technicians"
             OnOpenSignature="HandleOpenSignature" 
             OnOpenUpload="HandleOpenUpload" 
@@ -1174,7 +1311,16 @@ else
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Lokasi Ruangan</label>
-                            <input type="text" class="form-control form-input-premium" @bind="EditEvent.Lokasi" disabled="@(EditEvent.StatusAcara == "Selesai")" required />
+                            <select class="form-select form-input-premium" @bind="EditEvent.IdLokasi" disabled="@(EditEvent.StatusAcara == "Selesai")" required>
+                                <option value="">-- Pilih Lokasi --</option>
+                                @if(MasterLokasiList != null)
+                                {
+                                    @foreach (var lok in MasterLokasiList)
+                                    {
+                                        <option value="@lok.IdLokasi">@lok.NamaLokasi</option>
+                                    }
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="row g-3 mb-4">
@@ -1211,13 +1357,14 @@ else
                                 var need = EditNeedsList[i];
                                 <div class="row g-2 mb-2 align-items-center">
                                     <div class="col-5">
-                                        <select class="form-select form-input-premium" @bind="need.JenisKebutuhan" disabled="@(EditEvent.StatusAcara == "Selesai")">
-                                            <option value="Proyektor">Proyektor</option>
-                                            <option value="Sound System">Sound System</option>
-                                            <option value="Layar LED">Layar LED</option>
-                                            <option value="Mic Wireless">Mic Wireless</option>
-                                            <option value="Laptop/PC">Laptop/PC</option>
-                                            <option value="Lainnya">Lainnya...</option>
+                                        <select class="form-select form-input-premium" @bind="need.IdBarang" disabled="@(EditEvent.StatusAcara == "Selesai")">
+                                            @if(MasterBarangList != null)
+                                            {
+                                                @foreach (var brg in MasterBarangList)
+                                                {
+                                                    <option value="@brg.IdBarang">@brg.NamaBarang</option>
+                                                }
+                                            }
                                         </select>
                                     </div>
                                     <div class="col-2">
@@ -1279,7 +1426,7 @@ else
                 <h6 class="fw-bold mb-2 text-dark" style="font-size: 0.88rem;">Detail Acara:</h6>
                 <div class="p-3 mb-3 small" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; line-height: 1.5; color: #475569;">
                     <strong>Nama Acara:</strong> @SelectedEventForAssign.NamaAcara <br/>
-                    <strong>Lokasi:</strong> @SelectedEventForAssign.Lokasi <br/>
+                    <strong>Lokasi:</strong> @SelectedEventForAssign.LokasiNavigation?.NamaLokasi <br/>
                     <strong>Waktu:</strong> @SelectedEventForAssign.Tanggal.ToString("dd MMM yyyy") (@SelectedEventForAssign.JamMulai.ToString(@"hh\:mm") - @SelectedEventForAssign.JamSelesai.ToString(@"hh\:mm"))
                 </div>
 
@@ -1290,8 +1437,8 @@ else
                         @foreach (var tek in Technicians)
                         {
                             var activeTasks = ActiveEvents.Count(e => e.PenugasanList.Any(p => p.IdTeknisi == tek.IdTeknisi));
-                            <option value="@tek.IdTeknisi" disabled="@(tek.StatusKetersediaan != "Tersedia")">
-                                @tek.User?.Username (@tek.Spesialisasi) - @(tek.StatusKetersediaan == "Tersedia" ? "Tersedia" : "Sibuk") [Tugas Aktif: @activeTasks]
+                            <option value="@tek.IdTeknisi">
+                                @tek.User?.Username (@tek.Spesialisasi) - @(tek.StatusKetersediaan == "Tersedia" ? "Tersedia" : "Sedang Bertugas") [Tugas Aktif: @activeTasks]
                             </option>
                         }
                     </select>
@@ -1368,7 +1515,7 @@ else
                     else
                     {
                         <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-                            <span class="fw-bold text-success" style="font-size: 1rem;">✓ TANDA TANGAN DIGITAL TERPASANG</span>
+                            <span class="fw-bold text-success" style="font-size: 1rem;">Ã¢Å“â€œ TANDA TANGAN DIGITAL TERPASANG</span>
                             <small class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">Hash: @SignatureDataUrl</small>
                         </div>
                     }
@@ -1564,6 +1711,9 @@ else
     // UI Database tab state
     private string ActiveTab { get; set; } = "teknisi";
     
+    private List<MasterLokasi> MasterLokasiList { get; set; } = new();
+    private List<MasterBarang> MasterBarangList { get; set; } = new();
+
     private string _activeMenu = "dashboard";
     private string ActiveMenu 
     { 
@@ -1617,7 +1767,7 @@ else
     private List<SupportAcara> AllSupportAcara { get; set; } = new();
     private List<MappingTeknisi> Technicians { get; set; } = new();
     private List<Penugasan> Assignments { get; set; } = new();
-    private List<RiwayatAcara> HistoryEvents { get; set; } = new();
+    private List<AuditLog> SystemLogs { get; set; } = new();
     private List<Notification> UserNotifications { get; set; } = new();
 
     // Helpdesk Form Bindings
@@ -1625,11 +1775,7 @@ else
     private DateTime NewEventDate { get; set; } = DateTime.Today;
     private TimeOnly NewEventStart { get; set; } = new TimeOnly(8, 0);
     private TimeOnly NewEventEnd { get; set; } = new TimeOnly(17, 0);
-    private List<KebutuhanAcara> NewNeedsList { get; set; } = new()
-    {
-        new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Layar utama" },
-        new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Wireless mic 2 buah" }
-    };
+    private List<KebutuhanAcara> NewNeedsList { get; set; } = new();
 
     // Edit Event Bindings
     private bool ShowEditModal { get; set; } = false;
@@ -1666,7 +1812,7 @@ else
     private async Task LoadDataAsync()
     {
         var rawEventsQuery = DbContext.SupportAcara
-           .Include(e => e.Helpdesk)
+           .Include(e => e.PembuatAcara)
            .Include(e => e.Kebutuhan)
            .Include(e => e.PenugasanList)
            .ThenInclude(p => p.Teknisi)
@@ -1675,7 +1821,7 @@ else
 
         if (IsLoggedIn && CurrentRole == "Helpdesk" && LoggedInUser != null)
         {
-            rawEventsQuery = rawEventsQuery.Where(e => e.IdUserHelpdesk == LoggedInUser.IdUser);
+            rawEventsQuery = rawEventsQuery.Where(e => e.IdPembuatAcara == LoggedInUser.IdUser);
         }
 
         var rawEvents = await rawEventsQuery.ToListAsync();
@@ -1701,17 +1847,14 @@ else
            .ThenInclude(t => t!.User)
            .ToListAsync();
 
-        if (IsLoggedIn && CurrentRole == "Helpdesk" && LoggedInUser != null)
+        MasterLokasiList = await DbContext.MasterLokasi.ToListAsync();
+        MasterBarangList = await DbContext.MasterBarang.ToListAsync();
+
+        if (!IsLoggedIn || CurrentRole != "Helpdesk")
         {
-            HistoryEvents = await DbContext.RiwayatAcara
-               .Where(r => DbContext.SupportAcara.Any(s => s.IdAcara == r.IdAcara && s.IdUserHelpdesk == LoggedInUser.IdUser))
-               .OrderByDescending(r => r.WaktuSelesai)
-               .ToListAsync();
-        }
-        else
-        {
-            HistoryEvents = await DbContext.RiwayatAcara
-               .OrderByDescending(r => r.WaktuSelesai)
+            SystemLogs = await DbContext.AuditLogs
+               .OrderByDescending(a => a.Waktu)
+               .Take(100)
                .ToListAsync();
         }
 
@@ -1892,7 +2035,7 @@ else
     // Helpdesk Form Handlers
     private void AddNeedInputRow()
     {
-        NewNeedsList.Add(new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "" });
+        NewNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList?.FirstOrDefault()?.IdBarang ?? 1, Jumlah = 1, Keterangan = "" });
     }
 
     private void RemoveNeedInputRow(int index)
@@ -1911,7 +2054,7 @@ else
             NewEvent.JamMulai = NewEventStart.ToTimeSpan();
             NewEvent.JamSelesai = NewEventEnd.ToTimeSpan();
             NewEvent.Tanggal = NewEventDate;
-            NewEvent.IdUserHelpdesk = LoggedInUser?.IdUser ?? 2;
+            NewEvent.IdPembuatAcara = LoggedInUser?.IdUser ?? 2;
             NewEvent.StatusAcara = "Belum Ditugaskan";
 
             // Add needs
@@ -1919,13 +2062,23 @@ else
             {
                 NewEvent.Kebutuhan.Add(new KebutuhanAcara
                 {
-                    JenisKebutuhan = need.JenisKebutuhan,
+                    IdBarang = need.IdBarang,
                     Jumlah = need.Jumlah,
                     Keterangan = need.Keterangan
                 });
             }
 
             DbContext.SupportAcara.Add(NewEvent);
+            
+            // Insert Audit Log
+            DbContext.AuditLogs.Add(new AuditLog
+            {
+                Waktu = DateTime.Now,
+                Username = LoggedInUser?.Username ?? "Sistem",
+                Aksi = "Tambah Acara",
+                Detail = $"Membuat Acara baru: '{NewEvent.NamaAcara}'"
+            });
+
             await DbContext.SaveChangesAsync();
 
             ShowNotificationWithTimer($"Acara '{NewEvent.NamaAcara}' berhasil disimpan.");
@@ -1935,11 +2088,11 @@ else
             NewEventDate = DateTime.Today;
             NewEventStart = new TimeOnly(8, 0);
             NewEventEnd = new TimeOnly(17, 0);
-            NewNeedsList = new List<KebutuhanAcara>
+            NewNeedsList = new List<KebutuhanAcara>();
+            if (MasterBarangList != null && MasterBarangList.Any())
             {
-                new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Layar utama" },
-                new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Wireless mic 2 buah" }
-            };
+                NewNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList.First().IdBarang, Jumlah = 1, Keterangan = "Layar utama" });
+            }
 
             await LoadDataAsync();
         }
@@ -1962,7 +2115,7 @@ else
         { 
             IdKebutuhan = k.IdKebutuhan,
             IdAcara = k.IdAcara,
-            JenisKebutuhan = k.JenisKebutuhan, 
+            IdBarang = k.IdBarang, 
             Jumlah = k.Jumlah, 
             Keterangan = k.Keterangan 
         }).ToList();
@@ -1978,7 +2131,7 @@ else
 
     private void AddEditNeedInputRow()
     {
-        EditNeedsList.Add(new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "" });
+        EditNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList?.FirstOrDefault()?.IdBarang ?? 1, Jumlah = 1, Keterangan = "" });
     }
 
     private void RemoveEditNeedInputRow(int index)
@@ -1999,8 +2152,26 @@ else
 
             if (existingEvent != null)
             {
+                var changes = new List<string>();
+                
+                if (existingEvent.NamaAcara != EditEvent.NamaAcara)
+                    changes.Add($"Nama dari '{existingEvent.NamaAcara}' ke '{EditEvent.NamaAcara}'");
+                if (existingEvent.IdLokasi != EditEvent.IdLokasi)
+                {
+                    changes.Add($"Lokasi diubah");
+                }
+                if (existingEvent.Tanggal != EditEventDate)
+                    changes.Add($"Tanggal dari {existingEvent.Tanggal:dd MMM} ke {EditEventDate:dd MMM}");
+                var newStart = EditEventStart.ToTimeSpan();
+                if (existingEvent.JamMulai != newStart)
+                    changes.Add($"Jam Mulai dari {existingEvent.JamMulai:hh\\:mm} ke {newStart:hh\\:mm}");
+
+                string changeDetail = changes.Count > 0 
+                    ? $"Memperbarui {existingEvent.NamaAcara}: " + string.Join("; ", changes)
+                    : $"Memperbarui data kebutuhan IT untuk acara {existingEvent.NamaAcara}";
+
                 existingEvent.NamaAcara = EditEvent.NamaAcara;
-                existingEvent.Lokasi = EditEvent.Lokasi;
+                existingEvent.IdLokasi = EditEvent.IdLokasi;
                 existingEvent.Tanggal = EditEventDate;
                 existingEvent.JamMulai = EditEventStart.ToTimeSpan();
                 existingEvent.JamSelesai = EditEventEnd.ToTimeSpan();
@@ -2012,7 +2183,7 @@ else
                 {
                     existingEvent.Kebutuhan.Add(new KebutuhanAcara
                     {
-                        JenisKebutuhan = need.JenisKebutuhan,
+                        IdBarang = need.IdBarang,
                         Jumlah = need.Jumlah,
                         Keterangan = need.Keterangan
                     });
@@ -2032,6 +2203,15 @@ else
                         });
                     }
                 }
+
+                // Insert Audit Log
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Edit Acara",
+                    Detail = changeDetail
+                });
 
                 await DbContext.SaveChangesAsync();
                 ShowNotificationWithTimer($"Acara '{existingEvent.NamaAcara}' berhasil diperbarui.");
@@ -2084,11 +2264,21 @@ else
     {
         try
         {
-            var tek = await DbContext.MappingTeknisi.FindAsync(EditTeknisi.IdTeknisi);
+            var tek = await DbContext.MappingTeknisi.Include(t=>t.User).FirstOrDefaultAsync(t=>t.IdTeknisi == EditTeknisi.IdTeknisi);
             if (tek != null)
             {
                 tek.Spesialisasi = EditTeknisi.Spesialisasi;
                 tek.StatusKetersediaan = EditTeknisi.StatusKetersediaan;
+                
+                // Insert Audit Log
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Edit Teknisi",
+                    Detail = $"Memperbarui spesialisasi/status ketersediaan teknisi '{tek.User?.Username}'"
+                });
+
                 await DbContext.SaveChangesAsync();
                 ShowNotificationWithTimer($"Data teknisi '{tek.User?.Username}' berhasil diperbarui.");
             }
@@ -2116,14 +2306,14 @@ else
                 {
                     IdAcara = eventItem.IdAcara,
                     IdTeknisi = SelectedTeknisiIdForAssign,
-                    IdUserAdmin = 1, // Admin Pak Adit
+                    IdPenugasTeknisi = 1, // Admin Pak Adit
                     StatusPenugasan = "Ditugaskan",
                 };
                 
                 DbContext.Penugasan.Add(penugasan);
 
                 // Update technician availability status to "Sibuk"
-                var tek = await DbContext.MappingTeknisi.FindAsync(SelectedTeknisiIdForAssign);
+                var tek = await DbContext.MappingTeknisi.Include(t => t.User).FirstOrDefaultAsync(t => t.IdTeknisi == SelectedTeknisiIdForAssign);
                 if (tek != null)
                 {
                     tek.StatusKetersediaan = "Sibuk";
@@ -2134,6 +2324,15 @@ else
                         Status = "Unread"
                     });
                 }
+
+                // Insert Audit Log
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Assign Teknisi",
+                    Detail = $"Menugaskan '{tek?.User?.Username ?? "Teknisi"}' untuk mengelola acara '{eventItem.NamaAcara}'"
+                });
 
                 await DbContext.SaveChangesAsync();
                 
@@ -2146,6 +2345,12 @@ else
         {
             ShowNotificationWithTimer($"Gagal menugaskan teknisi: {ex.Message}");
         }
+    }
+
+    private void HandleMenuChange(string menu)
+    {
+        ActiveMenu = menu;
+        StateHasChanged();
     }
 
     // Technician Sign Handlers
@@ -2367,19 +2572,6 @@ else
                 var penugasan = fullEvent.PenugasanList.FirstOrDefault();
                 var namaTeknisi = penugasan?.Teknisi?.User?.Username ?? "Tidak Ada";
 
-                // Add to Riwayat
-                var riwayat = new RiwayatAcara
-                {
-                    IdAcara = fullEvent.IdAcara,
-                    IdPenugasan = penugasan?.IdPenugasan ?? 0,
-                    NamaAcara = fullEvent.NamaAcara,
-                    NamaTeknisi = namaTeknisi,
-                    TanggalAcara = fullEvent.Tanggal,
-                    DokumentasiKegiatanFile = penugasan?.DokumentasiKegiatanFile,
-                    WaktuSelesai = DateTime.Now
-                };
-                DbContext.RiwayatAcara.Add(riwayat);
-
                 // Update technician availability back to "Tersedia"
                 if (penugasan?.Teknisi != null)
                 {
@@ -2447,6 +2639,56 @@ else
         
         UserModalTitle = "Edit Pengguna";
         ShowUserModal = true;
+    }
+
+    private async Task DeleteUser(User user)
+    {
+        try
+        {
+            var dbUser = await DbContext.Users
+                .FirstOrDefaultAsync(u => u.IdUser == user.IdUser);
+                
+            if (dbUser != null)
+            {
+                // Prevent deletion of sys admin or currently logged in user
+                if (LoggedInUser != null && dbUser.IdUser == LoggedInUser.IdUser)
+                {
+                    ShowNotificationWithTimer("Tidak dapat menghapus akun Anda sendiri!");
+                    return;
+                }
+
+                // Check FK constraints
+                bool isHelpdeskInUse = await DbContext.SupportAcara.AnyAsync(s => s.IdPembuatAcara == dbUser.IdUser);
+                if (isHelpdeskInUse)
+                {
+                    ShowNotificationWithTimer("Gagal: Pengguna ini sudah membuat/terhubung dengan Acara (Helpdesk).");
+                    return;
+                }
+                
+                bool isAdminInUse = await DbContext.Penugasan.AnyAsync(p => p.IdPenugasTeknisi == dbUser.IdUser);
+                var tek = await DbContext.MappingTeknisi.FirstOrDefaultAsync(m => m.IdUser == dbUser.IdUser);
+                bool isTekInUse = tek != null && await DbContext.Penugasan.AnyAsync(p => p.IdTeknisi == tek.IdTeknisi);
+
+                if (isAdminInUse || isTekInUse)
+                {
+                    ShowNotificationWithTimer("Gagal: Pengguna ini memiliki sejarah penugasan teknisi (tidak bisa dihapus karena riwayat).");
+                    return;
+                }
+
+                // Safe to delete
+                if (tek != null) DbContext.MappingTeknisi.Remove(tek);
+                DbContext.Users.Remove(dbUser);
+                
+                await DbContext.SaveChangesAsync();
+                ShowNotificationWithTimer($"Pengguna '{dbUser.Username}' berhasil dihapus dari sistem.");
+                
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowNotificationWithTimer($"Gagal menghapus pengguna: {ex.Message}");
+        }
     }
 
     private async Task HandleSaveUser()
@@ -2641,7 +2883,6 @@ else
         try
         {
             // Clear tables
-            DbContext.RiwayatAcara.RemoveRange(DbContext.RiwayatAcara);
             DbContext.Penugasan.RemoveRange(DbContext.Penugasan);
             DbContext.KebutuhanAcara.RemoveRange(DbContext.KebutuhanAcara);
             DbContext.SupportAcara.RemoveRange(DbContext.SupportAcara);
@@ -2659,33 +2900,33 @@ else
                 new SupportAcara 
                 { 
                     IdAcara = 1, 
-                    IdUserHelpdesk = 2, 
+                    IdPembuatAcara = 2, 
                     NamaAcara = "Rapat Pleno Senat Universitas", 
                     Tanggal = DateTime.Today, 
                     JamMulai = new TimeSpan(9, 0, 0), 
                     JamSelesai = new TimeSpan(12, 0, 0), 
-                    Lokasi = "Aula Utama Gedung Rektorat Lt. 3", 
+                    IdLokasi = 1, 
                     StatusAcara = "Belum Ditugaskan",
                     Kebutuhan = new List<KebutuhanAcara>
                     {
-                        new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Microphone wireless 4 buah & Audio Mixer" },
-                        new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Proyektor utama & Layar gantung" }
+                        new KebutuhanAcara { IdBarang = 2, Jumlah = 1, Keterangan = "Microphone wireless 4 buah & Audio Mixer" },
+                        new KebutuhanAcara { IdBarang = 1, Jumlah = 1, Keterangan = "Proyektor utama & Layar gantung" }
                     }
                 },
                 new SupportAcara 
                 { 
                     IdAcara = 2, 
-                    IdUserHelpdesk = 2, 
+                    IdPembuatAcara = 2, 
                     NamaAcara = "Seminar Nasional IT & AI", 
                     Tanggal = DateTime.Today.AddDays(1), 
                     JamMulai = new TimeSpan(13, 0, 0), 
                     JamSelesai = new TimeSpan(16, 30, 0), 
-                    Lokasi = "Auditorium BJ Habibie", 
+                    IdLokasi = 2, 
                     StatusAcara = "Belum Ditugaskan",
                     Kebutuhan = new List<KebutuhanAcara>
                     {
-                        new KebutuhanAcara { JenisKebutuhan = "Layar / Screen", Jumlah = 1, Keterangan = "Videotron latar panggung utama" },
-                        new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Sound system konser outdoor / semi-indoor" }
+                        new KebutuhanAcara { IdBarang = 3, Jumlah = 1, Keterangan = "Videotron latar panggung utama" },
+                        new KebutuhanAcara { IdBarang = 2, Jumlah = 1, Keterangan = "Sound system konser outdoor / semi-indoor" }
                     }
                 }
             );
@@ -2700,3 +2941,7 @@ else
         }
     }
 }
+
+
+
+

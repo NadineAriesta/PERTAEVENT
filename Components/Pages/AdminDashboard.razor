@@ -182,7 +182,7 @@
 
                                             <div class="small text-muted">
 
-                                                <span>📍</span> @eventItem.Lokasi <br/>
+                                                <span>📍</span> @eventItem.LokasiNavigation?.NamaLokasi <br/>
 
                                                 <span>🕒</span> @eventItem.Tanggal.ToString("dd MMM yyyy") | @eventItem.JamMulai.ToString(@"hh\:mm") - @eventItem.JamSelesai.ToString(@"hh\:mm")
 
@@ -204,25 +204,7 @@
 
                                                 {
 
-                                                    var clName = UIHelpers.GetNeedBaseClass(need.JenisKebutuhan);
-
-                                                    var icon = UIHelpers.GetNeedIcon(need.JenisKebutuhan);
-
-                                                    var cleanedName = UIHelpers.CleanNeedName(need.JenisKebutuhan);
-
-                                                    <span class="kebutuhan-badge-item @clName">
-
-                                                        <span class="badge-icon">@icon</span>
-
-                                                        @cleanedName
-
-                                                        <span class="kebutuhan-qty-pill">
-
-                                                            <span>@need.Jumlah</span>
-
-                                                        </span>
-
-                                                    </span>
+                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem;">@need.Barang?.NamaBarang <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
 
                                                 }
 
@@ -260,7 +242,7 @@
 
                                                         <span class="text-success fw-bold">
 
-                                                            ✍️ Disetujui Admin (@(assignment.Admin?.Username ?? "Admin"))
+                                                            ✍️ Disetujui Admin (@(assignment.PenugasTeknisi?.Username ?? "Admin"))
 
                                                         </span>
 
@@ -754,33 +736,29 @@
 
                                         {
 
+                                            var assignment = riwayat.PenugasanList?.FirstOrDefault();
+
                                             <tr>
 
+                                                <td class="fw-bold" style="color: #072C4C;">@riwayat.NamaAcara</td>
+
                                                 <td>
 
-                                                    <strong class="text-dark">@riwayat.NamaAcara</strong>
-
-                                                    <div class="text-muted small">Riwayat ID: @riwayat.IdRiwayat</div>
+                                                    <span class="badge bg-dark">@(assignment?.Teknisi?.User?.Username ?? "N/A")</span>
 
                                                 </td>
 
-                                                <td>
+                                                <td>📅 @riwayat.Tanggal.ToString("dd MMM yyyy")</td>
 
-                                                    <span class="badge bg-dark">@riwayat.NamaTeknisi</span>
-
-                                                </td>
-
-                                                <td>📅 @riwayat.TanggalAcara.ToString("dd MMM yyyy")</td>
-
-                                                <td>🕒 @riwayat.WaktuSelesai.ToString("dd MMM yyyy HH:mm")</td>
+                                                <td>🕒 @(assignment?.WaktuUpload?.ToString("dd MMM yyyy HH:mm") ?? "N/A")</td>
 
                                                 <td>
 
-                                                    @if (!string.IsNullOrEmpty(riwayat.DokumentasiKegiatanFile))
+                                                    @if (!string.IsNullOrEmpty(assignment?.DokumentasiKegiatanFile))
 
                                                     {
 
-                                                        <img src="@riwayat.DokumentasiKegiatanFile" class="img-thumbnail" style="max-height: 60px; cursor: pointer; border: 2px solid var(--pertamina-blue);" @onclick="() => OnPreviewImage.InvokeAsync(riwayat.DokumentasiKegiatanFile)" title="Klik untuk memperbesar" />
+                                                        <img src="@assignment.DokumentasiKegiatanFile" class="img-thumbnail" style="max-height: 60px; cursor: pointer; border: 2px solid var(--pertamina-blue);" @onclick="() => OnPreviewImage.InvokeAsync(assignment.DokumentasiKegiatanFile)" title="Klik untuk memperbesar" />
 
                                                     }
 
@@ -842,7 +820,7 @@
 
     [Parameter]
 
-    public List<RiwayatAcara> HistoryEvents { get; set; } = new();
+    public List<SupportAcara> HistoryEvents { get; set; } = new();
 
 
 
@@ -944,7 +922,7 @@
 
                 list = list.Where(e => (e.NamaAcara?.ToLower().Contains(txt) ?? false) || 
 
-                                       (e.Lokasi?.ToLower().Contains(txt) ?? false));
+                                       (e.LokasiNavigation?.NamaLokasi?.ToLower().Contains(txt) ?? false));
 
             }
 

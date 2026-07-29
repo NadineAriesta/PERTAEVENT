@@ -44,7 +44,7 @@
             <div class="card-header-accent"></div>
             <div class="p-4">
                 <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="fs-3">📝</span>
+                    <span class="fs-3">ðŸ“</span>
                     <h3 class="m-0" style="color: var(--pertamina-blue);">Input Acara & Kebutuhan</h3>
                 </div>
                 <p class="text-muted">Masukkan data acara secara manual beserta detail kebutuhan logistik IT.</p>
@@ -56,8 +56,13 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">Lokasi Ruangan</label>
-                        <input type="text" class="form-control premium-input" @bind="NewEvent.Lokasi" placeholder="Contoh: Gedung A Lantai 2, Aula Rektorat" required />
+                        <select class="form-select premium-input" @bind="NewEvent.IdLokasi" required>
+                            <option value="">-- Pilih Lokasi --</option>
+                            @foreach (var lok in MasterLokasiList)
+                            {
+                                <option value="@lok.IdLokasi">@lok.NamaLokasi</option>
+                            }
+                        </select>
                     </div>
 
                     <div class="row mb-3">
@@ -95,13 +100,11 @@
                                 var index = i;
                                 <div class="row g-2 mb-2 align-items-center">
                                     <div class="col-5">
-                                        <select class="form-select premium-input py-2" @bind="NewNeedsList[index].JenisKebutuhan">
-                                            <option value="Proyektor">Proyektor</option>
-                                            <option value="Sound System">Sound System</option>
-                                            <option value="Layar / Screen">Layar / Screen</option>
-                                            <option value="Multimedia Laptop">Multimedia Laptop</option>
-                                            <option value="Kabel Roll & Kelistrikan">Kabel & Listrik</option>
-                                            <option value="Lainnya">Lainnya</option>
+                                        <select class="form-select premium-input py-2" @bind="NewNeedsList[index].IdBarang">
+                                            @foreach (var brg in MasterBarangList)
+                                            {
+                                                <option value="@brg.IdBarang">@brg.NamaBarang</option>
+                                            }
                                         </select>
                                     </div>
                                     <div class="col-3">
@@ -164,22 +167,13 @@
                                         <td>
                                             <div>📅 @eventItem.Tanggal.ToString("dd MMM yyyy")</div>
                                             <div class="small text-muted">🕒 @eventItem.JamMulai.ToString(@"hh\:mm") - @eventItem.JamSelesai.ToString(@"hh\:mm")</div>
-                                            <div class="small fw-semibold text-primary">📍 @eventItem.Lokasi</div>
+                                            <div class="small fw-semibold text-primary">📍 @eventItem.LokasiNavigation?.NamaLokasi</div>
                                         </td>
                                         <td>
                                             <div class="kebutuhan-badge-wrapper">
                                                 @foreach (var need in eventItem.Kebutuhan)
                                                 {
-                                                    var clName = UIHelpers.GetNeedBaseClass(need.JenisKebutuhan);
-                                                    var icon = UIHelpers.GetNeedIcon(need.JenisKebutuhan);
-                                                    var cleanedName = UIHelpers.CleanNeedName(need.JenisKebutuhan);
-                                                    <span class="kebutuhan-badge-item @clName">
-                                                        <span class="badge-icon">@icon</span>
-                                                        @cleanedName
-                                                        <span class="kebutuhan-qty-pill">
-                                                            <span>@need.Jumlah</span>
-                                                        </span>
-                                                    </span>
+                                                    <span class="badge" style="background: #e9ecef; color: #333; font-size: 0.75rem; border: 1px solid rgba(0,0,0,0.1);">@need.Barang?.NamaBarang <strong style="margin-left: 4px;">&times;@need.Jumlah</strong></span>
                                                 }
                                             </div>
                                         </td>
@@ -212,20 +206,30 @@
     [Parameter]
     public EventCallback OnEventSaved { get; set; }
 
+    [Parameter]
+    public List<MasterLokasi> MasterLokasiList { get; set; } = new();
+
+    [Parameter]
+    public List<MasterBarang> MasterBarangList { get; set; } = new();
+
     // Helpdesk Form Bindings
     private SupportAcara NewEvent { get; set; } = new();
     private DateTime NewEventDate { get; set; } = DateTime.Today;
     private TimeOnly NewEventStart { get; set; } = new TimeOnly(8, 0);
     private TimeOnly NewEventEnd { get; set; } = new TimeOnly(17, 0);
-    private List<KebutuhanAcara> NewNeedsList { get; set; } = new()
+    private List<KebutuhanAcara> NewNeedsList { get; set; } = new();
+
+    protected override void OnInitialized()
     {
-        new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Layar utama" },
-        new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Wireless mic 2 buah" }
-    };
+        if (MasterBarangList.Any())
+        {
+            NewNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList.First().IdBarang, Jumlah = 1, Keterangan = "Layar utama" });
+        }
+    }
 
     private void AddNeedInputRow()
     {
-        NewNeedsList.Add(new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "" });
+        NewNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList.FirstOrDefault()?.IdBarang ?? 1, Jumlah = 1, Keterangan = "" });
     }
 
     private void RemoveNeedInputRow(int index)
@@ -244,7 +248,7 @@
             NewEvent.JamMulai = NewEventStart.ToTimeSpan();
             NewEvent.JamSelesai = NewEventEnd.ToTimeSpan();
             NewEvent.Tanggal = NewEventDate;
-            NewEvent.IdUserHelpdesk = LoggedInUser?.IdUser ?? 2;
+            NewEvent.IdPembuatAcara = LoggedInUser?.IdUser ?? 2;
             NewEvent.StatusAcara = "Belum Ditugaskan";
 
             // Add needs
@@ -252,7 +256,7 @@
             {
                 NewEvent.Kebutuhan.Add(new KebutuhanAcara
                 {
-                    JenisKebutuhan = need.JenisKebutuhan,
+                    IdBarang = need.IdBarang,
                     Jumlah = need.Jumlah,
                     Keterangan = need.Keterangan
                 });
@@ -268,11 +272,11 @@
             NewEventDate = DateTime.Today;
             NewEventStart = new TimeOnly(8, 0);
             NewEventEnd = new TimeOnly(17, 0);
-            NewNeedsList = new List<KebutuhanAcara>
+            NewNeedsList = new List<KebutuhanAcara>();
+            if (MasterBarangList != null && MasterBarangList.Any())
             {
-                new KebutuhanAcara { JenisKebutuhan = "Proyektor", Jumlah = 1, Keterangan = "Layar utama" },
-                new KebutuhanAcara { JenisKebutuhan = "Sound System", Jumlah = 1, Keterangan = "Wireless mic 2 buah" }
-            };
+                NewNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList.First().IdBarang, Jumlah = 1, Keterangan = "Layar utama" });
+            }
 
             await OnEventSaved.InvokeAsync();
         }
@@ -299,12 +303,13 @@
     {
         return status switch
         {
-            "Belum Ditugaskan" => "🔴",
-            "Ditugaskan" => "🟡",
-            "Dikonfirmasi" => "🟢",
-            "Dokumen Diunggah" => "🔵",
-            "Selesai" => "⚫",
-            _ => "⚪"
+            "Belum Ditugaskan" => "ðŸ”´",
+            "Ditugaskan" => "ðŸŸ¡",
+            "Dikonfirmasi" => "ðŸŸ¢",
+            "Dokumen Diunggah" => "ðŸ”µ",
+            "Selesai" => "âš«",
+            _ => "âšª"
         };
     }
 }
+
