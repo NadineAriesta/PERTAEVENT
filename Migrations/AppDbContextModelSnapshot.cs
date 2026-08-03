@@ -49,7 +49,41 @@ namespace EventSupportApp.Migrations
 
                     b.HasKey("IdLog");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
+                });
+
+            modelBuilder.Entity("EventSupportApp.Data.DiskusiPenugasan", b =>
+                {
+                    b.Property<int>("IdDiskusi")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDiskusi"));
+
+                    b.Property<int>("IdAcara")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPenugasan")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUserPengirim")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Pesan")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("WaktuKirim")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("IdDiskusi");
+
+                    b.HasIndex("IdPenugasan");
+
+                    b.HasIndex("IdUserPengirim");
+
+                    b.ToTable("DiskusiPenugasan", (string)null);
                 });
 
             modelBuilder.Entity("EventSupportApp.Data.KebutuhanAcara", b =>
@@ -61,9 +95,6 @@ namespace EventSupportApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdKebutuhan"));
 
                     b.Property<int>("IdAcara")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdBarang")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsAmbil")
@@ -80,74 +111,77 @@ namespace EventSupportApp.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<string>("NamaBarang")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("IdKebutuhan");
 
                     b.HasIndex("IdAcara");
 
-                    b.HasIndex("IdBarang");
-
-                    b.ToTable("KebutuhanAcara");
+                    b.ToTable("KebutuhanAcara", (string)null);
 
                     b.HasData(
                         new
                         {
                             IdKebutuhan = 1,
                             IdAcara = 1,
-                            IdBarang = 1,
                             IsAmbil = true,
                             IsKembali = true,
                             Jumlah = 1,
-                            Keterangan = "Proyektor utama & Layar gantung"
+                            Keterangan = "Proyektor utama & Layar gantung",
+                            NamaBarang = "Proyektor"
                         },
                         new
                         {
                             IdKebutuhan = 2,
                             IdAcara = 1,
-                            IdBarang = 3,
                             IsAmbil = true,
                             IsKembali = true,
                             Jumlah = 1,
-                            Keterangan = "Microphone wireless 4 buah & Audio Mixer"
+                            Keterangan = "Microphone wireless 4 buah & Audio Mixer",
+                            NamaBarang = "Sound System"
                         },
                         new
                         {
                             IdKebutuhan = 3,
                             IdAcara = 1,
-                            IdBarang = 4,
                             IsAmbil = true,
                             IsKembali = true,
                             Jumlah = 4,
-                            Keterangan = ""
+                            Keterangan = "",
+                            NamaBarang = "Mic Wireless"
                         },
                         new
                         {
                             IdKebutuhan = 4,
                             IdAcara = 2,
-                            IdBarang = 12,
                             IsAmbil = false,
                             IsKembali = false,
                             Jumlah = 1,
-                            Keterangan = "Videotron latar panggung utama"
+                            Keterangan = "Videotron latar panggung utama",
+                            NamaBarang = "Proyektor"
                         },
                         new
                         {
                             IdKebutuhan = 5,
                             IdAcara = 2,
-                            IdBarang = 3,
                             IsAmbil = false,
                             IsKembali = false,
                             Jumlah = 1,
-                            Keterangan = "Sound system outdoor"
+                            Keterangan = "Sound system outdoor",
+                            NamaBarang = "Sound System"
                         },
                         new
                         {
                             IdKebutuhan = 6,
                             IdAcara = 3,
-                            IdBarang = 1,
                             IsAmbil = false,
                             IsKembali = false,
                             Jumlah = 1,
-                            Keterangan = "Proyektor utama & Layar gantung"
+                            Keterangan = "Proyektor utama & Layar gantung",
+                            NamaBarang = "Proyektor"
                         });
                 });
 
@@ -176,7 +210,7 @@ namespace EventSupportApp.Migrations
 
                     b.HasIndex("IdUser");
 
-                    b.ToTable("MappingTeknisi");
+                    b.ToTable("MappingTeknisi", (string)null);
 
                     b.HasData(
                         new
@@ -199,186 +233,6 @@ namespace EventSupportApp.Migrations
                             IdUser = 5,
                             Spesialisasi = "Multimedia & Kelistrikan",
                             StatusKetersediaan = "Sibuk"
-                        });
-                });
-
-            modelBuilder.Entity("EventSupportApp.Data.MasterBarang", b =>
-                {
-                    b.Property<int>("IdBarang")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBarang"));
-
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Kategori")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("NamaBarang")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("IdBarang");
-
-                    b.ToTable("MasterBarang");
-
-                    b.HasData(
-                        new
-                        {
-                            IdBarang = 1,
-                            Icon = "📹",
-                            Kategori = "Video",
-                            NamaBarang = "Proyektor"
-                        },
-                        new
-                        {
-                            IdBarang = 2,
-                            Icon = "🖥️",
-                            Kategori = "Video",
-                            NamaBarang = "Layar Proyektor"
-                        },
-                        new
-                        {
-                            IdBarang = 3,
-                            Icon = "🔊",
-                            Kategori = "Audio",
-                            NamaBarang = "Sound System"
-                        },
-                        new
-                        {
-                            IdBarang = 4,
-                            Icon = "🎤",
-                            Kategori = "Audio",
-                            NamaBarang = "Mic Wireless"
-                        },
-                        new
-                        {
-                            IdBarang = 5,
-                            Icon = "🎤",
-                            Kategori = "Audio",
-                            NamaBarang = "Mic Kabel"
-                        },
-                        new
-                        {
-                            IdBarang = 6,
-                            Icon = "💻",
-                            Kategori = "Komputer",
-                            NamaBarang = "Laptop"
-                        },
-                        new
-                        {
-                            IdBarang = 7,
-                            Icon = "🔌",
-                            Kategori = "Kelistrikan",
-                            NamaBarang = "Kabel Roll"
-                        },
-                        new
-                        {
-                            IdBarang = 8,
-                            Icon = "🔌",
-                            Kategori = "Kelistrikan",
-                            NamaBarang = "Kabel HDMI"
-                        },
-                        new
-                        {
-                            IdBarang = 9,
-                            Icon = "📍",
-                            Kategori = "Aksesoris",
-                            NamaBarang = "Pointer Presentasi"
-                        },
-                        new
-                        {
-                            IdBarang = 10,
-                            Icon = "📷",
-                            Kategori = "Video",
-                            NamaBarang = "Webcam"
-                        },
-                        new
-                        {
-                            IdBarang = 11,
-                            Icon = "🎛️",
-                            Kategori = "Audio",
-                            NamaBarang = "Mixer Audio"
-                        },
-                        new
-                        {
-                            IdBarang = 12,
-                            Icon = "📺",
-                            Kategori = "Video",
-                            NamaBarang = "Videotron / LED Wall"
-                        });
-                });
-
-            modelBuilder.Entity("EventSupportApp.Data.MasterLokasi", b =>
-                {
-                    b.Property<int>("IdLokasi")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLokasi"));
-
-                    b.Property<string>("Keterangan")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("NamaLokasi")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("IdLokasi");
-
-                    b.ToTable("MasterLokasi");
-
-                    b.HasData(
-                        new
-                        {
-                            IdLokasi = 1,
-                            Keterangan = "Ruang rapat utama lantai 1",
-                            NamaLokasi = "Gedung Rektorat Lt. 1"
-                        },
-                        new
-                        {
-                            IdLokasi = 2,
-                            Keterangan = "Ruang rapat lantai 2",
-                            NamaLokasi = "Gedung Rektorat Lt. 2"
-                        },
-                        new
-                        {
-                            IdLokasi = 3,
-                            Keterangan = "Aula besar untuk acara resmi",
-                            NamaLokasi = "Gedung Rektorat Lt. 3 - Aula Utama"
-                        },
-                        new
-                        {
-                            IdLokasi = 4,
-                            Keterangan = "Auditorium utama kampus",
-                            NamaLokasi = "Auditorium BJ Habibie"
-                        },
-                        new
-                        {
-                            IdLokasi = 5,
-                            Keterangan = "Ruang serbaguna untuk seminar dan workshop",
-                            NamaLokasi = "Ruang Serbaguna Gedung B"
-                        },
-                        new
-                        {
-                            IdLokasi = 6,
-                            Keterangan = "Lab komputer untuk pelatihan",
-                            NamaLokasi = "Lab Komputer Gedung C"
-                        },
-                        new
-                        {
-                            IdLokasi = 7,
-                            Keterangan = "Area outdoor untuk event besar",
-                            NamaLokasi = "Lapangan Utama"
                         });
                 });
 
@@ -414,7 +268,7 @@ namespace EventSupportApp.Migrations
 
                     b.HasIndex("IdUser");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("EventSupportApp.Data.Penugasan", b =>
@@ -463,7 +317,7 @@ namespace EventSupportApp.Migrations
 
                     b.HasIndex("IdTeknisi");
 
-                    b.ToTable("Penugasan");
+                    b.ToTable("Penugasan", (string)null);
 
                     b.HasData(
                         new
@@ -511,7 +365,7 @@ namespace EventSupportApp.Migrations
 
                     b.HasKey("IdRole");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -539,9 +393,6 @@ namespace EventSupportApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAcara"));
 
-                    b.Property<int>("IdLokasi")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdPembuatAcara")
                         .HasColumnType("int");
 
@@ -550,6 +401,11 @@ namespace EventSupportApp.Migrations
 
                     b.Property<TimeSpan>("JamSelesai")
                         .HasColumnType("time");
+
+                    b.Property<string>("Lokasi")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("NamaAcara")
                         .IsRequired()
@@ -566,20 +422,18 @@ namespace EventSupportApp.Migrations
 
                     b.HasKey("IdAcara");
 
-                    b.HasIndex("IdLokasi");
-
                     b.HasIndex("IdPembuatAcara");
 
-                    b.ToTable("SupportAcara");
+                    b.ToTable("SupportAcara", (string)null);
 
                     b.HasData(
                         new
                         {
                             IdAcara = 1,
-                            IdLokasi = 1,
                             IdPembuatAcara = 2,
                             JamMulai = new TimeSpan(0, 8, 0, 0, 0),
                             JamSelesai = new TimeSpan(0, 12, 0, 0, 0),
+                            Lokasi = "Gedung Rektorat Lt. 1",
                             NamaAcara = "Rapat Pleno Dekanat",
                             StatusAcara = "Selesai",
                             Tanggal = new DateTime(2026, 7, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -587,10 +441,10 @@ namespace EventSupportApp.Migrations
                         new
                         {
                             IdAcara = 2,
-                            IdLokasi = 4,
                             IdPembuatAcara = 2,
                             JamMulai = new TimeSpan(0, 8, 0, 0, 0),
                             JamSelesai = new TimeSpan(0, 12, 0, 0, 0),
+                            Lokasi = "Auditorium BJ Habibie",
                             NamaAcara = "Seminar Nasional IT & AI",
                             StatusAcara = "Ditugaskan",
                             Tanggal = new DateTime(2026, 7, 25, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -598,13 +452,13 @@ namespace EventSupportApp.Migrations
                         new
                         {
                             IdAcara = 3,
-                            IdLokasi = 3,
                             IdPembuatAcara = 2,
                             JamMulai = new TimeSpan(0, 9, 0, 0, 0),
                             JamSelesai = new TimeSpan(0, 12, 0, 0, 0),
+                            Lokasi = "Aula Utama Gedung Rektorat Lt. 3",
                             NamaAcara = "Rapat Pleno Senat Universitas",
                             StatusAcara = "Ditugaskan",
-                            Tanggal = new DateTime(2026, 7, 29, 0, 0, 0, 0, DateTimeKind.Local)
+                            Tanggal = new DateTime(2026, 7, 28, 0, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 
@@ -636,7 +490,7 @@ namespace EventSupportApp.Migrations
 
                     b.HasIndex("IdRole");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -681,6 +535,25 @@ namespace EventSupportApp.Migrations
                         });
                 });
 
+            modelBuilder.Entity("EventSupportApp.Data.DiskusiPenugasan", b =>
+                {
+                    b.HasOne("EventSupportApp.Data.Penugasan", "Penugasan")
+                        .WithMany("DiskusiList")
+                        .HasForeignKey("IdPenugasan")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EventSupportApp.Data.User", "Pengirim")
+                        .WithMany()
+                        .HasForeignKey("IdUserPengirim")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Pengirim");
+
+                    b.Navigation("Penugasan");
+                });
+
             modelBuilder.Entity("EventSupportApp.Data.KebutuhanAcara", b =>
                 {
                     b.HasOne("EventSupportApp.Data.SupportAcara", "Acara")
@@ -689,15 +562,7 @@ namespace EventSupportApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventSupportApp.Data.MasterBarang", "Barang")
-                        .WithMany()
-                        .HasForeignKey("IdBarang")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Acara");
-
-                    b.Navigation("Barang");
                 });
 
             modelBuilder.Entity("EventSupportApp.Data.MappingTeknisi", b =>
@@ -751,19 +616,11 @@ namespace EventSupportApp.Migrations
 
             modelBuilder.Entity("EventSupportApp.Data.SupportAcara", b =>
                 {
-                    b.HasOne("EventSupportApp.Data.MasterLokasi", "LokasiNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdLokasi")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("EventSupportApp.Data.User", "PembuatAcara")
                         .WithMany()
                         .HasForeignKey("IdPembuatAcara")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("LokasiNavigation");
 
                     b.Navigation("PembuatAcara");
                 });
@@ -777,6 +634,11 @@ namespace EventSupportApp.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("EventSupportApp.Data.Penugasan", b =>
+                {
+                    b.Navigation("DiskusiList");
                 });
 
             modelBuilder.Entity("EventSupportApp.Data.SupportAcara", b =>

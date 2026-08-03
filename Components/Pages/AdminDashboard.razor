@@ -91,11 +91,8 @@
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
 
                     <div>
-
                         <h3 class="m-0" style="color: var(--pertamina-blue);">Monitor Alur Penugasan & Approval</h3>
-
-                        <p class="text-muted m-0">Menyelesaikan masalah miss-komunikasi approval tanda tangan (sign) dan bukti foto teknisi.</p>
-
+                        <p class="text-muted m-0">Pantau status penugasan, progres persetujuan (sign), dan laporan dokumentasi dari teknisi.</p>
                     </div>
 
                 </div>
@@ -204,7 +201,7 @@
 
                                                 {
 
-                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem;">@need.Barang?.NamaBarang <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
+                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem;">@need.Barang?.NamaBarang @(string.IsNullOrEmpty(need.Keterangan) ? "" : $"({need.Keterangan})") <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
 
                                                 }
 
@@ -273,6 +270,14 @@
                                                         }
 
                                                     </div>
+
+                                                    @if (!string.IsNullOrEmpty(assignment.CatatanTeknisi))
+                                                    {
+                                                        <div class="alert alert-warning p-2 mt-2 mb-0 small" style="border-left: 4px solid #f59e0b; background-color: #fffbeb;">
+                                                            <strong>💬 Catatan / Pengaduan:</strong><br/>
+                                                            <span class="text-dark">@assignment.CatatanTeknisi</span>
+                                                        </div>
+                                                    }
 
                                                 </div>
 

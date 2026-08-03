@@ -163,6 +163,16 @@
                                         <td>
                                             <strong class="text-dark">@eventItem.NamaAcara</strong>
                                             <div class="text-muted small">ID: @eventItem.IdAcara</div>
+                                            @{
+                                                var assignment = eventItem.PenugasanList?.FirstOrDefault();
+                                                if (assignment != null && !string.IsNullOrEmpty(assignment.CatatanTeknisi))
+                                                {
+                                                    <div class="alert alert-warning p-2 mt-2 mb-0 small" style="border-left: 4px solid #f59e0b; background-color: #fffbeb;">
+                                                        <strong>💬 Catatan / Pengaduan:</strong><br/>
+                                                        <span class="text-dark">@assignment.CatatanTeknisi</span>
+                                                    </div>
+                                                }
+                                            }
                                         </td>
                                         <td>
                                             <div>📅 @eventItem.Tanggal.ToString("dd MMM yyyy")</div>
