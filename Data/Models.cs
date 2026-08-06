@@ -29,10 +29,18 @@ namespace EventSupportApp.Data
         
         [MaxLength(50)]
         public string Kategori { get; set; } = string.Empty; // e.g., Audio, Video, Kelistrikan
-        
+
         [MaxLength(50)]
         public string Icon { get; set; } = "🛠️";
+
+        /// <summary>Kode seri/inventaris unik, misal: SN01, PRJ-02</summary>
+        [MaxLength(50)]
+        public string KodeBarang { get; set; } = string.Empty;
+
+        /// <summary>Total unit yang dimiliki perusahaan</summary>
+        public int JumlahStok { get; set; } = 1;
     }
+
 
     public class User
     {

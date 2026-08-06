@@ -31,27 +31,31 @@ using (var scope = app.Services.CreateScope())
         new MasterLokasi { IdLokasi = 6, NamaLokasi = "Gedung kolaboratif Lt.2", Keterangan = "Gedung kolaboratif Lantai 2" }
     };
 
-    var existingLocations = db.MasterLokasi.ToList();
-    foreach (var target in targetLocations)
+    try
     {
-        var existing = existingLocations.FirstOrDefault(l => l.IdLokasi == target.IdLokasi);
-        if (existing == null)
+        var existingLocations = db.MasterLokasi.ToList();
+        foreach (var target in targetLocations)
         {
-            db.MasterLokasi.Add(target);
+            var existing = existingLocations.FirstOrDefault(l => l.IdLokasi == target.IdLokasi);
+            if (existing == null)
+            {
+                // Skip re-inserting hardcoded seed if the ID is missing (causes IDENTITY_INSERT exception) 
+                // OR user intentionally deleted it via UI.
+                continue;
+            }
+            else if (existing.NamaLokasi != target.NamaLokasi || existing.Keterangan != target.Keterangan)
+            {
+                existing.NamaLokasi = target.NamaLokasi;
+                existing.Keterangan = target.Keterangan;
+                db.MasterLokasi.Update(existing);
+            }
         }
-        else if (existing.NamaLokasi != target.NamaLokasi || existing.Keterangan != target.Keterangan)
-        {
-            existing.NamaLokasi = target.NamaLokasi;
-            existing.Keterangan = target.Keterangan;
-            db.MasterLokasi.Update(existing);
-        }
+        db.SaveChanges();
     }
-    var extraLocations = existingLocations.Where(l => l.IdLokasi > 6).ToList();
-    if (extraLocations.Any())
+    catch (Exception ex)
     {
-        db.MasterLokasi.RemoveRange(extraLocations);
+        Console.WriteLine("Seed sync ignored: " + ex.Message);
     }
-    db.SaveChanges();
     
     // Auto-create AuditLogs if not exists (raw SQL)
     db.Database.ExecuteSqlRaw(@"
