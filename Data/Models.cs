@@ -22,16 +22,19 @@ namespace EventSupportApp.Data
     {
         [Key]
         public int IdBarang { get; set; }
-        
+
+        [MaxLength(20)]
+        public string Code { get; set; } = string.Empty; // Kode unik barang, e.g. PRY-001
+
         [Required]
         [MaxLength(100)]
         public string NamaBarang { get; set; } = string.Empty;
         
         [MaxLength(50)]
         public string Kategori { get; set; } = string.Empty; // e.g., Audio, Video, Kelistrikan
-        
-        [MaxLength(50)]
-        public string Icon { get; set; } = "🛠️";
+
+        /// <summary>Jumlah stok barang yang tersedia di gudang.</summary>
+        public int Stok { get; set; } = 0;
     }
 
     public class User

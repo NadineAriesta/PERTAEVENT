@@ -4,16 +4,19 @@ using EventSupportApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace EventSupportApp.Migrations
+namespace EventSupportApp.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260728170153_AddMasterLokasiBarang")]
+    partial class AddMasterLokasiBarang
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,10 +213,10 @@ namespace EventSupportApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBarang"));
 
-                    b.Property<string>("Code")
+                    b.Property<string>("Icon")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Kategori")
                         .IsRequired()
@@ -225,9 +228,6 @@ namespace EventSupportApp.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Stok")
-                        .HasColumnType("int");
-
                     b.HasKey("IdBarang");
 
                     b.ToTable("MasterBarang");
@@ -236,98 +236,86 @@ namespace EventSupportApp.Migrations
                         new
                         {
                             IdBarang = 1,
-                            Code = "PRY-001",
+                            Icon = "📹",
                             Kategori = "Video",
-                            NamaBarang = "Proyektor",
-                            Stok = 5
+                            NamaBarang = "Proyektor"
                         },
                         new
                         {
                             IdBarang = 2,
-                            Code = "LAY-001",
+                            Icon = "🖥️",
                             Kategori = "Video",
-                            NamaBarang = "Layar Proyektor",
-                            Stok = 5
+                            NamaBarang = "Layar Proyektor"
                         },
                         new
                         {
                             IdBarang = 3,
-                            Code = "SND-001",
+                            Icon = "🔊",
                             Kategori = "Audio",
-                            NamaBarang = "Sound System",
-                            Stok = 3
+                            NamaBarang = "Sound System"
                         },
                         new
                         {
                             IdBarang = 4,
-                            Code = "MCW-001",
+                            Icon = "🎤",
                             Kategori = "Audio",
-                            NamaBarang = "Mic Wireless",
-                            Stok = 10
+                            NamaBarang = "Mic Wireless"
                         },
                         new
                         {
                             IdBarang = 5,
-                            Code = "MCK-001",
+                            Icon = "🎤",
                             Kategori = "Audio",
-                            NamaBarang = "Mic Kabel",
-                            Stok = 8
+                            NamaBarang = "Mic Kabel"
                         },
                         new
                         {
                             IdBarang = 6,
-                            Code = "LPT-001",
+                            Icon = "💻",
                             Kategori = "Komputer",
-                            NamaBarang = "Laptop",
-                            Stok = 4
+                            NamaBarang = "Laptop"
                         },
                         new
                         {
                             IdBarang = 7,
-                            Code = "KBR-001",
+                            Icon = "🔌",
                             Kategori = "Kelistrikan",
-                            NamaBarang = "Kabel Roll",
-                            Stok = 6
+                            NamaBarang = "Kabel Roll"
                         },
                         new
                         {
                             IdBarang = 8,
-                            Code = "KBH-001",
+                            Icon = "🔌",
                             Kategori = "Kelistrikan",
-                            NamaBarang = "Kabel HDMI",
-                            Stok = 10
+                            NamaBarang = "Kabel HDMI"
                         },
                         new
                         {
                             IdBarang = 9,
-                            Code = "PTR-001",
+                            Icon = "📍",
                             Kategori = "Aksesoris",
-                            NamaBarang = "Pointer Presentasi",
-                            Stok = 5
+                            NamaBarang = "Pointer Presentasi"
                         },
                         new
                         {
                             IdBarang = 10,
-                            Code = "WBC-001",
+                            Icon = "📷",
                             Kategori = "Video",
-                            NamaBarang = "Webcam",
-                            Stok = 3
+                            NamaBarang = "Webcam"
                         },
                         new
                         {
                             IdBarang = 11,
-                            Code = "MXR-001",
+                            Icon = "🎛️",
                             Kategori = "Audio",
-                            NamaBarang = "Mixer Audio",
-                            Stok = 2
+                            NamaBarang = "Mixer Audio"
                         },
                         new
                         {
                             IdBarang = 12,
-                            Code = "VDT-001",
+                            Icon = "📺",
                             Kategori = "Video",
-                            NamaBarang = "Videotron / LED Wall",
-                            Stok = 1
+                            NamaBarang = "Videotron / LED Wall"
                         });
                 });
 
@@ -356,38 +344,44 @@ namespace EventSupportApp.Migrations
                         new
                         {
                             IdLokasi = 1,
-                            Keterangan = "Gedung amanah Lantai 1",
-                            NamaLokasi = "Gedung amanah Lt. 1"
+                            Keterangan = "Ruang rapat utama lantai 1",
+                            NamaLokasi = "Gedung Rektorat Lt. 1"
                         },
                         new
                         {
                             IdLokasi = 2,
-                            Keterangan = "Gedung amanah Lantai 2",
-                            NamaLokasi = "Gedung amanah Lt. 2"
+                            Keterangan = "Ruang rapat lantai 2",
+                            NamaLokasi = "Gedung Rektorat Lt. 2"
                         },
                         new
                         {
                             IdLokasi = 3,
-                            Keterangan = "Gedung kompeten pintu depan",
-                            NamaLokasi = "Gedung kompeten (pintu depan)"
+                            Keterangan = "Aula besar untuk acara resmi",
+                            NamaLokasi = "Gedung Rektorat Lt. 3 - Aula Utama"
                         },
                         new
                         {
                             IdLokasi = 4,
-                            Keterangan = "Gedung kompeten pintu belakang",
-                            NamaLokasi = "Gedung kompeten (pintu belakang)"
+                            Keterangan = "Auditorium utama kampus",
+                            NamaLokasi = "Auditorium BJ Habibie"
                         },
                         new
                         {
                             IdLokasi = 5,
-                            Keterangan = "Gedung kolaboratif Lantai 1",
-                            NamaLokasi = "Gedung kolaboratif Lt.1"
+                            Keterangan = "Ruang serbaguna untuk seminar dan workshop",
+                            NamaLokasi = "Ruang Serbaguna Gedung B"
                         },
                         new
                         {
                             IdLokasi = 6,
-                            Keterangan = "Gedung kolaboratif Lantai 2",
-                            NamaLokasi = "Gedung kolaboratif Lt.2"
+                            Keterangan = "Lab komputer untuk pelatihan",
+                            NamaLokasi = "Lab Komputer Gedung C"
+                        },
+                        new
+                        {
+                            IdLokasi = 7,
+                            Keterangan = "Area outdoor untuk event besar",
+                            NamaLokasi = "Lapangan Utama"
                         });
                 });
 
@@ -613,7 +607,7 @@ namespace EventSupportApp.Migrations
                             JamSelesai = new TimeSpan(0, 12, 0, 0, 0),
                             NamaAcara = "Rapat Pleno Senat Universitas",
                             StatusAcara = "Ditugaskan",
-                            Tanggal = new DateTime(2026, 8, 6, 0, 0, 0, 0, DateTimeKind.Local)
+                            Tanggal = new DateTime(2026, 7, 29, 0, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 

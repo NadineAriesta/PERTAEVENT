@@ -35,18 +35,18 @@ namespace EventSupportApp.Data
 
             // ========== SEED: Master Barang ==========
             modelBuilder.Entity<MasterBarang>().HasData(
-                new MasterBarang { IdBarang = 1, NamaBarang = "Proyektor", Kategori = "Video", Icon = "📹" },
-                new MasterBarang { IdBarang = 2, NamaBarang = "Layar Proyektor", Kategori = "Video", Icon = "🖥️" },
-                new MasterBarang { IdBarang = 3, NamaBarang = "Sound System", Kategori = "Audio", Icon = "🔊" },
-                new MasterBarang { IdBarang = 4, NamaBarang = "Mic Wireless", Kategori = "Audio", Icon = "🎤" },
-                new MasterBarang { IdBarang = 5, NamaBarang = "Mic Kabel", Kategori = "Audio", Icon = "🎤" },
-                new MasterBarang { IdBarang = 6, NamaBarang = "Laptop", Kategori = "Komputer", Icon = "💻" },
-                new MasterBarang { IdBarang = 7, NamaBarang = "Kabel Roll", Kategori = "Kelistrikan", Icon = "🔌" },
-                new MasterBarang { IdBarang = 8, NamaBarang = "Kabel HDMI", Kategori = "Kelistrikan", Icon = "🔌" },
-                new MasterBarang { IdBarang = 9, NamaBarang = "Pointer Presentasi", Kategori = "Aksesoris", Icon = "📍" },
-                new MasterBarang { IdBarang = 10, NamaBarang = "Webcam", Kategori = "Video", Icon = "📷" },
-                new MasterBarang { IdBarang = 11, NamaBarang = "Mixer Audio", Kategori = "Audio", Icon = "🎛️" },
-                new MasterBarang { IdBarang = 12, NamaBarang = "Videotron / LED Wall", Kategori = "Video", Icon = "📺" }
+                new MasterBarang { IdBarang = 1,  Code = "PRY-001", NamaBarang = "Proyektor",            Kategori = "Video",       Stok = 5  },
+                new MasterBarang { IdBarang = 2,  Code = "LAY-001", NamaBarang = "Layar Proyektor",      Kategori = "Video",       Stok = 5  },
+                new MasterBarang { IdBarang = 3,  Code = "SND-001", NamaBarang = "Sound System",         Kategori = "Audio",       Stok = 3  },
+                new MasterBarang { IdBarang = 4,  Code = "MCW-001", NamaBarang = "Mic Wireless",         Kategori = "Audio",       Stok = 10 },
+                new MasterBarang { IdBarang = 5,  Code = "MCK-001", NamaBarang = "Mic Kabel",            Kategori = "Audio",       Stok = 8  },
+                new MasterBarang { IdBarang = 6,  Code = "LPT-001", NamaBarang = "Laptop",               Kategori = "Komputer",    Stok = 4  },
+                new MasterBarang { IdBarang = 7,  Code = "KBR-001", NamaBarang = "Kabel Roll",           Kategori = "Kelistrikan", Stok = 6  },
+                new MasterBarang { IdBarang = 8,  Code = "KBH-001", NamaBarang = "Kabel HDMI",           Kategori = "Kelistrikan", Stok = 10 },
+                new MasterBarang { IdBarang = 9,  Code = "PTR-001", NamaBarang = "Pointer Presentasi",   Kategori = "Aksesoris",   Stok = 5  },
+                new MasterBarang { IdBarang = 10, Code = "WBC-001", NamaBarang = "Webcam",               Kategori = "Video",       Stok = 3  },
+                new MasterBarang { IdBarang = 11, Code = "MXR-001", NamaBarang = "Mixer Audio",          Kategori = "Audio",       Stok = 2  },
+                new MasterBarang { IdBarang = 12, Code = "VDT-001", NamaBarang = "Videotron / LED Wall", Kategori = "Video",       Stok = 1  }
             );
 
             // ========== SEED: Roles ==========

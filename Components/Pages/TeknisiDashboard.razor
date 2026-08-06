@@ -600,14 +600,46 @@ else if (ActiveMenu == "penugasan")
 
     private async Task ToggleKebutuhan(string key, Penugasan p, KebutuhanAcara keb)
     {
-        if (CheckedKebutuhan.Contains(key)) 
+        if (CheckedKebutuhan.Contains(key))
         {
+            // Barang dikembalikan: batalkan pengambilan
             CheckedKebutuhan.Remove(key);
+            bool wasAmbil = keb.IsAmbil;
+            keb.IsAmbil   = false;
             keb.IsKembali = false;
+
+            // Kembalikan stok jika sebelumnya sudah diambil
+            if (wasAmbil && keb.Barang != null)
+            {
+                using var ctx = DbFactory.CreateDbContext();
+                var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
+                if (barang != null)
+                {
+                    barang.Stok += keb.Jumlah;
+                    ctx.Update(barang);
+                    await ctx.SaveChangesAsync();
+                    keb.Barang.Stok = barang.Stok; // sinkron objek lokal
+                }
+            }
         }
-        else 
+        else
         {
+            // Barang diambil/dipinjam: kurangi stok
             CheckedKebutuhan.Add(key);
+            keb.IsAmbil = true;
+
+            if (keb.Barang != null)
+            {
+                using var ctx = DbFactory.CreateDbContext();
+                var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
+                if (barang != null && barang.Stok >= keb.Jumlah)
+                {
+                    barang.Stok -= keb.Jumlah;
+                    ctx.Update(barang);
+                    await ctx.SaveChangesAsync();
+                    keb.Barang.Stok = barang.Stok; // sinkron objek lokal
+                }
+            }
         }
 
         await UpdatePenugasanAndKebutuhan(p, keb);
@@ -615,7 +647,36 @@ else if (ActiveMenu == "penugasan")
 
     private async Task TogglePengembalianBarang(KebutuhanAcara keb, Penugasan p)
     {
+        bool sebelumnya = keb.IsKembali;
         keb.IsKembali = !keb.IsKembali;
+
+        // Barang dikembalikan: tambah stok kembali
+        if (keb.IsKembali && keb.Barang != null)
+        {
+            using var ctx = DbFactory.CreateDbContext();
+            var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
+            if (barang != null)
+            {
+                barang.Stok += keb.Jumlah;
+                ctx.Update(barang);
+                await ctx.SaveChangesAsync();
+                keb.Barang.Stok = barang.Stok;
+            }
+        }
+        else if (!keb.IsKembali && sebelumnya && keb.Barang != null)
+        {
+            // Batalkan pengembalian: kurangi stok lagi
+            using var ctx = DbFactory.CreateDbContext();
+            var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
+            if (barang != null && barang.Stok >= keb.Jumlah)
+            {
+                barang.Stok -= keb.Jumlah;
+                ctx.Update(barang);
+                await ctx.SaveChangesAsync();
+                keb.Barang.Stok = barang.Stok;
+            }
+        }
+
         await UpdatePenugasanAndKebutuhan(p, keb);
     }
 
