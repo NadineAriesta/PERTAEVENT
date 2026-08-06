@@ -198,17 +198,13 @@ else
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "semua_acara" ? "menu-active" : "")" @onclick='() => ActiveMenu = "semua_acara"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span> Support Acara</button>
             }
             <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Kebutuhan Acara</button>
-            @if (CurrentRole != "Teknisi")
-            {
-                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "mapping" ? "menu-active" : "")" @onclick='() => ActiveMenu = "mapping"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Mapping Teknisi</button>
-            }
             @if (CurrentRole == "Teknisi")
             {
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg></span> Penugasan Teknisi</button>
             }
             @if (CurrentRole == "Admin")
             {
-                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 14l2 2 4-4"></path></svg></span> Daftar Penugasan</button>
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 14l2 2 4-4"></path></svg></span> Penugasan & Teknisi</button>
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "pengguna" ? "menu-active" : "")" @onclick='() => ActiveMenu = "pengguna"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Manajemen Pengguna</button>
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "auditlog" ? "menu-active" : "")" @onclick='() => ActiveMenu = "auditlog"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span> Log Aktivitas</button>
             }
@@ -441,8 +437,8 @@ else
                     </div>
                 </div>
 
-                <div class="table-responsive" style="min-height: 250px;">
-                    <table class="table align-middle m-0" style="width: 100%;">
+                <div class="table-responsive" style="min-height: 200px;">
+                    <table class="table align-middle m-0" style="width: 100%; table-layout: fixed; min-width: 850px;">
                         <thead>
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
                                 <th class="border-0 py-2 ps-3" style="width: 28%; ">NAMA ACARA</th>
@@ -663,7 +659,7 @@ else
                                             <input type="number" class="form-control form-input-premium" @bind="NewNeedsList[index].Jumlah" min="1" placeholder="Qty" />
                                         </div>
                                         <div class="col-3">
-                                            <input type="text" class="form-control form-input-premium" @bind="NewNeedsList[index].Keterangan" placeholder="Keterangan / spesifikasi" />
+                                            <input type="text" class="form-control form-input-premium" @bind="NewNeedsList[index].Keterangan" placeholder="Tipe / Spesifikasi (Cth: sn1)" />
                                         </div>
                                         <div class="col-1 text-center">
                                             <button type="button" class="btn-delete-premium" @onclick="() => RemoveNeedInputRow(index)">
@@ -724,7 +720,7 @@ else
                                     @foreach (var keb in ev.Kebutuhan)
                                     {
                                         <span class="badge text-dark px-3 py-2 fw-normal" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; color: #334155 !important;">
-                                            @(keb.Barang?.NamaBarang?.Replace("🔹", "").TrimStart('*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 6px;">&times;@keb.Jumlah</strong>
+                                            @(keb.Barang?.NamaBarang?.Replace("🔹", "").TrimStart('*', ' ', '-')) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})") <strong style="color: var(--pertamina-blue); margin-left: 6px;">&times;@keb.Jumlah</strong>
                                         </span>
                                     }
                                     @if (ev.Kebutuhan.Count == 0)
@@ -819,7 +815,7 @@ else
                 </div>
             </div>
         }
-        else if (ActiveMenu == "mapping")
+        else if (ActiveMenu == "penugasan" && CurrentRole != "Teknisi")
         {
             <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
                 <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
@@ -833,8 +829,8 @@ else
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0" style="width: 100%;">
+                <div class="table-responsive" style="min-height: 200px;">
+                    <table class="table align-middle mb-0" style="width: 100%; table-layout: fixed; min-width: 800px;">
                         <thead style="background-color: #F8FAFC;">
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
                                 <th class="border-0 py-2 ps-3" style="width: 25%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; ">NAMA TEKNISI</th>
@@ -869,13 +865,20 @@ else
                                         }
                                     </td>
                                     <td class="py-2">
-                                        @if (tek.StatusKetersediaan == "Tersedia")
-                                        {
-                                            <span class="premium-pill-badge badge-green">Tersedia</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="premium-pill-badge badge-blue">Sedang Bertugas</span>
+                                        @{
+                                            var techAssignments = GetAssignmentsForTechnician(tek.IdTeknisi);
+                                            if (techAssignments.Count == 0)
+                                            {
+                                                <span class="premium-pill-badge badge-green">Tersedia</span>
+                                            }
+                                            else if (techAssignments.Any(a => a.Acara?.StatusAcara == "Dikonfirmasi" || a.Acara?.StatusAcara == "Dokumen Diunggah"))
+                                            {
+                                                <span class="premium-pill-badge badge-blue">Sedang Bertugas</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="premium-pill-badge badge-yellow">Menunggu Sign</span>
+                                            }
                                         }
                                     </td>
                                     <td class="text-center py-2 pe-4">
@@ -887,9 +890,6 @@ else
                     </table>
                 </div>
             </div>
-        }
-        else if (ActiveMenu == "penugasan" && CurrentRole != "Teknisi")
-        {
 
             <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
                 <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
@@ -902,8 +902,8 @@ else
                         <input type="text" class="form-control" placeholder="Cari nama acara atau teknisi..." style="border-radius: 10px; border: 1px solid #e2e8f0; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0" style="width: 100%;">
+                <div class="table-responsive" style="min-height: 200px;">
+                    <table class="table align-middle mb-0" style="width: 100%; table-layout: fixed; min-width: 800px;">
                         <thead style="background-color: #F8FAFC;">
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
                                 <th class="border-0 py-2 ps-3" style="width: 35%; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">ACARA</th>
@@ -1027,7 +1027,7 @@ else
                 <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
                     <div>
                         <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Log Aktivitas Sistem</h5>
-                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Riwayat perubahan data dan jejak audit (Audit Trail)</p>
+                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Pantau riwayat perubahan data dan aktivitas pengguna</p>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -1098,16 +1098,16 @@ else
                 </div>
             </div>
 
-            <div class="table-responsive" style="min-height: 250px;">
-                <table class="table align-middle mb-0" style="width: 100%;">
+            <div class="table-responsive" style="min-height: 200px;">
+                <table class="table align-middle mb-0" style="width: 100%; table-layout: fixed; min-width: 950px;">
                     <thead style="background-color: #F8FAFC;">
                         <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-                            <th class="border-0 py-2 ps-3" style="width: 22%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; ">NAMA ACARA</th>
-                            <th class="border-0 py-2" style="width: 16%; ">TANGGAL &amp; JAM</th>
-                            <th class="border-0 py-2" style="width: 16%; ">LOKASI</th>
-                            <th class="border-0 py-2" style="width: 16%; ">KEBUTUHAN IT</th>
-                            <th class="border-0 py-2" style="width: 14%; ">STATUS / TEKNISI</th>
-                            <th class="border-0 py-2 text-start" style="width: 16%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 1rem; ">AKSI</th>
+                            <th class="border-0 py-2 ps-3" style="width: 20%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; ">NAMA ACARA</th>
+                            <th class="border-0 py-2" style="width: 14%; ">TANGGAL &amp; JAM</th>
+                            <th class="border-0 py-2" style="width: 15%; ">LOKASI</th>
+                            <th class="border-0 py-2" style="width: 15%; ">KEBUTUHAN IT</th>
+                            <th class="border-0 py-2" style="width: 22%; ">STATUS / TEKNISI</th>
+                            <th class="border-0 py-2 text-start" style="width: 14%; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 1rem; ">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1140,7 +1140,7 @@ else
                                             {
                                                 @foreach (var need in eventItem.Kebutuhan)
                                                 {
-                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem;">@(need.Barang?.NamaBarang?.Replace("🔹", "").TrimStart('*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
+                                                    <span class="badge text-dark fw-normal" style="background: #f1f5f9; border: 1px solid #e2e8f0; font-size: 0.75rem; white-space: normal; text-align: left; display: inline-block;">@(need.Barang?.NamaBarang?.Replace("🔹", "").TrimStart('*', ' ', '-')) <strong style="color: var(--pertamina-blue); margin-left: 4px;">&times;@need.Jumlah</strong></span>
                                                 }
                                             }
                                             else
@@ -1197,9 +1197,17 @@ else
                         }
 
                         <!-- Completed Events (shown inline if any) -->
-                        @if (AllSupportAcara.Count(e => e.StatusAcara == "Selesai") > 0)
+                        @{
+                            var filteredSelesai = AllSupportAcara.Where(e => e.StatusAcara == "Selesai").Where(e => {
+                                if (!IsDateMatch(e.Tanggal)) return false;
+                                return string.IsNullOrEmpty(SearchFilter) || 
+                                    e.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                                    (e.LokasiNavigation?.NamaLokasi?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false);
+                            }).ToList();
+                        }
+                        @if (filteredSelesai.Count > 0)
                         {
-                            @foreach (var hist in AllSupportAcara.Where(e => e.StatusAcara == "Selesai").Take(3))
+                            @foreach (var hist in filteredSelesai.Take(3))
                             {
                                 <tr style="border-bottom: 1px solid #f1f5f9; background-color: #fafafa; opacity: 0.8;">
                                     <td class="py-2 ps-3 fw-bold" style="color: #64748b; font-size: 0.95rem;">@hist.NamaAcara</td>
@@ -1269,7 +1277,7 @@ else
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </div>
                     </div>
-                    <div class="premium-master-card" @onclick='() => ActiveMenu = "mapping"'>
+                    <div class="premium-master-card" @onclick='() => ActiveMenu = "penugasan"'>
                         <div class="premium-master-icon-wrap">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
                         </div>
@@ -1371,7 +1379,7 @@ else
                                         <input type="number" class="form-control form-input-premium" @bind="need.Jumlah" min="1" placeholder="Qty" disabled="@(EditEvent.StatusAcara == "Selesai")" />
                                     </div>
                                     <div class="col-4">
-                                        <input type="text" class="form-control form-input-premium" @bind="need.Keterangan" placeholder="Keterangan / Spesifikasi" disabled="@(EditEvent.StatusAcara == "Selesai")" />
+                                        <input type="text" class="form-control form-input-premium" @bind="need.Keterangan" placeholder="Tipe / Spesifikasi (Cth: sn1)" disabled="@(EditEvent.StatusAcara == "Selesai")" />
                                     </div>
                                     @if (EditEvent.StatusAcara != "Selesai")
                                     {
@@ -2002,7 +2010,14 @@ else
             var mapping = LoggedInUser != null
                 ? await DbContext.MappingTeknisi.FirstOrDefaultAsync(m => m.IdUser == LoggedInUser.IdUser)
                 : null;
-            CurrentTeknisiId = mapping?.IdTeknisi ?? 1;
+            if (mapping != null) 
+            {
+                CurrentTeknisiId = mapping.IdTeknisi;
+            }
+            else 
+            {
+                CurrentTeknisiId = SelectedTeknisiIdForAssign > 0 ? SelectedTeknisiIdForAssign : 1;
+            }
         }
         await LoadDataAsync();
     }
@@ -2535,6 +2550,12 @@ else
             {
                 penugasan.Progress = assignment.Progress;
                 penugasan.CatatanTeknisi = assignment.CatatanTeknisi;
+                penugasan.StatusPenugasan = assignment.StatusPenugasan;
+                
+                if (penugasan.Acara != null && assignment.Acara != null)
+                {
+                    penugasan.Acara.StatusAcara = assignment.Acara.StatusAcara;
+                }
 
                 // Notify admin
                 DbContext.Notifications.Add(new Notification

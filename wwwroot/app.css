@@ -235,6 +235,9 @@ h6 {
     border-radius: 50rem !important;
     line-height: 1 !important;
     white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .premium-pill-badge.badge-red {

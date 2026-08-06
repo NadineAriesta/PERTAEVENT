@@ -297,7 +297,7 @@ else if (ActiveMenu == "master")
                                 <div style="padding: 0.35rem 0; display: flex; align-items: center; justify-content: space-between; @borderStyle">
                                     <div class="d-flex align-items-center gap-2">
                                         <div>
-                                            <div style="color: #334155; font-size: 0.9rem; margin-bottom: 2px;">@keb.Barang?.NamaBarang</div>
+                                            <div style="color: #334155; font-size: 0.9rem; margin-bottom: 2px;">@keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" (Tipe: {keb.Keterangan})")</div>
                                             <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2;">@(string.IsNullOrEmpty(keb.Keterangan) ? "Tanpa keterangan" : keb.Keterangan)</div>
                                         </div>
                                     </div>
@@ -367,7 +367,7 @@ else if (ActiveMenu == "penugasan")
                                         <input type="checkbox" checked="@isChecked" disabled="@disableUncheck"
                                             @onchange="() => ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 18px; height: 18px; border-radius: 4px; cursor: @(disableUncheck ? "not-allowed" : "pointer");" />
                                     }
-                                    <span style="color: #000000; font-size: 0.9rem; font-weight: 500;">@keb.Barang?.NamaBarang</span>
+                                    <span style="color: #000000; font-size: 0.9rem; font-weight: 500;">@keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")</span>
                                     <span style="background-color: #e2e8f0; color: #000000; font-size: 0.8rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-left: auto;">@keb.Jumlah Unit</span>
                                 </li>
                             }
@@ -388,7 +388,7 @@ else if (ActiveMenu == "penugasan")
                                                 @onchange="async (ChangeEventArgs e) => { keb.IsKembali = (bool)(e.Value ?? false); await UpdatePenugasanAndKebutuhan(assign, keb); }" style="accent-color: #09A537; width: 18px; height: 18px; border-radius: 4px; cursor: pointer;" />
                                         }
                                         <span style="color: #000000; font-size: 0.9rem; font-weight: 600; text-decoration: @(keb.IsKembali ? "line-through" : "none");">
-                                            @keb.Barang?.NamaBarang (@keb.Jumlah Unit)
+                                            @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan}) ") (@keb.Jumlah Unit)
                                         </span>
                                         <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="margin-left: auto; font-size: 0.75rem;">
                                             @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
@@ -472,9 +472,7 @@ else if (ActiveMenu == "penugasan")
                 .Include(p => p.Teknisi).ThenInclude(t => t!.User)
                 .ToListAsync();
 
-            MyAssignments = all
-                .Where(a => a.IdTeknisi == CurrentTeknisiId)
-                .ToList();
+            MyAssignments = all.ToList();
 
             foreach (var p in MyAssignments)
             {
@@ -591,6 +589,10 @@ else if (ActiveMenu == "penugasan")
         using var context = DbFactory.CreateDbContext();
         context.Update(p);
         await context.SaveChangesAsync();
+        if (OnUpdateProgress.HasDelegate)
+        {
+            await OnUpdateProgress.InvokeAsync(p);
+        }
         await OnParametersSetAsync();
     }
 
@@ -706,6 +708,10 @@ else if (ActiveMenu == "penugasan")
             context.Update(p.Acara);
         }
         await context.SaveChangesAsync();
+        if (OnUpdateProgress.HasDelegate)
+        {
+            await OnUpdateProgress.InvokeAsync(p);
+        }
         StateHasChanged();
     }
 
@@ -717,11 +723,24 @@ else if (ActiveMenu == "penugasan")
 
     private async Task SimpanProgress(Penugasan p)
     {
-        using var context = DbFactory.CreateDbContext();
-        context.Update(p);
-        await context.SaveChangesAsync();
+        if (OnUpdateProgress.HasDelegate)
+        {
+            await OnUpdateProgress.InvokeAsync(p);
+        }
+        else
+        {
+            using var context = DbFactory.CreateDbContext();
+            var entity = await context.Penugasan.FindAsync(p.IdPenugasan);
+            if (entity != null)
+            {
+                entity.CatatanTeknisi = p.CatatanTeknisi;
+                entity.Progress = p.Progress;
+                await context.SaveChangesAsync();
+            }
+        }
+        
         SavedProgressIds.Add(p.IdPenugasan);
-        _ = Task.Delay(30000).ContinueWith(_ => { SavedProgressIds.Remove(p.IdPenugasan); InvokeAsync(StateHasChanged); });
+        _ = Task.Delay(5000).ContinueWith(_ => { SavedProgressIds.Remove(p.IdPenugasan); InvokeAsync(StateHasChanged); });
     }
 
     private string GetIconForKebutuhan(string jenis)
