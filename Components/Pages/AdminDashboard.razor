@@ -123,7 +123,7 @@
 
                         <button class="btn btn-sm btn-pill-filter @(AdminStatusFilter == "Belum Ditugaskan" ? "active" : "") text-danger" @onclick='() => SetAdminFilter("Belum Ditugaskan")'>Belum Ditugaskan</button>
 
-                        <button class="btn btn-sm btn-pill-filter @(AdminStatusFilter == "Ditugaskan" ? "active" : "") text-warning" @onclick='() => SetAdminFilter("Ditugaskan")'>Belum Sign</button>
+                        <button class="btn btn-sm btn-pill-filter @(AdminStatusFilter == "Ditugaskan" ? "active" : "") text-warning" @onclick='() => SetAdminFilter("Ditugaskan")'>Ditugaskan</button>
 
                         <button class="btn btn-sm btn-pill-filter @(AdminStatusFilter == "Dikonfirmasi" ? "active" : "") text-success" @onclick='() => SetAdminFilter("Dikonfirmasi")'>Dikonfirmasi</button>
 
@@ -315,29 +315,7 @@
 
                                             }
 
-                                            else if (eventItem.StatusAcara == "Ditugaskan")
-
-                                            {
-
-                                                <button class="btn btn-outline-secondary btn-sm px-3 rounded-pill" disabled>
-
-                                                    ⏳ Menunggu Teknisi Sign
-
-                                                </button>
-
-                                            }
-
-                                            else if (eventItem.StatusAcara == "Dikonfirmasi")
-
-                                            {
-
-                                                <button class="btn btn-outline-primary btn-sm px-3 rounded-pill" disabled>
-
-                                                    ⏳ Menunggu Foto Dokumentasi
-
-                                                </button>
-
-                                            }
+                                            
 
                                             else if (eventItem.StatusAcara == "Dokumen Diunggah" && assignment != null)
 
