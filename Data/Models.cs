@@ -32,10 +32,13 @@ namespace EventSupportApp.Data
         
         [MaxLength(50)]
         public string Kategori { get; set; } = string.Empty; // e.g., Audio, Video, Kelistrikan
-
         /// <summary>Jumlah stok barang yang tersedia di gudang.</summary>
         public int Stok { get; set; } = 0;
+
+        /// <summary>Sisa barang di gudang yang belum dipinjam.</summary>
+        public int SisaBarang { get; set; } = 0;
     }
+
 
     public class User
     {

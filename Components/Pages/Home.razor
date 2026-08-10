@@ -198,6 +198,10 @@ else
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "semua_acara" ? "menu-active" : "")" @onclick='() => ActiveMenu = "semua_acara"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span> Support Acara</button>
             }
             <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Kebutuhan Acara</button>
+            @if (CurrentRole == "Admin")
+            {
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master_lokasi" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master_lokasi"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span> Lokasi</button>
+            }
             @if (CurrentRole == "Teknisi")
             {
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg></span> Penugasan Teknisi</button>
@@ -420,8 +424,8 @@ else
                 }
                 <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
                     <div>
-                        <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Acara Saya</h5>
-                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Pantau status pengajuan acara Anda</p>
+                        <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Daftar Acara</h5>
+                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Pantau status pengajuan acara</p>
                     </div>
                     <div class="d-flex gap-3 flex-wrap flex-md-nowrap align-items-center">
                         <div class="d-flex" style="background: #e2e8f0; border-radius: 10px; padding: 0.25rem;">
@@ -431,9 +435,8 @@ else
                         </div>
                         <div class="position-relative" style="width: 250px;">
                             <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
-                            <input type="text" class="form-control" placeholder="Cari acara saya..." style="border-radius: 10px; border: 1px solid #cbd5e1; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
+                            <input type="text" class="form-control" placeholder="Cari acara..." style="border-radius: 10px; border: 1px solid #cbd5e1; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
                         </div>
-                        <button type="button" class="btn btn-premium-red" @onclick='() => ActiveMenu = "form_acara"'>+ Ajukan Baru</button>
                     </div>
                 </div>
 
@@ -453,8 +456,8 @@ else
                             {
                                 <tr>
                                     <td colspan="5" class="text-center py-5 text-muted">
-                                        <span class="fs-2 d-block mb-2">Ã°Å¸â€œâ€¦</span>
-                                        <div class="fw-semibold">Tidak ada acara untuk filter ini</div>
+                                        <span class="fs-2 d-block mb-2">📅</span>
+                                        <div class="fw-semibold">Tidak ada acara aktif untuk filter ini</div>
                                         <div class="small">Silakan pilih filter tanggal lainnya atau cari kata kunci lain.</div>
                                     </td>
                                 </tr>
@@ -473,22 +476,24 @@ else
                                             <div style="color: #64748b; font-size: 0.9rem;">@eventItem.JamMulai.ToString(@"hh\:mm")-@eventItem.JamSelesai.ToString(@"hh\:mm")</div>
                                         </td>
                                         <td class="py-2">
-                                            <div style="color: #64748b; font-size: 0.9rem;">Anda</div>
+                                            <div style="color: #64748b; font-size: 0.9rem;">
+                                                @(eventItem.PembuatAcara?.Username == LoggedInUser?.Username ? "Anda" : (eventItem.PembuatAcara?.Username ?? "Admin"))
+                                            </div>
                                         </td>
                                         <td class="py-2">
                                             @if (eventItem.StatusAcara == "Belum Ditugaskan") { 
                                                 <span class="status-badge red">
-                                                    Belum ditugaskan
+                                                    Belum Ditugaskan
                                                 </span> 
                                             }
                                             else if (eventItem.StatusAcara == "Ditugaskan") { 
                                                 <span class="status-badge yellow">
-                                                    Ditugaskan, belum sign
+                                                    Ditugaskan
                                                 </span> 
                                             }
                                             else if (eventItem.StatusAcara == "Dikonfirmasi") { 
                                                 <span class="status-badge green">
-                                                    Dikonfirmasi (sign)
+                                                    Dikonfirmasi
                                                 </span> 
                                             }
                                             else if (eventItem.StatusAcara == "Dokumen Diunggah") { 
@@ -563,10 +568,10 @@ else
                                     <td class="text-muted py-2" style="font-size: 0.9rem;">@ev.LokasiNavigation?.NamaLokasi</td>
                                     <td class="text-muted py-2" style="font-size: 0.9rem;">@(ev.PembuatAcara?.Username ?? "Helpdesk")</td>
                                     <td class="py-2">
-                                        @if (ev.StatusAcara == "Belum Ditugaskan") { <span class="premium-pill-badge badge-red">Belum ditugaskan</span> }
+                                        @if (ev.StatusAcara == "Belum Ditugaskan") { <span class="premium-pill-badge badge-red">Belum Ditugaskan</span> }
                                         else if (ev.StatusAcara == "Ditugaskan") { <span class="premium-pill-badge badge-yellow">Ditugaskan</span> }
                                         else if (ev.StatusAcara == "Dikonfirmasi") { <span class="premium-pill-badge badge-green">Dikonfirmasi</span> }
-                                        else if (ev.StatusAcara == "Dokumen Diunggah") { <span class="premium-pill-badge badge-blue">Dok. Diunggah</span> }
+                                        else if (ev.StatusAcara == "Dokumen Diunggah") { <span class="premium-pill-badge badge-blue">Dokumen Diunggah</span> }
                                         else { <span class="premium-pill-badge badge-gray">Selesai</span> }
                                     </td>
                                     <td class="text-start py-2" style="padding-left: 2rem;">
@@ -597,7 +602,7 @@ else
                             <div class="col-md-6">
                                 <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Lokasi Ruangan</label>
                                 <select class="form-select form-input-premium" @bind="NewEvent.IdLokasi" required>
-                                    <option value="">-- Pilih Lokasi --</option>
+                                    <option value="0">-- Pilih Lokasi --</option>
                                     @if(MasterLokasiList != null)
                                     {
                                         @foreach (var lok in MasterLokasiList)
@@ -650,7 +655,15 @@ else
                                                 {
                                                     @foreach (var brg in MasterBarangList)
                                                     {
-                                                        <option value="@brg.IdBarang">@brg.NamaBarang</option>
+                                                        var stokTersedia = AvailableStock.ContainsKey(brg.IdBarang) ? AvailableStock[brg.IdBarang] : 0;
+                                                        
+                                                        // Hide if 0 stock completely
+                                                        if (stokTersedia > 0)
+                                                        {
+                                                            <option value="@brg.IdBarang">
+                                                                @brg.NamaBarang @(!string.IsNullOrEmpty(brg.Code) ? $"(Kode: {brg.Code})" : "") - Sisa: @stokTersedia
+                                                            </option>
+                                                        }
                                                     }
                                                 }
                                             </select>
@@ -659,7 +672,7 @@ else
                                             <input type="number" class="form-control form-input-premium" @bind="NewNeedsList[index].Jumlah" min="1" placeholder="Qty" />
                                         </div>
                                         <div class="col-3">
-                                            <input type="text" class="form-control form-input-premium" @bind="NewNeedsList[index].Keterangan" placeholder="Tipe / Spesifikasi (Cth: sn1)" />
+                                            <input type="text" class="form-control form-input-premium" @bind="NewNeedsList[index].Keterangan" placeholder="Keterangan / Catatan (Opsional)" />
                                         </div>
                                         <div class="col-1 text-center">
                                             <button type="button" class="btn-delete-premium" @onclick="() => RemoveNeedInputRow(index)">
@@ -693,46 +706,108 @@ else
             <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
                 <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
                     <div>
-                        <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Kebutuhan Acara</h5>
-                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Kelola detail logistik IT untuk setiap acara</p>
+                        <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Kebutuhan IT</h5>
+                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Kelola daftar referensi perangkat dan IT beserta stoknya</p>
                     </div>
-                    <div class="d-flex gap-3 flex-wrap flex-md-nowrap align-items-center" style="max-width: 500px; width: 100%;">
-                        <div class="position-relative flex-grow-1">
-                            <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
-                            <input type="text" class="form-control" placeholder="Cari acara..." style="border-radius: 10px; border: 1px solid #e2e8f0; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
-                        </div>
-
-                    </div>
+                    @if (CurrentRole == "Admin")
+                    {
+                        <button type="button" class="btn btn-premium-red fw-bold px-4" style="border-radius: 10px; font-size: 0.9rem;" @onclick="OpenAddBarangModal">+ Tambah Barang</button>
+                    }
                 </div>
 
-                <div class="p-4 bg-white">
-                    <div class="d-flex flex-column gap-3">
-                        @foreach (var ev in ActiveEvents)
-                        {
-                            var matchFilter = string.IsNullOrEmpty(SearchFilter) || 
-                                ev.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase);
-
-                            if (!matchFilter) continue;
-
-                            <div class="border rounded-4 p-4" style="background: #ffffff; border: 1px solid #e2e8f0 !important; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.borderColor='#cbd5e1'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)';">
-                                <h6 class="fw-bold mb-3" style="color: #072C4C; font-size: 1.1rem; font-family: 'Outfit';">@ev.NamaAcara</h6>
-                                <div class="d-flex gap-2 flex-wrap">
-                                    @foreach (var keb in ev.Kebutuhan)
-                                    {
-                                        <span class="badge text-dark px-3 py-2 fw-normal" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.85rem; color: #334155 !important;">
-                                            @(keb.Barang?.NamaBarang?.Replace("🔹", "").TrimStart('*', ' ', '-')) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})") <strong style="color: var(--pertamina-blue); margin-left: 6px;">&times;@keb.Jumlah</strong>
-                                        </span>
-                                    }
-                                    @if (ev.Kebutuhan.Count == 0)
-                                    {
-                                        <span class="badge text-muted px-3 py-2 fw-normal" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 0.85rem;">
-                                            Belum ada kebutuhan spesifik yang ditambahkan
-                                        </span>
-                                    }
-                                </div>
-                            </div>
-                        }
+                <div class="table-responsive" style="min-height: 200px;">
+                    <table class="table align-middle m-0" style="width: 100%; table-layout: fixed; min-width: 600px;">
+                        <thead>
+                            <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
+                                <th class="border-0 py-2 ps-4" style="width: 15%; ">KODE</th>
+                                <th class="border-0 py-2" style="width: 38%; ">NAMA BARANG</th>
+                                <th class="border-0 py-2" style="width: 20%; ">KATEGORI</th>
+                                <th class="border-0 py-2 text-center" style="width: 15%; ">STOK TOTAL</th>
+                                <th class="border-0 py-2 text-center pe-4" style="width: 12%; ">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (MasterBarangList != null)
+                            {
+                                @foreach (var brg in MasterBarangList)
+                                {
+                                    <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc';" onmouseout="this.style.background='transparent';">
+                                        <td class="py-3 ps-4 fw-bold" style="font-size: 0.85rem; color: #64748b;">@brg.Code</td>
+                                        <td class="py-3 fw-bold" style="color: #0f172a; font-size: 0.95rem;">@brg.NamaBarang</td>
+                                        <td class="py-3 text-muted" style="font-size: 0.9rem;">
+                                            <span class="badge text-dark bg-light border">@brg.Kategori</span>
+                                        </td>
+                                        <td class="py-3 text-center fw-bold" style="font-size: 0.95rem; color: #475569;">
+                                            @brg.Stok
+                                        </td>
+                                        <td class="py-3 text-center pe-4">
+                                            @if (CurrentRole == "Admin")
+                                            {
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditBarangModal(brg)">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteBarang(brg)">Hapus</button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted" style="font-size: 0.9rem;">-</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>        }
+        else if (ActiveMenu == "master_lokasi" && CurrentRole == "Admin")
+        {
+            <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
+                <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
+                    <div>
+                        <h5 class="m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit';">Lokasi Ruangan</h5>
+                        <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Daftar referensi ruangan dan gedung untuk kegiatan</p>
                     </div>
+                    @if (CurrentRole == "Admin")
+                    {
+                        <button type="button" class="btn btn-premium-red fw-bold px-4" style="border-radius: 10px; font-size: 0.9rem;" @onclick="OpenAddLokasiModal" >+ Tambah Ruangan</button>
+                    }
+                </div>
+
+                <div class="table-responsive" style="min-height: 200px;">
+                    <table class="table align-middle m-0" style="width: 100%; table-layout: fixed; min-width: 600px;">
+                        <thead>
+                            <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
+                                <th class="border-0 py-2 ps-4" style="width: 15%; ">ID</th>
+                                <th class="border-0 py-2" style="width: 40%; ">NAMA RUANGAN/LOKASI</th>
+                                <th class="border-0 py-2" style="width: 30%; ">KETERANGAN</th>
+                                <th class="border-0 py-2 text-center pe-4" style="width: 15%; ">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (MasterLokasiList != null)
+                            {
+                                @foreach (var lok in MasterLokasiList)
+                                {
+                                    <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc';" onmouseout="this.style.background='transparent';">
+                                        <td class="py-3 ps-4 text-muted fw-bold" style="font-size: 0.85rem;">LOK-@lok.IdLokasi.ToString("D3")</td>
+                                        <td class="py-3 fw-bold" style="color: #0f172a; font-size: 0.95rem;">@lok.NamaLokasi</td>
+                                        <td class="py-3 text-muted" style="font-size: 0.9rem;">@(string.IsNullOrEmpty(lok.Keterangan) ? "-" : lok.Keterangan)</td>
+                                        <td class="py-3 text-center pe-4">
+                                            @if (CurrentRole == "Admin")
+                                            {
+                                                <div class="d-flex justify-content-center gap-2"><button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditLokasiModal(lok)">Edit</button><button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteLokasi(lok)">Hapus</button></div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted" style="font-size: 0.9rem;">-</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         }
@@ -906,10 +981,11 @@ else
                     <table class="table align-middle mb-0" style="width: 100%; table-layout: fixed; min-width: 800px;">
                         <thead style="background-color: #F8FAFC;">
                             <tr class="text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-                                <th class="border-0 py-2 ps-3" style="width: 35%; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">ACARA</th>
-                                <th class="border-0 py-2" style="width: 25%;">TEKNISI</th>
-                                <th class="border-0 py-2" style="width: 20%;">STATUS</th>
-                                <th class="border-0 py-2 pe-4 text-end" style="width: 20%; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">WAKTU KONFIRMASI</th>
+                                <th class="border-0 py-2 ps-3" style="width: 30%; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">ACARA</th>
+                                <th class="border-0 py-2" style="width: 20%;">TEKNISI</th>
+                                <th class="border-0 py-2" style="width: 20%;">PROGRES</th>
+                                <th class="border-0 py-2" style="width: 15%;">STATUS</th>
+                                <th class="border-0 py-2 pe-4 text-end" style="width: 15%; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">WAKTU KONFIRMASI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -924,16 +1000,31 @@ else
                                     <td class="fw-bold py-2 ps-3" style="color: #072C4C; font-size: 0.95rem;">@ev.NamaAcara</td>
                                     <td class="text-muted py-2" style="font-size: 0.9rem;">@(assignment?.Teknisi?.User?.Username ?? "—")</td>
                                     <td class="py-2">
-                                        @if (ev.StatusAcara == "Belum Ditugaskan") { <span class="premium-pill-badge badge-red">Belum ditugaskan</span> }
-                                        else if (ev.StatusAcara == "Ditugaskan") { <span class="premium-pill-badge badge-yellow">Belum Sign</span> }
+                                        @if (assignment != null)
+                                        {
+                                            <div class="d-flex align-items-center gap-2" style="max-width: 150px;">
+                                                <div class="progress flex-grow-1" style="height: 6px; background: #e2e8f0; border-radius: 3px;">
+                                                    <div class="progress-bar" role="progressbar" style="width: @(assignment.Progress)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 3px;"></div>
+                                                </div>
+                                                <span class="fw-bold" style="font-size: 0.8rem; min-width: 35px; text-align: right;">@(assignment.Progress)%</span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span>—</span>
+                                        }
+                                    </td>
+                                    <td class="py-2">
+                                        @if (ev.StatusAcara == "Belum Ditugaskan") { <span class="premium-pill-badge badge-red">Belum Ditugaskan</span> }
+                                        else if (ev.StatusAcara == "Ditugaskan") { <span class="premium-pill-badge badge-yellow">Ditugaskan</span> }
                                         else if (ev.StatusAcara == "Dikonfirmasi") { <span class="premium-pill-badge badge-green">Dikonfirmasi</span> }
-                                        else if (ev.StatusAcara == "Dokumen Diunggah") { <span class="premium-pill-badge badge-blue">Dok. Diunggah</span> }
+                                        else if (ev.StatusAcara == "Dokumen Diunggah") { <span class="premium-pill-badge badge-blue">Dokumen Diunggah</span> }
                                         else { <span class="premium-pill-badge badge-gray">Selesai</span> }
                                     </td>
                                     <td class="text-muted py-2 pe-4 text-end" style="font-size: 0.9rem;">
                                         @if (ev.StatusAcara == "Belum Ditugaskan" || ev.StatusAcara == "Ditugaskan") { <span>—</span> }
                                         else if (ev.StatusAcara == "Selesai") { <span>Ditandai otomatis</span> }
-                                        else { <span>@(assignment?.WaktuKonfirmasi?.ToString("dd Jul, HH.mm") ?? "12 Jul, 10.20")</span> }
+                                        else { <span>@(assignment?.WaktuKonfirmasi?.ToString("dd MMM, HH:mm") ?? "—")</span> }
                                     </td>
                                 </tr>
                             }
@@ -1152,19 +1243,19 @@ else
                                     <td class="py-2">
                                         @if (eventItem.StatusAcara == "Belum Ditugaskan")
                                         {
-                                            <span class="premium-pill-badge badge-red">Belum ditugaskan</span>
+                                            <span class="premium-pill-badge badge-red">Belum Ditugaskan</span>
                                         }
                                         else if (eventItem.StatusAcara == "Ditugaskan")
                                         {
-                                            <span class="premium-pill-badge badge-yellow">Belum Sign &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
+                                            <span class="premium-pill-badge badge-yellow">Ditugaskan &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
                                         }
                                         else if (eventItem.StatusAcara == "Dikonfirmasi")
                                         {
-                                            <span class="premium-pill-badge badge-green">Siap &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
+                                            <span class="premium-pill-badge badge-green">Dikonfirmasi &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
                                         }
                                         else if (eventItem.StatusAcara == "Dokumen Diunggah")
                                         {
-                                            <span class="premium-pill-badge badge-blue">Setup selesai &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
+                                            <span class="premium-pill-badge badge-blue">Dokumen Diunggah &middot; @(assignment?.Teknisi?.User?.Username ?? "Teknisi")</span>
                                         }
                                         else
                                         {
@@ -1191,34 +1282,6 @@ else
                                                 <button class="btn btn-sm btn-success fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(25,135,84,0.2);" @onclick="() => CompleteEvent(eventItem)">✅ Selesaikan</button>
                                             }
                                         </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-
-                        <!-- Completed Events (shown inline if any) -->
-                        @{
-                            var filteredSelesai = AllSupportAcara.Where(e => e.StatusAcara == "Selesai").Where(e => {
-                                if (!IsDateMatch(e.Tanggal)) return false;
-                                return string.IsNullOrEmpty(SearchFilter) || 
-                                    e.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
-                                    (e.LokasiNavigation?.NamaLokasi?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false);
-                            }).ToList();
-                        }
-                        @if (filteredSelesai.Count > 0)
-                        {
-                            @foreach (var hist in filteredSelesai.Take(3))
-                            {
-                                <tr style="border-bottom: 1px solid #f1f5f9; background-color: #fafafa; opacity: 0.8;">
-                                    <td class="py-2 ps-3 fw-bold" style="color: #64748b; font-size: 0.95rem;">@hist.NamaAcara</td>
-                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">@hist.Tanggal.ToString("dd MMM yyyy")</td>
-                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">-</td>
-                                    <td class="py-2 text-muted" style="font-size: 0.9rem;">-</td>
-                                    <td class="py-2">
-                                        <span class="premium-pill-badge badge-gray">Selesai &middot; @(hist.PenugasanList?.FirstOrDefault()?.Teknisi?.User?.Username ?? "Selesai")</span>
-                                    </td>
-                                    <td class="py-2 text-start text-muted" style="font-size: 0.8rem; font-style: italic; padding-left: 1rem;">
-                                        Telah diselesaikan
                                     </td>
                                 </tr>
                             }
@@ -1270,13 +1333,15 @@ else
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                         </div>
                         <div class="flex-grow-1">
-                            <div class="premium-master-title">Master Kebutuhan IT</div>
+                            <div class="premium-master-title">Kebutuhan IT</div>
                             <div class="premium-master-desc">Proyektor, sound system, layar, dll</div>
                         </div>
                         <div class="premium-master-arrow">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </div>
                     </div>
+                </div>
+                <div class="dash-master-row mt-3">
                     <div class="premium-master-card" @onclick='() => ActiveMenu = "penugasan"'>
                         <div class="premium-master-icon-wrap">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
@@ -1289,12 +1354,101 @@ else
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </div>
                     </div>
+
+                    <div class="premium-master-card" @onclick='() => ActiveMenu = "master_lokasi"'>
+                        <div class="premium-master-icon-wrap">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="premium-master-title">Lokasi</div>
+                            <div class="premium-master-desc">Kelola data ruangan dan gedung</div>
+                        </div>
+                        <div class="premium-master-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     }
 
-    </main>
+    
+    <!-- Modal Tambah/Edit Lokasi -->
+    @if (ShowLokasiModal)
+    {
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0" style="border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); overflow: hidden;">
+                    <div class="modal-header" style="background: #fafafa; border-bottom: 1px solid #f1f5f9; padding: 1.25rem 1.5rem;">
+                        <h5 class="modal-title fw-bold" style="color: #072C4C; font-family: 'Outfit';">@(IsEditLokasi ? "Edit Ruangan/Lokasi" : "Tambah Ruangan/Lokasi Baru")</h5>
+                        <button type="button" class="btn-close" @onclick="CloseLokasiModal"></button>
+                    </div>
+                    <div class="modal-body" style="padding: 1.5rem;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="font-size: 0.9rem; color: #334155;">Nama Ruangan/Lokasi <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-input-premium" @bind="ActiveLokasi.NamaLokasi" placeholder="Cth: Gedung Utama Lt. 2" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="font-size: 0.9rem; color: #334155;">Keterangan (Opsional)</label>
+                            <textarea class="form-control form-input-premium" @bind="ActiveLokasi.Keterangan" placeholder="Deskripsi ruangan..." rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid #f1f5f9; background: #fafafa; padding: 1rem 1.5rem;">
+                        <button type="button" class="btn btn-light px-4 fw-medium" style="border-radius: 8px;" @onclick="CloseLokasiModal">Batal</button>
+                        <button type="button" class="btn btn-premium-red px-4 fw-bold" style="border-radius: 8px;" @onclick="SaveLokasi">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <!-- Modal Tambah/Edit Master Barang -->
+    @if (ShowBarangModal)
+    {
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0" style="border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); overflow: hidden;">
+                    <div class="modal-header" style="background: #fafafa; border-bottom: 1px solid #f1f5f9; padding: 1.25rem 1.5rem;">
+                        <h5 class="modal-title fw-bold" style="color: #072C4C; font-family: 'Outfit';">@(IsEditBarang ? "Edit Barang" : "Tambah Barang Baru")</h5>
+                        <button type="button" class="btn-close" @onclick="CloseBarangModal"></button>
+                    </div>
+                    <div class="modal-body" style="padding: 1.5rem;">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold" style="font-size: 0.9rem; color: #334155;">Kode Barang <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-input-premium" @bind="ActiveBarang.Code" placeholder="Cth: VID-05" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold" style="font-size: 0.9rem; color: #334155;">Kategori <span class="text-danger">*</span></label>
+                                <select class="form-select form-input-premium" @bind="ActiveBarang.Kategori">
+                                    <option value="">-- Pilih --</option>
+                                    <option value="Audio">Audio</option>
+                                    <option value="Video">Video</option>
+                                    <option value="Jaringan">Jaringan</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="font-size: 0.9rem; color: #334155;">Nama Barang <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-input-premium" @bind="ActiveBarang.NamaBarang" placeholder="Cth: Proyektor 5000 Lumens" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="font-size: 0.9rem; color: #334155;">Jumlah Stok Total <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-input-premium" @bind="ActiveBarang.Stok" min="1" />
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid #f1f5f9; background: #fafafa; padding: 1rem 1.5rem;">
+                        <button type="button" class="btn btn-light px-4 fw-medium" style="border-radius: 8px;" @onclick="CloseBarangModal">Batal</button>
+                        <button type="button" class="btn btn-premium-red px-4 fw-bold" style="border-radius: 8px;" @onclick="SaveBarang">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</main>
     </div> <!-- end dash-shell -->
 
 <!-- ============================================== -->
@@ -1320,7 +1474,7 @@ else
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Lokasi Ruangan</label>
                             <select class="form-select form-input-premium" @bind="EditEvent.IdLokasi" disabled="@(EditEvent.StatusAcara == "Selesai")" required>
-                                <option value="">-- Pilih Lokasi --</option>
+                                <option value="0">-- Pilih Lokasi --</option>
                                 @if(MasterLokasiList != null)
                                 {
                                     @foreach (var lok in MasterLokasiList)
@@ -1370,7 +1524,22 @@ else
                                             {
                                                 @foreach (var brg in MasterBarangList)
                                                 {
-                                                    <option value="@brg.IdBarang">@brg.NamaBarang</option>
+                                                    var stokTersedia = AvailableStock.ContainsKey(brg.IdBarang) ? AvailableStock[brg.IdBarang] : 0;
+                                                    
+                                                    // In edit mode we can have the current item itself, so calculate real available
+                                                    var totalAvailableForEdit = stokTersedia;
+                                                    if (need.IdBarang == brg.IdBarang && EditEvent?.StatusAcara != "Selesai") {
+                                                        // We add back what's already requested by this specific line before edit
+                                                        totalAvailableForEdit += need.Jumlah;
+                                                    }
+
+                                                    // For Edit modal, we MUST include the currently selected item because it's part of the event.
+                                                    if (totalAvailableForEdit > 0 || need.IdBarang == brg.IdBarang)
+                                                    {
+                                                        <option value="@brg.IdBarang">
+                                                            @brg.NamaBarang @(!string.IsNullOrEmpty(brg.Code) ? $"(Kode: {brg.Code})" : "") - Sisa: @Math.Max(0, totalAvailableForEdit)
+                                                        </option>
+                                                    }
                                                 }
                                             }
                                         </select>
@@ -1379,7 +1548,7 @@ else
                                         <input type="number" class="form-control form-input-premium" @bind="need.Jumlah" min="1" placeholder="Qty" disabled="@(EditEvent.StatusAcara == "Selesai")" />
                                     </div>
                                     <div class="col-4">
-                                        <input type="text" class="form-control form-input-premium" @bind="need.Keterangan" placeholder="Tipe / Spesifikasi (Cth: sn1)" disabled="@(EditEvent.StatusAcara == "Selesai")" />
+                                        <input type="text" class="form-control form-input-premium" @bind="need.Keterangan" placeholder="Keterangan / Catatan (Opsional)" disabled="@(EditEvent.StatusAcara == "Selesai")" />
                                     </div>
                                     @if (EditEvent.StatusAcara != "Selesai")
                                     {
@@ -1666,6 +1835,205 @@ else
     private string InputPassword { get; set; } = string.Empty;
     private string LoginErrorMessage { get; set; } = string.Empty;
     private User? LoggedInUser { get; set; }
+    
+    // Master Lokasi Management
+    
+    // Master Barang Management
+    private bool ShowBarangModal { get; set; } = false;
+    private bool IsEditBarang { get; set; } = false;
+    private MasterBarang ActiveBarang { get; set; } = new();
+
+    private void OpenAddBarangModal()
+    {
+        IsEditBarang = false;
+        ActiveBarang = new MasterBarang { Stok = 1 };
+        ShowBarangModal = true;
+    }
+
+    private void OpenEditBarangModal(MasterBarang brg)
+    {
+        IsEditBarang = true;
+        ActiveBarang = new MasterBarang 
+        { 
+            IdBarang = brg.IdBarang, 
+            NamaBarang = brg.NamaBarang, 
+            Code = brg.Code,
+            Kategori = brg.Kategori,
+            Stok = brg.Stok,
+            SisaBarang = brg.SisaBarang
+        };
+        ShowBarangModal = true;
+    }
+
+    
+    private async Task DeleteBarang(MasterBarang brg)
+    {
+        try
+        {
+            var target = await DbContext.MasterBarang.FindAsync(brg.IdBarang);
+            if (target != null)
+            {
+                DbContext.MasterBarang.Remove(target);
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Hapus Master IT",
+                    Detail = $"Menghapus barang '{target.NamaBarang}' dari daftar master data"
+                });
+                await DbContext.SaveChangesAsync();
+                ShowNotificationWithTimer("Barang berhasil dihapus.");
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            ShowNotificationWithTimer("Gagal menghapus: Barang masih digunakan pada acara aktif!");
+        }
+    }
+
+    private void CloseBarangModal()
+    {
+        ShowBarangModal = false;
+    }
+
+    private async Task SaveBarang()
+    {
+        if (string.IsNullOrWhiteSpace(ActiveBarang.NamaBarang) || string.IsNullOrWhiteSpace(ActiveBarang.Code))
+        {
+            ShowNotificationWithTimer("Kode dan Nama Barang tidak boleh kosong.");
+            return;
+        }
+
+        if (IsEditBarang)
+        {
+            var target = await DbContext.MasterBarang.FindAsync(ActiveBarang.IdBarang);
+            if (target != null)
+            {
+                int borrowed = target.Stok - target.SisaBarang;
+                target.Code = ActiveBarang.Code;
+                target.NamaBarang = ActiveBarang.NamaBarang;
+                target.Kategori = ActiveBarang.Kategori;
+                target.Stok = ActiveBarang.Stok;
+                target.SisaBarang = Math.Max(0, ActiveBarang.Stok - borrowed);
+                DbContext.MasterBarang.Update(target);
+                ShowNotificationWithTimer("Barang berhasil diperbarui.");
+            }
+        }
+        else
+        {
+            ActiveBarang.SisaBarang = ActiveBarang.Stok;
+            DbContext.MasterBarang.Add(ActiveBarang);
+            ShowNotificationWithTimer("Barang berhasil ditambahkan.");
+        }
+
+        DbContext.AuditLogs.Add(new AuditLog
+        {
+            Waktu = DateTime.Now,
+            Username = LoggedInUser?.Username ?? "Sistem",
+            Aksi = IsEditBarang ? "Edit Master IT" : "Tambah Master IT",
+            Detail = $"{(IsEditBarang ? "Memperbarui" : "Menambahkan")} data barang '{ActiveBarang.NamaBarang}'"
+        });
+
+        await DbContext.SaveChangesAsync();
+        ShowBarangModal = false;
+        await LoadDataAsync();
+    }
+
+    private bool ShowLokasiModal { get; set; } = false;
+    private bool IsEditLokasi { get; set; } = false;
+    private MasterLokasi ActiveLokasi { get; set; } = new();
+
+    private void OpenAddLokasiModal()
+    {
+        IsEditLokasi = false;
+        ActiveLokasi = new MasterLokasi();
+        ShowLokasiModal = true;
+    }
+
+    private void OpenEditLokasiModal(MasterLokasi lok)
+    {
+        IsEditLokasi = true;
+        // Copy data to avoid immediate binding changes in table
+        ActiveLokasi = new MasterLokasi 
+        { 
+            IdLokasi = lok.IdLokasi, 
+            NamaLokasi = lok.NamaLokasi, 
+            Keterangan = lok.Keterangan 
+        };
+        ShowLokasiModal = true;
+    }
+
+    
+    private async Task DeleteLokasi(MasterLokasi lok)
+    {
+        try
+        {
+            var target = await DbContext.MasterLokasi.FindAsync(lok.IdLokasi);
+            if (target != null)
+            {
+                DbContext.MasterLokasi.Remove(target);
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Hapus Lokasi",
+                    Detail = $"Menghapus lokasi '{target.NamaLokasi}' dari daftar master data"
+                });
+                await DbContext.SaveChangesAsync();
+                ShowNotificationWithTimer("Lokasi berhasil dihapus.");
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            ShowNotificationWithTimer("Gagal menghapus: Lokasi masih digunakan pada acara aktif!");
+        }
+    }
+
+    private void CloseLokasiModal()
+    {
+        ShowLokasiModal = false;
+    }
+
+    private async Task SaveLokasi()
+    {
+        if (string.IsNullOrWhiteSpace(ActiveLokasi.NamaLokasi))
+        {
+            ShowNotificationWithTimer("Nama Lokasi tidak boleh kosong.");
+            return;
+        }
+
+        if (IsEditLokasi)
+        {
+            var target = await DbContext.MasterLokasi.FindAsync(ActiveLokasi.IdLokasi);
+            if (target != null)
+            {
+                target.NamaLokasi = ActiveLokasi.NamaLokasi;
+                target.Keterangan = ActiveLokasi.Keterangan;
+                DbContext.MasterLokasi.Update(target);
+                ShowNotificationWithTimer("Lokasi berhasil diperbarui.");
+            }
+        }
+        else
+        {
+            DbContext.MasterLokasi.Add(ActiveLokasi);
+            ShowNotificationWithTimer("Lokasi berhasil ditambahkan.");
+        }
+
+        DbContext.AuditLogs.Add(new AuditLog
+        {
+            Waktu = DateTime.Now,
+            Username = LoggedInUser?.Username ?? "Sistem",
+            Aksi = IsEditLokasi ? "Edit Lokasi" : "Tambah Lokasi",
+            Detail = $"{(IsEditLokasi ? "Memperbarui" : "Menambahkan")} data lokasi '{ActiveLokasi.NamaLokasi}'"
+        });
+
+        await DbContext.SaveChangesAsync();
+        ShowLokasiModal = false;
+        await LoadDataAsync();
+    }
+
     private bool ShowLoginModal { get; set; } = false;
     private string SelectedLoginRole { get; set; } = string.Empty;
     private bool ShowLoginDropdown { get; set; } = false;
@@ -1732,6 +2100,9 @@ else
             ClearNotification(); 
         } 
     }
+    
+    // NEW: Dictionary to track available stock for each barang (IdBarang -> Available Qty)
+    private Dictionary<int, int> AvailableStock { get; set; } = new Dictionary<int, int>();
 
     private string SearchFilter { get; set; } = string.Empty;
     private string DateFilter { get; set; } = "Semua";
@@ -1827,10 +2198,8 @@ else
            .ThenInclude(t => t!.User)
            .AsQueryable();
 
-        if (IsLoggedIn && CurrentRole == "Helpdesk" && LoggedInUser != null)
-        {
-            rawEventsQuery = rawEventsQuery.Where(e => e.IdPembuatAcara == LoggedInUser.IdUser);
-        }
+        // Agar Helpdesk dapat melihat semua event (termasuk yang dibuat oleh Admin), filter IdPembuatAcara dihapus.
+        // Cukup biarkan rawEventsQuery mengambil semua event yang terdaftar.
 
         var rawEvents = await rawEventsQuery.ToListAsync();
 
@@ -1857,6 +2226,13 @@ else
 
         MasterLokasiList = await DbContext.MasterLokasi.ToListAsync();
         MasterBarangList = await DbContext.MasterBarang.ToListAsync();
+
+        // COMPUTE AVAILABLE STOCK
+        AvailableStock.Clear();
+        foreach(var brg in MasterBarangList)
+        {
+            AvailableStock[brg.IdBarang] = brg.SisaBarang;
+        }
 
         if (!IsLoggedIn || CurrentRole != "Helpdesk")
         {
@@ -2050,7 +2426,9 @@ else
     // Helpdesk Form Handlers
     private void AddNeedInputRow()
     {
-        NewNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList?.FirstOrDefault()?.IdBarang ?? 1, Jumlah = 1, Keterangan = "" });
+        var firstValid = MasterBarangList?.FirstOrDefault(b => AvailableStock.ContainsKey(b.IdBarang) && AvailableStock[b.IdBarang] > 0);
+        int defaultId = firstValid != null ? firstValid.IdBarang : 0;
+        NewNeedsList.Add(new KebutuhanAcara { IdBarang = defaultId, Jumlah = 1 });
     }
 
     private void RemoveNeedInputRow(int index)
@@ -2065,6 +2443,11 @@ else
     {
         try
         {
+            if (NewEvent.IdLokasi == 0)
+            {
+                ShowNotificationWithTimer("Error: Silakan pilih lokasi ruangan terlebih dahulu.");
+                return;
+            }
             // Parse times
             NewEvent.JamMulai = NewEventStart.ToTimeSpan();
             NewEvent.JamSelesai = NewEventEnd.ToTimeSpan();
@@ -2110,6 +2493,7 @@ else
             }
 
             await LoadDataAsync();
+            ActiveMenu = "dashboard";
         }
         catch (Exception ex)
         {
@@ -2146,7 +2530,9 @@ else
 
     private void AddEditNeedInputRow()
     {
-        EditNeedsList.Add(new KebutuhanAcara { IdBarang = MasterBarangList?.FirstOrDefault()?.IdBarang ?? 1, Jumlah = 1, Keterangan = "" });
+        var firstValid = MasterBarangList?.FirstOrDefault(b => AvailableStock.ContainsKey(b.IdBarang) && AvailableStock[b.IdBarang] > 0);
+        int defaultId = firstValid != null ? firstValid.IdBarang : 0;
+        EditNeedsList.Add(new KebutuhanAcara { IdBarang = defaultId, Jumlah = 1 });
     }
 
     private void RemoveEditNeedInputRow(int index)
@@ -2161,6 +2547,11 @@ else
     {
         try
         {
+            if (EditEvent.IdLokasi == 0)
+            {
+                ShowNotificationWithTimer("Error: Silakan pilih lokasi ruangan terlebih dahulu.");
+                return;
+            }
             var existingEvent = await DbContext.SupportAcara
                .Include(e => e.Kebutuhan)
                .FirstOrDefaultAsync(e => e.IdAcara == EditEvent.IdAcara);
@@ -2351,7 +2742,7 @@ else
 
                 await DbContext.SaveChangesAsync();
                 
-                ShowNotificationWithTimer($"Teknisi berhasil ditugaskan. Status acara berubah menjadi 'Ditugaskan/Belum Sign'.");
+                ShowNotificationWithTimer($"Teknisi berhasil ditugaskan. Status acara berubah menjadi 'Ditugaskan'.");
                 ShowAssignModal = false;
                 await LoadDataAsync();
             }
@@ -2403,6 +2794,14 @@ else
                     penugasan.Acara.StatusAcara = "Dikonfirmasi"; // status becomes Hijau
                 }
 
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Sign Teknisi",
+                    Detail = $"Teknisi menyetujui penugasan acara '{penugasan.Acara?.NamaAcara}'"
+                });
+
                 await DbContext.SaveChangesAsync();
                 ShowNotificationWithTimer($"Tanda tangan berhasil disimpan! Status penugasan Anda sekarang 'Dikonfirmasi'.");
                 ShowSignatureModal = false;
@@ -2443,6 +2842,14 @@ else
                     IdUser = 1, // Admin Id
                     Message = $"Penugasan ditolak oleh Teknisi untuk Event {penugasan.Acara?.NamaAcara}.",
                     Status = "Unread"
+                });
+
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Tolak Penugasan",
+                    Detail = $"Teknisi menolak penugasan acara '{penugasan.Acara?.NamaAcara}'"
                 });
 
                 await DbContext.SaveChangesAsync();
@@ -2529,6 +2936,14 @@ else
                     Status = "Unread"
                 });
 
+                DbContext.AuditLogs.Add(new AuditLog
+                {
+                    Waktu = DateTime.Now,
+                    Username = LoggedInUser?.Username ?? "Sistem",
+                    Aksi = "Upload Dokumen",
+                    Detail = $"Teknisi { (isEdit ? "memperbarui" : "mengunggah") } foto dokumentasi acara '{penugasan.Acara?.NamaAcara}'"
+                });
+
                 await DbContext.SaveChangesAsync();
                 ShowNotificationWithTimer($"Dokumentasi berhasil disimpan.");
                 ShowUploadModal = false;
@@ -2561,7 +2976,7 @@ else
                 DbContext.Notifications.Add(new Notification
                 {
                     IdUser = 1, // Admin
-                    Message = $"Progress diperbarui ({penugasan.Progress}%) untuk Event {penugasan.Acara?.NamaAcara}.",
+                    Message = $"Progress diperbarui ({penugasan.Progress}%) untuk Event \"{penugasan.Acara?.NamaAcara ?? "Tidak Diketahui"}\".",
                     Status = "Unread"
                 });
 
@@ -2601,6 +3016,20 @@ else
 
                 // Remove active event (or mark as Selesai, but we filter Selesai out of ActiveEvents)
                 fullEvent.StatusAcara = "Selesai";
+
+                // Automatically mark all equipment as returned when the event is completed by Admin
+                foreach (var k in fullEvent.Kebutuhan)
+                {
+                    if (k.IsAmbil && !k.IsKembali)
+                    {
+                        var brg = await DbContext.MasterBarang.FindAsync(k.IdBarang);
+                        if (brg != null)
+                        {
+                            brg.SisaBarang += k.Jumlah;
+                        }
+                    }
+                    k.IsKembali = true;
+                }
 
                 await DbContext.SaveChangesAsync();
 
@@ -2916,6 +3345,13 @@ else
                 else t.StatusKetersediaan = "Tersedia";
             }
 
+            // Reset MasterBarang SisaBarang to Stok
+            var barangs = await DbContext.MasterBarang.ToListAsync();
+            foreach (var b in barangs)
+            {
+                b.SisaBarang = b.Stok;
+            }
+
             // Seed default active events
             DbContext.SupportAcara.AddRange(
                 new SupportAcara 
@@ -2966,3 +3402,4 @@ else
 
 
 
+ 

@@ -35,18 +35,18 @@ namespace EventSupportApp.Data
 
             // ========== SEED: Master Barang ==========
             modelBuilder.Entity<MasterBarang>().HasData(
-                new MasterBarang { IdBarang = 1,  Code = "PRY-001", NamaBarang = "Proyektor",            Kategori = "Video",       Stok = 5  },
-                new MasterBarang { IdBarang = 2,  Code = "LAY-001", NamaBarang = "Layar Proyektor",      Kategori = "Video",       Stok = 5  },
-                new MasterBarang { IdBarang = 3,  Code = "SND-001", NamaBarang = "Sound System",         Kategori = "Audio",       Stok = 3  },
-                new MasterBarang { IdBarang = 4,  Code = "MCW-001", NamaBarang = "Mic Wireless",         Kategori = "Audio",       Stok = 10 },
-                new MasterBarang { IdBarang = 5,  Code = "MCK-001", NamaBarang = "Mic Kabel",            Kategori = "Audio",       Stok = 8  },
-                new MasterBarang { IdBarang = 6,  Code = "LPT-001", NamaBarang = "Laptop",               Kategori = "Komputer",    Stok = 4  },
-                new MasterBarang { IdBarang = 7,  Code = "KBR-001", NamaBarang = "Kabel Roll",           Kategori = "Kelistrikan", Stok = 6  },
-                new MasterBarang { IdBarang = 8,  Code = "KBH-001", NamaBarang = "Kabel HDMI",           Kategori = "Kelistrikan", Stok = 10 },
-                new MasterBarang { IdBarang = 9,  Code = "PTR-001", NamaBarang = "Pointer Presentasi",   Kategori = "Aksesoris",   Stok = 5  },
-                new MasterBarang { IdBarang = 10, Code = "WBC-001", NamaBarang = "Webcam",               Kategori = "Video",       Stok = 3  },
-                new MasterBarang { IdBarang = 11, Code = "MXR-001", NamaBarang = "Mixer Audio",          Kategori = "Audio",       Stok = 2  },
-                new MasterBarang { IdBarang = 12, Code = "VDT-001", NamaBarang = "Videotron / LED Wall", Kategori = "Video",       Stok = 1  }
+                new MasterBarang { IdBarang = 1,  Code = "PRY-001", NamaBarang = "Proyektor",            Kategori = "Video",       Stok = 5,  SisaBarang = 5  }, // -0 (tidak ada yang meminjam saat ini)
+                new MasterBarang { IdBarang = 2,  Code = "LAY-001", NamaBarang = "Layar Proyektor",      Kategori = "Video",       Stok = 5,  SisaBarang = 5  },
+                new MasterBarang { IdBarang = 3,  Code = "SND-001", NamaBarang = "Sound System",         Kategori = "Audio",       Stok = 3,  SisaBarang = 2  }, // -1 (Acara 1)
+                new MasterBarang { IdBarang = 4,  Code = "MCW-001", NamaBarang = "Mic Wireless",         Kategori = "Audio",       Stok = 10, SisaBarang = 8  }, // -2 (Acara 1)
+                new MasterBarang { IdBarang = 5,  Code = "MCK-001", NamaBarang = "Mic Kabel",            Kategori = "Audio",       Stok = 8,  SisaBarang = 8  },
+                new MasterBarang { IdBarang = 6,  Code = "LPT-001", NamaBarang = "Laptop",               Kategori = "Komputer",    Stok = 4,  SisaBarang = 4  },
+                new MasterBarang { IdBarang = 7,  Code = "KBR-001", NamaBarang = "Kabel Roll",           Kategori = "Kelistrikan", Stok = 6,  SisaBarang = 6  },
+                new MasterBarang { IdBarang = 8,  Code = "KBH-001", NamaBarang = "Kabel HDMI",           Kategori = "Kelistrikan", Stok = 10, SisaBarang = 10 },
+                new MasterBarang { IdBarang = 9,  Code = "PTR-001", NamaBarang = "Pointer Presentasi",   Kategori = "Aksesoris",   Stok = 5,  SisaBarang = 5  },
+                new MasterBarang { IdBarang = 10, Code = "WBC-001", NamaBarang = "Webcam",               Kategori = "Video",       Stok = 3,  SisaBarang = 3  },
+                new MasterBarang { IdBarang = 11, Code = "MXR-001", NamaBarang = "Mixer Audio",          Kategori = "Audio",       Stok = 2,  SisaBarang = 2  },
+                new MasterBarang { IdBarang = 12, Code = "VDT-001", NamaBarang = "Videotron / LED Wall", Kategori = "Video",       Stok = 1,  SisaBarang = 0  }  // -1 (Acara 1)
             );
 
             // ========== SEED: Roles ==========
@@ -78,45 +78,78 @@ namespace EventSupportApp.Data
                 {
                     IdAcara = 1,
                     IdPembuatAcara = 2,
-                    NamaAcara = "Rapat Pleno Dekanat",
-                    Tanggal = new DateTime(2026, 7, 23),
+                    NamaAcara = "Seminar Nasional IT & AI",
+                    Tanggal = new DateTime(2026, 7, 25),
                     JamMulai = new TimeSpan(8, 0, 0),
                     JamSelesai = new TimeSpan(12, 0, 0),
-                    IdLokasi = 1, // Gedung amanah Lt. 1
-                    StatusAcara = "Selesai"
+                    IdLokasi = 4,
+                    StatusAcara = "Dikonfirmasi"
                 },
                 new SupportAcara
                 {
                     IdAcara = 2,
                     IdPembuatAcara = 2,
-                    NamaAcara = "Seminar Nasional IT & AI",
-                    Tanggal = new DateTime(2026, 7, 25),
-                    JamMulai = new TimeSpan(8, 0, 0),
+                    NamaAcara = "Rapat Pleno Senat Universitas",
+                    Tanggal = new DateTime(2026, 8, 6),
+                    JamMulai = new TimeSpan(9, 0, 0),
                     JamSelesai = new TimeSpan(12, 0, 0),
-                    IdLokasi = 4, // Gedung kompeten (pintu belakang)
+                    IdLokasi = 3,
                     StatusAcara = "Ditugaskan"
                 },
                 new SupportAcara
                 {
                     IdAcara = 3,
                     IdPembuatAcara = 2,
-                    NamaAcara = "Rapat Pleno Senat Universitas",
-                    Tanggal = DateTime.Today,
+                    NamaAcara = "Workshop Pelatihan Microsoft Office",
+                    Tanggal = new DateTime(2026, 8, 10),
+                    JamMulai = new TimeSpan(8, 0, 0),
+                    JamSelesai = new TimeSpan(16, 0, 0),
+                    IdLokasi = 5,
+                    StatusAcara = "Belum Ditugaskan"
+                },
+                new SupportAcara
+                {
+                    IdAcara = 4,
+                    IdPembuatAcara = 2,
+                    NamaAcara = "Wisuda Sarjana & Pascasarjana",
+                    Tanggal = new DateTime(2026, 8, 15),
+                    JamMulai = new TimeSpan(7, 0, 0),
+                    JamSelesai = new TimeSpan(14, 0, 0),
+                    IdLokasi = 1,
+                    StatusAcara = "Belum Ditugaskan"
+                },
+                new SupportAcara
+                {
+                    IdAcara = 5,
+                    IdPembuatAcara = 2,
+                    NamaAcara = "Pelantikan BEM Periode 2026",
+                    Tanggal = new DateTime(2026, 7, 20),
                     JamMulai = new TimeSpan(9, 0, 0),
-                    JamSelesai = new TimeSpan(12, 0, 0),
-                    IdLokasi = 3, // Gedung kompeten (pintu depan)
-                    StatusAcara = "Ditugaskan"
+                    JamSelesai = new TimeSpan(11, 0, 0),
+                    IdLokasi = 6,
+                    StatusAcara = "Selesai"
                 }
             );
 
             // ========== SEED: KebutuhanAcara (menggunakan IdBarang) ==========
             modelBuilder.Entity<KebutuhanAcara>().HasData(
-                new KebutuhanAcara { IdKebutuhan = 1, IdAcara = 1, IdBarang = 1,  Jumlah = 1,  Keterangan = "Proyektor utama & Layar gantung",         IsAmbil = true,  IsKembali = true  },
-                new KebutuhanAcara { IdKebutuhan = 2, IdAcara = 1, IdBarang = 3,  Jumlah = 1,  Keterangan = "Microphone wireless 4 buah & Audio Mixer", IsAmbil = true,  IsKembali = true  },
-                new KebutuhanAcara { IdKebutuhan = 3, IdAcara = 1, IdBarang = 4,  Jumlah = 4,  Keterangan = "",                                        IsAmbil = true,  IsKembali = true  },
-                new KebutuhanAcara { IdKebutuhan = 4, IdAcara = 2, IdBarang = 12, Jumlah = 1,  Keterangan = "Videotron latar panggung utama",          IsAmbil = false, IsKembali = false },
-                new KebutuhanAcara { IdKebutuhan = 5, IdAcara = 2, IdBarang = 3,  Jumlah = 1,  Keterangan = "Sound system outdoor",                   IsAmbil = false, IsKembali = false },
-                new KebutuhanAcara { IdKebutuhan = 6, IdAcara = 3, IdBarang = 1,  Jumlah = 1,  Keterangan = "Proyektor utama & Layar gantung",         IsAmbil = false, IsKembali = false }
+                // Acara 1 - Seminar Nasional IT & AI
+                new KebutuhanAcara { IdKebutuhan = 1,  IdAcara = 1, IdBarang = 12, Jumlah = 1, Keterangan = "Videotron latar panggung utama",        IsAmbil = true,  IsKembali = false },
+                new KebutuhanAcara { IdKebutuhan = 2,  IdAcara = 1, IdBarang = 3,  Jumlah = 1, Keterangan = "Sound system outdoor",                  IsAmbil = true,  IsKembali = false },
+                new KebutuhanAcara { IdKebutuhan = 3,  IdAcara = 1, IdBarang = 4,  Jumlah = 2, Keterangan = "Mic untuk pembicara",                   IsAmbil = true,  IsKembali = false },
+                // Acara 2 - Rapat Pleno
+                new KebutuhanAcara { IdKebutuhan = 4,  IdAcara = 2, IdBarang = 1,  Jumlah = 1, Keterangan = "Proyektor utama & Layar gantung",       IsAmbil = false, IsKembali = false },
+                new KebutuhanAcara { IdKebutuhan = 5,  IdAcara = 2, IdBarang = 9,  Jumlah = 1, Keterangan = "Pointer untuk presentasi",              IsAmbil = false, IsKembali = false },
+                // Acara 3 - Workshop
+                new KebutuhanAcara { IdKebutuhan = 6,  IdAcara = 3, IdBarang = 6,  Jumlah = 3, Keterangan = "Laptop untuk peserta",                  IsAmbil = false, IsKembali = false },
+                new KebutuhanAcara { IdKebutuhan = 7,  IdAcara = 3, IdBarang = 8,  Jumlah = 5, Keterangan = "Kabel HDMI koneksi layar",             IsAmbil = false, IsKembali = false },
+                // Acara 4 - Wisuda
+                new KebutuhanAcara { IdKebutuhan = 8,  IdAcara = 4, IdBarang = 3,  Jumlah = 2, Keterangan = "Sound system panggung wisuda",         IsAmbil = false, IsKembali = false },
+                new KebutuhanAcara { IdKebutuhan = 9,  IdAcara = 4, IdBarang = 11, Jumlah = 1, Keterangan = "Mixer audio untuk MC",                 IsAmbil = false, IsKembali = false },
+                new KebutuhanAcara { IdKebutuhan = 10, IdAcara = 4, IdBarang = 12, Jumlah = 1, Keterangan = "Videotron backdrop panggung",          IsAmbil = false, IsKembali = false },
+                // Acara 5 - Pelantikan BEM (selesai, semua sudah dikembalikan)
+                new KebutuhanAcara { IdKebutuhan = 11, IdAcara = 5, IdBarang = 1,  Jumlah = 1, Keterangan = "Proyektor untuk presentasi BEM",       IsAmbil = true,  IsKembali = true  },
+                new KebutuhanAcara { IdKebutuhan = 12, IdAcara = 5, IdBarang = 4,  Jumlah = 2, Keterangan = "Mic wireless untuk momen pelantikan",  IsAmbil = true,  IsKembali = true  }
             );
 
             // ========== SEED: Penugasan ==========
@@ -124,18 +157,19 @@ namespace EventSupportApp.Data
                 new Penugasan
                 {
                     IdPenugasan = 1, IdAcara = 1, IdTeknisi = 1, IdPenugasTeknisi = 1,
+                    StatusPenugasan = "Dikonfirmasi", Progress = 40,
+                    WaktuKonfirmasi = new DateTime(2026, 7, 24, 9, 30, 0)
+                },
+                new Penugasan
+                {
+                    IdPenugasan = 2, IdAcara = 2, IdTeknisi = 2, IdPenugasTeknisi = 1,
+                    StatusPenugasan = "Ditugaskan", Progress = 0
+                },
+                new Penugasan
+                {
+                    IdPenugasan = 3, IdAcara = 5, IdTeknisi = 3, IdPenugasTeknisi = 1,
                     StatusPenugasan = "Selesai", Progress = 100,
-                    DokumentasiKegiatanFile = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=300&h=300&fit=crop"
-                },
-                new Penugasan
-                {
-                    IdPenugasan = 2, IdAcara = 2, IdTeknisi = 1, IdPenugasTeknisi = 1,
-                    StatusPenugasan = "Ditugaskan", Progress = 0
-                },
-                new Penugasan
-                {
-                    IdPenugasan = 3, IdAcara = 3, IdTeknisi = 2, IdPenugasTeknisi = 1,
-                    StatusPenugasan = "Ditugaskan", Progress = 0
+                    WaktuKonfirmasi = new DateTime(2026, 7, 19, 8, 0, 0)
                 }
             );
 

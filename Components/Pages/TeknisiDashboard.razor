@@ -385,7 +385,7 @@ else if (ActiveMenu == "penugasan")
                                         @if (status != "Menunggu Konfirmasi" && status != "Selesai")
                                         {
                                             <input type="checkbox" checked="@keb.IsKembali"
-                                                @onchange="async (ChangeEventArgs e) => { keb.IsKembali = (bool)(e.Value ?? false); await UpdatePenugasanAndKebutuhan(assign, keb); }" style="accent-color: #09A537; width: 18px; height: 18px; border-radius: 4px; cursor: pointer;" />
+                                                @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 18px; height: 18px; border-radius: 4px; cursor: pointer;" />
                                         }
                                         <span style="color: #000000; font-size: 0.9rem; font-weight: 600; text-decoration: @(keb.IsKembali ? "line-through" : "none");">
                                             @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan}) ") (@keb.Jumlah Unit)
@@ -421,12 +421,7 @@ else if (ActiveMenu == "penugasan")
                                 </div>
                                 <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
                                 <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
-                                @if (SavedProgressIds.Contains(assign.IdPenugasan))
-                                {
-                                    <div class="save-notif mb-2" style="position: fixed; bottom: 20px; right: 20px; background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1050; border-left: 4px solid #16a34a; font-size: 0.9rem; font-weight: bold; color: #16a34a; cursor: pointer;" @onclick="() => HideNotification(assign.IdPenugasan)">
-                                        Data penugasan berhasil disimpan
-                                    </div>
-                                }
+                                @* Notifikasi bawah dihapus — gunakan notifikasi atas saja *@
                                 <div class="d-flex gap-2">
                                     <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" @onclick="() => SimpanProgress(assign)">Simpan Catatan</button>
                                     <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">
@@ -481,7 +476,7 @@ else if (ActiveMenu == "penugasan")
                     var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
                     foreach (var k in kebutuhan)
                     {
-                        if (k.IsKembali)
+                        if (k.IsAmbil || k.IsKembali)
                         {
                             CheckedKebutuhan.Add($"{p.IdPenugasan}_{k.IdKebutuhan}");
                         }
@@ -586,6 +581,7 @@ else if (ActiveMenu == "penugasan")
     {
         p.StatusPenugasan = "Siap Bertugas";
         p.Progress = 20;
+        p.WaktuKonfirmasi = DateTime.Now;
         using var context = DbFactory.CreateDbContext();
         context.Update(p);
         await context.SaveChangesAsync();
@@ -617,10 +613,10 @@ else if (ActiveMenu == "penugasan")
                 var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
                 if (barang != null)
                 {
-                    barang.Stok += keb.Jumlah;
+                    barang.SisaBarang += keb.Jumlah;
                     ctx.Update(barang);
                     await ctx.SaveChangesAsync();
-                    keb.Barang.Stok = barang.Stok; // sinkron objek lokal
+                    keb.Barang.SisaBarang = barang.SisaBarang; // sinkron objek lokal
                 }
             }
         }
@@ -634,12 +630,12 @@ else if (ActiveMenu == "penugasan")
             {
                 using var ctx = DbFactory.CreateDbContext();
                 var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
-                if (barang != null && barang.Stok >= keb.Jumlah)
+                if (barang != null && barang.SisaBarang >= keb.Jumlah)
                 {
-                    barang.Stok -= keb.Jumlah;
+                    barang.SisaBarang -= keb.Jumlah;
                     ctx.Update(barang);
                     await ctx.SaveChangesAsync();
-                    keb.Barang.Stok = barang.Stok; // sinkron objek lokal
+                    keb.Barang.SisaBarang = barang.SisaBarang; // sinkron objek lokal
                 }
             }
         }
@@ -659,10 +655,10 @@ else if (ActiveMenu == "penugasan")
             var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
             if (barang != null)
             {
-                barang.Stok += keb.Jumlah;
+                barang.SisaBarang += keb.Jumlah;
                 ctx.Update(barang);
                 await ctx.SaveChangesAsync();
-                keb.Barang.Stok = barang.Stok;
+                keb.Barang.SisaBarang = barang.SisaBarang;
             }
         }
         else if (!keb.IsKembali && sebelumnya && keb.Barang != null)
@@ -670,12 +666,12 @@ else if (ActiveMenu == "penugasan")
             // Batalkan pengembalian: kurangi stok lagi
             using var ctx = DbFactory.CreateDbContext();
             var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
-            if (barang != null && barang.Stok >= keb.Jumlah)
+            if (barang != null && barang.SisaBarang >= keb.Jumlah)
             {
-                barang.Stok -= keb.Jumlah;
+                barang.SisaBarang -= keb.Jumlah;
                 ctx.Update(barang);
                 await ctx.SaveChangesAsync();
-                keb.Barang.Stok = barang.Stok;
+                keb.Barang.SisaBarang = barang.SisaBarang;
             }
         }
 
