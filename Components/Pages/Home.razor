@@ -197,7 +197,15 @@ else
             {
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "semua_acara" ? "menu-active" : "")" @onclick='() => ActiveMenu = "semua_acara"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span> Support Acara</button>
             }
-            <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Kebutuhan Acara</button>
+            @if (CurrentRole == "Teknisi")
+            {
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Kebutuhan Acara</button>
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "kebutuhan_event" ? "menu-active" : "")" @onclick='() => ActiveMenu = "kebutuhan_event"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span> Logistik Event Saya</button>
+            }
+            else
+            {
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Kebutuhan Acara</button>
+            }
             @if (CurrentRole == "Admin")
             {
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "master_lokasi" ? "menu-active" : "")" @onclick='() => ActiveMenu = "master_lokasi"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span> Lokasi</button>
@@ -205,6 +213,7 @@ else
             @if (CurrentRole == "Teknisi")
             {
                 <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "penugasan" ? "menu-active" : "")" @onclick='() => ActiveMenu = "penugasan"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg></span> Penugasan Teknisi</button>
+                <button type="button" class="dash-sidebar-menu-btn @(ActiveMenu == "histori" ? "menu-active" : "")" @onclick='() => ActiveMenu = "histori"'><span class="dash-sidebar-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span> Histori Pekerjaan</button>
             }
             @if (CurrentRole == "Admin")
             {
@@ -377,7 +386,7 @@ else
     <!-- ============================================== -->
     <!-- DYNAMIC VIEWS                                  -->
     <!-- ============================================== -->
-    @if (CurrentRole == "Helpdesk" || CurrentRole == "Admin")
+    @if (CurrentRole == "Helpdesk" || CurrentRole == "Admin" || ActiveMenu == "master")
     {
         @if (ActiveMenu == "dashboard" && CurrentRole == "Helpdesk")
         {            <!-- Stats Row for Helpdesk -->
@@ -701,7 +710,7 @@ else
                 </div>
             </div>
         }
-        else if (ActiveMenu == "master" && CurrentRole != "Teknisi")
+        else if (ActiveMenu == "master")
         {
             <div class="card border-0 bg-white mb-4" style="border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
                 <div class="d-flex flex-wrap justify-content-between align-items-center p-4 gap-3" style="border-bottom: 1px solid #f1f5f9; background: #fafafa;">
@@ -1291,7 +1300,7 @@ else
             </div>
         </div>
     }
-    else if (CurrentRole == "Teknisi")
+    else if (CurrentRole == "Teknisi" && ActiveMenu != "master")
     {
         <TeknisiDashboard 
             ActiveMenu="@ActiveMenu"

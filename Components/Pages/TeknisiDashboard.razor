@@ -1,6 +1,7 @@
 @using EventSupportApp.Data
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<AppDbContext> DbFactory
+@inject Microsoft.JSInterop.IJSRuntime JS
 
 <style>
     /* Enterprise Dashboard CSS for Teknisi */
@@ -118,6 +119,13 @@
         gap: 0.75rem;
         transition: box-shadow 0.2s;
     }
+    .tek-event-card .tek-event-left {
+        flex: 1;
+        min-width: 0;
+    }
+    @@media (max-width: 768px) {
+        .tek-event-card { flex-direction: column; align-items: stretch; }
+    }
     .tek-event-card:hover {
         box-shadow: 0 4px 12px rgba(0,0,0,0.07);
     }
@@ -175,8 +183,7 @@
         <select @bind="DashFilterStatus" style="min-width:150px;">
             <option value="Semua">Semua Status</option>
             <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
-            <option value="Diterima">Diterima</option>
-            <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
+            <option value="Berlangsung">Berlangsung</option>
             <option value="Selesai">Selesai</option>
         </select>
         <select @bind="DashFilterWaktu" style="min-width:140px;">
@@ -207,7 +214,7 @@
             var progress = CalculateProgress(assign);
             <div class="tek-event-card" style="padding: 1.5rem;">
                 <!-- Left Side: Details -->
-                <div style="flex: 1; padding-right: 1.5rem; min-width: 250px;">
+                <div class="tek-event-left" style="padding-right: 1.5rem;">
                     <div class="fw-bold text-dark mb-3" style="font-size: 1.25rem; color: #0f172a;">@assign.Acara?.NamaAcara</div>
                     <div class="d-flex flex-wrap align-items-center text-muted mb-2" style="font-size: 0.9rem; gap: 1.5rem;">
                         <div class="d-flex align-items-center gap-2">
@@ -257,7 +264,7 @@
         }
     </div>
 }
-else if (ActiveMenu == "master")
+else if (ActiveMenu == "kebutuhan_event")
 {
     var masterFiltered = MyAssignments
         .Where(a => string.IsNullOrEmpty(MasterSearch) || (a.Acara?.NamaAcara.Contains(MasterSearch, StringComparison.OrdinalIgnoreCase) == true))
@@ -284,27 +291,63 @@ else if (ActiveMenu == "master")
             if (kebutuhanList.Any())
             {
                 <div class="tek-card" style="padding: 0.85rem 1.25rem; border-radius: 8px;">
-                    <div class="mb-2" style="font-size: 0.95rem; color: #0f172a; font-weight: 600;">@assign.Acara?.NamaAcara</div>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                        <div style="font-size: 0.95rem; color: #0f172a; font-weight: 600;">@assign.Acara?.NamaAcara</div>
+                        <div class="text-muted d-flex flex-wrap align-items-center gap-3" style="font-size: 0.85rem;">
+                            <span class="d-flex align-items-center gap-1">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#005CA9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                @assign.Acara?.Tanggal.ToString("dd MMM yyyy")
+                            </span>
+                            <span class="d-flex align-items-center gap-1">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E31E24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")
+                            </span>
+                        </div>
+                    </div>
                     
-                    <div class="row g-3">
-                        @for (int i = 0; i < kebutuhanList.Count; i++)
+                    <div style="display: flex; flex-direction: column;">
+                        @for (int i = 0; i < kebutuhanList.Count; i += 2)
                         {
-                            var keb = kebutuhanList[i];
-                            bool hasBorder = i < (kebutuhanList.Count % 2 == 0 ? kebutuhanList.Count - 2 : kebutuhanList.Count - 1);
-                            string borderStyle = hasBorder ? "border-bottom: 1px solid #e2e8f0;" : "";
-                            
-                            <div class="col-md-6">
-                                <div style="padding: 0.35rem 0; display: flex; align-items: center; justify-content: space-between; @borderStyle">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div>
-                                            <div style="color: #334155; font-size: 0.9rem; margin-bottom: 2px;">@keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" (Tipe: {keb.Keterangan})")</div>
-                                            <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2;">@(string.IsNullOrEmpty(keb.Keterangan) ? "Tanpa keterangan" : keb.Keterangan)</div>
+                            var itemKiri = kebutuhanList[i];
+                            var itemKanan = i + 1 < kebutuhanList.Count ? kebutuhanList[i + 1] : null;
+                            bool isLastRow = i + 2 >= kebutuhanList.Count;
+                            string rowBorderStyle = isLastRow ? "" : "border-bottom: 1px solid #e2e8f0;";
+
+                            <div class="row g-3 py-2" style="@rowBorderStyle">
+                                <div class="col-md-6 d-flex align-items-center justify-content-between" style="word-break: break-word; overflow-wrap: break-word;">
+                                    <div style="flex: 1; min-width: 0; padding-right: 1rem;">
+                                        <div style="color: #334155; font-size: 0.9rem; font-weight: 600; word-break: break-word; white-space: normal;">
+                                            @itemKiri.Barang?.NamaBarang
+                                        </div>
+                                        <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2; word-break: break-word; white-space: normal;">
+                                            @(string.IsNullOrEmpty(itemKiri.Keterangan) ? "Tanpa keterangan" : itemKiri.Keterangan)
                                         </div>
                                     </div>
-                                    <div style="background-color: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; white-space: nowrap; margin-left: 0.2rem; border: 1px solid #e2e8f0;">
-                                        @keb.Jumlah unit
+                                    <div style="background-color: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; white-space: nowrap; border: 1px solid #e2e8f0; flex-shrink: 0;">
+                                        @itemKiri.Jumlah unit
                                     </div>
                                 </div>
+                                
+                                @if (itemKanan != null)
+                                {
+                                    <div class="col-md-6 d-flex align-items-center justify-content-between" style="word-break: break-word; overflow-wrap: break-word; padding-left: 1.5rem;">
+                                        <div style="flex: 1; min-width: 0; padding-right: 1rem;">
+                                            <div style="color: #334155; font-size: 0.9rem; font-weight: 600; word-break: break-word; white-space: normal;">
+                                                @itemKanan.Barang?.NamaBarang
+                                            </div>
+                                            <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2; word-break: break-word; white-space: normal;">
+                                                @(string.IsNullOrEmpty(itemKanan.Keterangan) ? "Tanpa keterangan" : itemKanan.Keterangan)
+                                            </div>
+                                        </div>
+                                        <div style="background-color: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.8rem; white-space: nowrap; border: 1px solid #e2e8f0; flex-shrink: 0;">
+                                            @itemKanan.Jumlah unit
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6"></div>
+                                }
                             </div>
                         }
                     </div>
@@ -320,26 +363,29 @@ else if (ActiveMenu == "master")
 }
 else if (ActiveMenu == "penugasan")
 {
-    <!-- Penugasan Teknisi - All events, each in its own card -->
-    @foreach (var assign in MyAssignments.OrderBy(a => !string.IsNullOrEmpty(a.DokumentasiKegiatanFile)).ThenByDescending(a => a.IdPenugasan))
+    @foreach (var assign in MyAssignments
+        .OrderBy(a => ((a.Acara?.Kebutuhan != null && a.Acara.Kebutuhan.Any() && a.Acara.Kebutuhan.All(k => k.IsKembali)) || CalculateProgress(a) == 100 || !string.IsNullOrEmpty(a.DokumentasiKegiatanFile) || a.StatusPenugasan == "Selesai") ? 1 : 0)
+        .ThenBy(a => (a.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(a.StatusPenugasan) || a.StatusPenugasan == "Menunggu Konfirmasi") ? 0 : 1)
+        .ThenByDescending(a => a.IdPenugasan))
     {
         var status = GetStatusPenugasan(assign);
         var progress = CalculateProgress(assign);
+        bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(k => k.IsKembali);
 
-        <div class="tek-card mb-4" style="border-radius: 12px; padding: 1.5rem;">
+        <div class="tek-card mb-2" style="border-radius: 12px; padding: 1.5rem;">
             <div class="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                    <h5 class="fw-bold mb-2" style="color: #072C4C; font-size: 1.25rem;">@assign.Acara?.NamaAcara</h5>
-                    <div class="text-muted d-flex align-items-center gap-3" style="font-size: 0.85rem;">
-                        <span class="d-flex align-items-center gap-1">
+                <div style="flex: 1; min-width: 0;">
+                    <h5 class="fw-bold mb-2" style="color: #072C4C; font-size: 1.25rem; word-break: break-word; white-space: normal;">@assign.Acara?.NamaAcara</h5>
+                    <div class="text-muted d-flex flex-wrap align-items-center gap-3" style="font-size: 0.85rem;">
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#005CA9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             @assign.Acara?.Tanggal.ToString("dd MMM yyyy")
                         </span>
-                        <span class="d-flex align-items-center gap-1">
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E31E24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                             @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")
                         </span>
-                        <span class="d-flex align-items-center gap-1">
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#09A537" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                             @assign.Acara?.LokasiNavigation?.NamaLokasi
                         </span>
@@ -353,22 +399,24 @@ else if (ActiveMenu == "penugasan")
                         <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
                             Kebutuhan Acara:
                         </h6>
-                        <ul class="keb-checklist mb-4" style="display: flex; flex-direction: column; gap: 6px; border: none; padding: 0;">
+                        <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
                             @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
                             {
                                 var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
                                 var isChecked = CheckedKebutuhan.Contains(kebKey);
-                                bool isEventDayOrPast = assign.Acara != null && assign.Acara.Tanggal.Date <= DateTime.Today;
-                                bool disableUncheck = isEventDayOrPast && isChecked;
 
-                                <li class="@(isChecked ? "checked" : "")" style="background-color: #f8fafc; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 0;">
-                                    @if (status != "Menunggu Konfirmasi" && status != "Selesai")
-                                    {
-                                        <input type="checkbox" checked="@isChecked" disabled="@disableUncheck"
-                                            @onchange="() => ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 18px; height: 18px; border-radius: 4px; cursor: @(disableUncheck ? "not-allowed" : "pointer");" />
-                                    }
-                                    <span style="color: #000000; font-size: 0.9rem; font-weight: 500;">@keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")</span>
-                                    <span style="background-color: #e2e8f0; color: #000000; font-size: 0.8rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-left: auto;">@keb.Jumlah Unit</span>
+                                <li class="@(isChecked ? "checked" : "")" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                    <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                        @if (status != "Menunggu Konfirmasi")
+                                        {
+                                            <input type="checkbox" checked="@isChecked" disabled="@(keb.IsKembali || isAllReturned)"
+                                                @onchange="() => ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 16px; height: 16px; cursor: @((keb.IsKembali || isAllReturned) ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                        }
+                                        <span style="color: #000000; font-size: 0.9rem; word-break: break-word; white-space: normal;">
+                                            @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")
+                                        </span>
+                                    </div>
+                                    <span class="text-muted" style="font-size: 0.85rem; flex-shrink: 0;">@keb.Jumlah Unit</span>
                                 </li>
                             }
                         </ul>
@@ -376,21 +424,23 @@ else if (ActiveMenu == "penugasan")
                         @if (assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
                         {
                             <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
-                                Pengembalian Barang Yang Dipinjam:
+                                Pengembalian Barang:
                             </h6>
-                            <ul class="keb-checklist" style="display: flex; flex-direction: column; gap: 6px; border: none; padding: 0;">
+                            <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
                                 @foreach (var keb in assign.Acara.Kebutuhan.Where(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
                                 {
-                                    <li style="background-color: #f8fafc; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 0;">
-                                        @if (status != "Menunggu Konfirmasi" && status != "Selesai")
-                                        {
-                                            <input type="checkbox" checked="@keb.IsKembali"
-                                                @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 18px; height: 18px; border-radius: 4px; cursor: pointer;" />
-                                        }
-                                        <span style="color: #000000; font-size: 0.9rem; font-weight: 600; text-decoration: @(keb.IsKembali ? "line-through" : "none");">
-                                            @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan}) ") (@keb.Jumlah Unit)
-                                        </span>
-                                        <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="margin-left: auto; font-size: 0.75rem;">
+                                    <li style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                        <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                            @if (status != "Menunggu Konfirmasi")
+                                            {
+                                                <input type="checkbox" checked="@keb.IsKembali" disabled="@isAllReturned"
+                                                    @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 16px; height: 16px; cursor: @(isAllReturned ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                            }
+                                            <span style="color: #000000; font-size: 0.9rem; text-decoration: @(keb.IsKembali ? "line-through" : "none"); word-break: break-word; white-space: normal;">
+                                                @keb.Barang?.NamaBarang (@keb.Jumlah Unit) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})")
+                                            </span>
+                                        </div>
+                                        <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="flex-shrink: 0; font-size: 0.75rem;">
                                             @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
                                         </span>
                                     </li>
@@ -408,7 +458,7 @@ else if (ActiveMenu == "penugasan")
                         }
                         else
                         {
-                            <div class="p-3" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                            <div style="background: transparent;">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <label class="form-label fw-bold small text-dark m-0">Progress Acara: @progress%</label>
                                     @if (progress == 100)
@@ -421,7 +471,7 @@ else if (ActiveMenu == "penugasan")
                                 </div>
                                 <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
                                 <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
-                                @* Notifikasi bawah dihapus — gunakan notifikasi atas saja *@
+                                
                                 <div class="d-flex gap-2">
                                     <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" @onclick="() => SimpanProgress(assign)">Simpan Catatan</button>
                                     <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">
@@ -439,6 +489,100 @@ else if (ActiveMenu == "penugasan")
     {
         <div class="tek-card p-4 text-center text-muted">Belum ada penugasan.</div>
     }
+}
+else if (ActiveMenu == "histori")
+{
+    var historiFiltered = MyAssignments
+        .Where(a => GetStatusPenugasan(a) != "Menunggu Konfirmasi")
+        .Where(a => string.IsNullOrEmpty(HistoriSearch) || 
+                    (a.Acara?.NamaAcara.Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (a.Acara?.LokasiNavigation?.NamaLokasi?.Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (a.Acara?.Tanggal.ToString("dd MMMM yyyy").Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (a.Acara?.Tanggal.ToString("dd MMM yyyy").Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (a.Acara?.Tanggal.ToString("dd/MM/yyyy").Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (a.Acara?.Kebutuhan != null && a.Acara.Kebutuhan.Any(k => k.Barang != null && k.Barang.NamaBarang.Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase))))
+        .Where(a => HistoriFilterStatus == "Semua" || 
+                    (HistoriFilterStatus == "Open" && a.StatusPenugasan != "Selesai" && a.StatusPenugasan != "Ditolak") || 
+                    (HistoriFilterStatus == "Close" && (a.StatusPenugasan == "Selesai" || a.StatusPenugasan == "Ditolak")))
+        .Where(a => HistoriFilterWaktu == "Semua" ||
+                    (HistoriFilterWaktu == "Hari Ini" && a.Acara?.Tanggal.Date == DateTime.Today) ||
+                    (HistoriFilterWaktu == "Minggu Ini" && a.Acara?.Tanggal.Date >= DateTime.Today && a.Acara?.Tanggal.Date <= DateTime.Today.AddDays(7)) ||
+                    (HistoriFilterWaktu == "Bulan Ini" && a.Acara?.Tanggal.Month == DateTime.Today.Month && a.Acara?.Tanggal.Year == DateTime.Today.Year))
+        .OrderByDescending(a => a.IdPenugasan)
+        .ToList();
+
+    <div class="tek-card mb-4" style="border-radius: 12px; padding: 1.25rem 0 0 0; overflow: hidden;">
+        <div class="d-flex align-items-center mb-3 gap-2 px-3" style="overflow-x: auto; padding-bottom: 4px; white-space: nowrap;">
+            <div class="position-relative flex-grow-1" style="min-width: 180px;">
+                <span class="position-absolute text-muted" style="left: 0.75rem; top: 50%; transform: translateY(-50%);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
+                <input type="text" class="form-control" placeholder="Cari event, tgl, lokasi, barang..." style="border-radius: 8px; border: 1px solid #cbd5e1; padding: 0.4rem 0.75rem 0.4rem 2rem; background: #fff; font-size: 0.8rem; width: 100%;" @bind="HistoriSearch" @bind:event="oninput" />
+            </div>
+
+            <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0">
+                <button class="btn btn-sm @(HistoriFilterWaktu == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Semua"'>Semua Waktu</button>
+                <button class="btn btn-sm @(HistoriFilterWaktu == "Hari Ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Hari Ini"'>Hari Ini</button>
+                <button class="btn btn-sm @(HistoriFilterWaktu == "Minggu Ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Minggu Ini"'>Minggu Ini</button>
+                <button class="btn btn-sm @(HistoriFilterWaktu == "Bulan Ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Bulan Ini"'>Bulan Ini</button>
+            </div>
+            
+            <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0">
+                <button class="btn btn-sm @(HistoriFilterStatus == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterStatus = "Semua"'>Semua Status</button>
+                <button class="btn btn-sm @(HistoriFilterStatus == "Open" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterStatus = "Open"'>Open</button>
+                <button class="btn btn-sm @(HistoriFilterStatus == "Close" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterStatus = "Close"'>Close</button>
+            </div>
+            
+            <button class="btn btn-sm text-white px-3 py-1 fw-bold rounded-pill shadow-sm d-flex align-items-center gap-1 flex-shrink-0" style="background-color: #09A537; font-size: 0.8rem;" @onclick="() => ExportExcel(historiFiltered)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Export
+            </button>
+        </div>
+
+        <div class="table-responsive" style="margin-bottom: 0;">
+            <table class="tek-table" style="width: 100%; margin-bottom: 0;">
+                <thead>
+                    <tr>
+                        <th style="width: 20%; padding-left: 1.25rem;">NAMA ACARA</th>
+                        <th style="width: 15%;">TANGGAL</th>
+                        <th style="width: 15%;">LOKASI</th>
+                        <th style="width: 20%;">KEBUTUHAN IT</th>
+                        <th style="width: 10%;">STATUS</th>
+                        <th style="width: 20%; padding-right: 1.25rem;">CATATAN TEKNISI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!historiFiltered.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted" style="padding-left: 1.25rem; padding-right: 1.25rem;">Belum ada histori pekerjaan.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var assign in historiFiltered)
+                        {
+                            var isClose = (assign.StatusPenugasan == "Selesai" || assign.StatusPenugasan == "Ditolak");
+                            var statusBadge = isClose ? "bg-success" : "bg-primary";
+                            var statusText = isClose ? "Close" : "Open";
+                            var needs = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() 
+                                        ? string.Join(", ", assign.Acara.Kebutuhan.Select(k => k.Barang?.NamaBarang))
+                                        : "-";
+
+                            <tr style="background-color: #fff; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc';" onmouseout="this.style.background='transparent';">
+                                <td class="fw-bold" style="color: #0f172a; font-size: 0.9rem; padding-left: 1.25rem;">@assign.Acara?.NamaAcara</td>
+                                <td>@assign.Acara?.Tanggal.ToString("dd MMM yyyy")</td>
+                                <td>@assign.Acara?.LokasiNavigation?.NamaLokasi</td>
+                                <td style="font-size: 0.8rem; line-height: 1.4;">@needs</td>
+                                <td><span class="badge @statusBadge">@statusText</span></td>
+                                <td style="font-size: 0.8rem; color: #64748b; font-style: italic; padding-right: 1.25rem;">@(string.IsNullOrEmpty(assign.CatatanTeknisi) ? "-" : assign.CatatanTeknisi)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 }
 
 @code {
@@ -469,17 +613,15 @@ else if (ActiveMenu == "penugasan")
 
             MyAssignments = all.ToList();
 
+            CheckedKebutuhan.Clear();
             foreach (var p in MyAssignments)
             {
-                if (p.StatusPenugasan != "Menunggu Konfirmasi" && p.StatusPenugasan != "Ditugaskan" && !string.IsNullOrEmpty(p.StatusPenugasan))
+                var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
+                foreach (var k in kebutuhan)
                 {
-                    var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
-                    foreach (var k in kebutuhan)
+                    if (k.IsAmbil)
                     {
-                        if (k.IsAmbil || k.IsKembali)
-                        {
-                            CheckedKebutuhan.Add($"{p.IdPenugasan}_{k.IdKebutuhan}");
-                        }
+                        CheckedKebutuhan.Add($"{p.IdPenugasan}_{k.IdKebutuhan}");
                     }
                 }
             }
@@ -490,9 +632,9 @@ else if (ActiveMenu == "penugasan")
     private int TotalPenugasan => MyAssignments.Count;
     private List<Penugasan> HariIni => MyAssignments.Where(a => a.Acara?.Tanggal.Date == DateTime.Today).ToList();
     private int PenugasanHariIni => MyAssignments.Count(a => a.Acara?.Tanggal.Date == DateTime.Today);
-    private int EventAktif => MyAssignments.Count(a => a.StatusPenugasan != "Selesai" && a.StatusPenugasan != "Ditolak");
-    private int MenungguKonfirmasi => MyAssignments.Count(a => a.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(a.StatusPenugasan));
-    private int Selesai => MyAssignments.Count(a => a.StatusPenugasan == "Selesai");
+    private int EventAktif => MyAssignments.Count(a => GetStatusPenugasan(a) == "Berlangsung");
+    private int MenungguKonfirmasi => MyAssignments.Count(a => GetStatusPenugasan(a) == "Menunggu Konfirmasi");
+    private int Selesai => MyAssignments.Count(a => GetStatusPenugasan(a) == "Selesai");
 
     // Dashboard filter state
     private string DashSearch = "";
@@ -501,6 +643,35 @@ else if (ActiveMenu == "penugasan")
 
     // Kebutuhan Acara filter
     private string MasterSearch = "";
+
+    // Histori filter
+    private string HistoriSearch = "";
+    private string HistoriFilterStatus = "Semua";
+    private string HistoriFilterWaktu = "Semua";
+
+    private async Task ExportExcel(IEnumerable<Penugasan> data)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("Nama Acara,Tanggal,Lokasi,Kebutuhan IT,Status,Catatan Teknisi");
+        foreach (var assign in data)
+        {
+            var needs = assign.Acara?.Kebutuhan != null 
+                ? string.Join(" | ", assign.Acara.Kebutuhan.Select(k => k.Barang?.NamaBarang)) 
+                : "";
+            var isClose = (assign.StatusPenugasan == "Selesai" || assign.StatusPenugasan == "Ditolak");
+            var status = isClose ? "Close" : "Open";
+            var catatan = assign.CatatanTeknisi?.Replace(",", " ")?.Replace("\n", " ") ?? "";
+            var namaAcara = assign.Acara?.NamaAcara?.Replace(",", " ") ?? "";
+            var lokasi = assign.Acara?.LokasiNavigation?.NamaLokasi?.Replace(",", " ") ?? "";
+            var tanggal = assign.Acara?.Tanggal.ToString("dd MMM yyyy");
+            sb.AppendLine($"{namaAcara},{tanggal},{lokasi},{needs},{status},{catatan}");
+        }
+        var fileContent = sb.ToString();
+        var bytes = System.Text.Encoding.UTF8.GetBytes(fileContent);
+        var base64 = Convert.ToBase64String(bytes);
+        
+        await JS.InvokeVoidAsync("eval", "let a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8;base64," + base64 + "'; a.download = 'Histori_Pekerjaan.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);");
+    }
 
     private IEnumerable<Penugasan> FilteredDashboard()
     {
@@ -526,19 +697,14 @@ else if (ActiveMenu == "penugasan")
     private string GetStatusPenugasan(Penugasan p)
     {
         if (p.StatusPenugasan == "Ditolak") return "Ditolak";
-        if (p.StatusPenugasan == "Selesai") return "Selesai";
-        if (p.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(p.StatusPenugasan) || p.StatusPenugasan == "Menunggu Konfirmasi") return "Menunggu Konfirmasi";
+        if (p.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(p.StatusPenugasan) || p.StatusPenugasan == "Menunggu Konfirmasi") 
+            return "Menunggu Konfirmasi";
 
-        int prog = CalculateProgress(p);
-        if (prog == 100) return "Selesai";
+        bool isAllReturned = p.Acara?.Kebutuhan != null && p.Acara.Kebutuhan.Any() && p.Acara.Kebutuhan.All(k => k.IsKembali);
+        if (p.StatusPenugasan == "Selesai" || CalculateProgress(p) == 100 || isAllReturned) 
+            return "Selesai";
 
-        if (p.Acara?.Tanggal.Date <= DateTime.Today) return "Berlangsung";
-
-        var kebutuhan = p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>();
-        bool hasChecked = kebutuhan.Any(keb => CheckedKebutuhan.Contains($"{p.IdPenugasan}_{keb.IdKebutuhan}"));
-        if (hasChecked) return "Persiapan";
-
-        return "Siap Bertugas";
+        return "Berlangsung";
     }
 
     private int CalculateProgress(Penugasan p)
@@ -547,41 +713,42 @@ else if (ActiveMenu == "penugasan")
         if (p.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(p.StatusPenugasan) || p.StatusPenugasan == "Menunggu Konfirmasi") return 0;
         
         var kebutuhan = (p.Acara?.Kebutuhan ?? new List<KebutuhanAcara>()).ToList();
-        var checkedItems = kebutuhan.Where(k => CheckedKebutuhan.Contains($"{p.IdPenugasan}_{k.IdKebutuhan}")).ToList();
 
-        // 1. If no items were requested/checked, documentation & active date give up to 90%
-        if (!checkedItems.Any())
+        if (kebutuhan.Count == 0)
         {
             if (p.StatusPenugasan == "Selesai") return 100;
             return 50;
         }
 
-        // 2. Check returns status of borrowed items
-        int totalBorrowed = checkedItems.Count;
-        int totalReturned = checkedItems.Count(k => k.IsKembali);
+        double stepWeight = 100.0 / (kebutuhan.Count + 1);
+        double progress = stepWeight; // base progress for accepting the assignment
 
-        if (totalReturned == totalBorrowed && totalBorrowed > 0)
+        foreach (var k in kebutuhan)
         {
-            return 100;
+            bool isChecked = CheckedKebutuhan.Contains($"{p.IdPenugasan}_{k.IdKebutuhan}");
+            if (isChecked)
+            {
+                progress += stepWeight * 0.5;
+            }
+            if (k.IsKembali)
+            {
+                progress += stepWeight * 0.5;
+            }
         }
 
-        // Base progress when accepted: 20%
-        int progress = 20;
-
-        // Adding progress based on items taken (up to 40%)
-        progress += (int)((double)checkedItems.Count / (kebutuhan.Count > 0 ? kebutuhan.Count : 1) * 30);
-
-        // Adding progress based on returned items (up to 45%)
-        progress += (int)((double)totalReturned / totalBorrowed * 45);
-
-        return progress > 99 ? 99 : progress;
+        int finalProgress = (int)Math.Round(progress);
+        if (finalProgress > 99 && kebutuhan.Any(k => !k.IsKembali))
+        {
+            return 99;
+        }
+        return finalProgress > 100 ? 100 : finalProgress;
     }
 
     private async Task TerimaPenugasan(Penugasan p)
     {
         p.StatusPenugasan = "Siap Bertugas";
-        p.Progress = 20;
         p.WaktuKonfirmasi = DateTime.Now;
+        p.Progress = CalculateProgress(p);
         using var context = DbFactory.CreateDbContext();
         context.Update(p);
         await context.SaveChangesAsync();
@@ -598,49 +765,53 @@ else if (ActiveMenu == "penugasan")
 
     private async Task ToggleKebutuhan(string key, Penugasan p, KebutuhanAcara keb)
     {
+        bool wasAmbil = keb.IsAmbil;
         if (CheckedKebutuhan.Contains(key))
         {
-            // Barang dikembalikan: batalkan pengambilan
             CheckedKebutuhan.Remove(key);
-            bool wasAmbil = keb.IsAmbil;
-            keb.IsAmbil   = false;
+            keb.IsAmbil = false;
             keb.IsKembali = false;
-
-            // Kembalikan stok jika sebelumnya sudah diambil
-            if (wasAmbil && keb.Barang != null)
-            {
-                using var ctx = DbFactory.CreateDbContext();
-                var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
-                if (barang != null)
-                {
-                    barang.SisaBarang += keb.Jumlah;
-                    ctx.Update(barang);
-                    await ctx.SaveChangesAsync();
-                    keb.Barang.SisaBarang = barang.SisaBarang; // sinkron objek lokal
-                }
-            }
         }
         else
         {
-            // Barang diambil/dipinjam: kurangi stok
             CheckedKebutuhan.Add(key);
             keb.IsAmbil = true;
+        }
 
-            if (keb.Barang != null)
+        p.Progress = CalculateProgress(p);
+        p.StatusPenugasan = (p.Progress == 100) ? "Selesai" : GetStatusPenugasan(p);
+        if (p.Progress == 100 && p.Acara != null)
+        {
+            p.Acara.StatusAcara = "Selesai";
+        }
+        StateHasChanged();
+
+        using var ctx = DbFactory.CreateDbContext();
+        var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
+        if (barang != null)
+        {
+            if (wasAmbil && !keb.IsAmbil)
             {
-                using var ctx = DbFactory.CreateDbContext();
-                var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
-                if (barang != null && barang.SisaBarang >= keb.Jumlah)
-                {
-                    barang.SisaBarang -= keb.Jumlah;
-                    ctx.Update(barang);
-                    await ctx.SaveChangesAsync();
-                    keb.Barang.SisaBarang = barang.SisaBarang; // sinkron objek lokal
-                }
+                barang.SisaBarang += keb.Jumlah;
+            }
+            else if (!wasAmbil && keb.IsAmbil)
+            {
+                barang.SisaBarang = Math.Max(0, barang.SisaBarang - keb.Jumlah);
             }
         }
 
-        await UpdatePenugasanAndKebutuhan(p, keb);
+        ctx.Entry(keb).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        ctx.Entry(p).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        if (p.Acara != null)
+        {
+            ctx.Entry(p.Acara).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        }
+        await ctx.SaveChangesAsync();
+
+        if (keb.Barang != null && barang != null)
+        {
+            keb.Barang.SisaBarang = barang.SisaBarang;
+        }
     }
 
     private async Task TogglePengembalianBarang(KebutuhanAcara keb, Penugasan p)
@@ -648,34 +819,40 @@ else if (ActiveMenu == "penugasan")
         bool sebelumnya = keb.IsKembali;
         keb.IsKembali = !keb.IsKembali;
 
-        // Barang dikembalikan: tambah stok kembali
-        if (keb.IsKembali && keb.Barang != null)
+        p.Progress = CalculateProgress(p);
+        p.StatusPenugasan = (p.Progress == 100) ? "Selesai" : GetStatusPenugasan(p);
+        if (p.Progress == 100 && p.Acara != null)
         {
-            using var ctx = DbFactory.CreateDbContext();
-            var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
-            if (barang != null)
-            {
-                barang.SisaBarang += keb.Jumlah;
-                ctx.Update(barang);
-                await ctx.SaveChangesAsync();
-                keb.Barang.SisaBarang = barang.SisaBarang;
-            }
+            p.Acara.StatusAcara = "Selesai";
         }
-        else if (!keb.IsKembali && sebelumnya && keb.Barang != null)
+        StateHasChanged();
+
+        using var ctx = DbFactory.CreateDbContext();
+        var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
+        if (barang != null)
         {
-            // Batalkan pengembalian: kurangi stok lagi
-            using var ctx = DbFactory.CreateDbContext();
-            var barang = await ctx.MasterBarang.FindAsync(keb.IdBarang);
-            if (barang != null && barang.SisaBarang >= keb.Jumlah)
+            if (keb.IsKembali && !sebelumnya)
             {
-                barang.SisaBarang -= keb.Jumlah;
-                ctx.Update(barang);
-                await ctx.SaveChangesAsync();
-                keb.Barang.SisaBarang = barang.SisaBarang;
+                barang.SisaBarang = Math.Min(barang.Stok, barang.SisaBarang + keb.Jumlah);
+            }
+            else if (!keb.IsKembali && sebelumnya)
+            {
+                barang.SisaBarang = Math.Max(0, barang.SisaBarang - keb.Jumlah);
             }
         }
 
-        await UpdatePenugasanAndKebutuhan(p, keb);
+        ctx.Entry(keb).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        ctx.Entry(p).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        if (p.Acara != null)
+        {
+            ctx.Entry(p.Acara).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        }
+        await ctx.SaveChangesAsync();
+
+        if (keb.Barang != null && barang != null)
+        {
+            keb.Barang.SisaBarang = barang.SisaBarang;
+        }
     }
 
     private async Task UpdatePenugasanAndKebutuhan(Penugasan p, KebutuhanAcara keb)
@@ -704,10 +881,6 @@ else if (ActiveMenu == "penugasan")
             context.Update(p.Acara);
         }
         await context.SaveChangesAsync();
-        if (OnUpdateProgress.HasDelegate)
-        {
-            await OnUpdateProgress.InvokeAsync(p);
-        }
         StateHasChanged();
     }
 
