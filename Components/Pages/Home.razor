@@ -437,10 +437,12 @@ else
                         <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Pantau status pengajuan acara</p>
                     </div>
                     <div class="d-flex gap-3 flex-wrap flex-md-nowrap align-items-center">
-                        <div class="d-flex" style="background: #e2e8f0; border-radius: 10px; padding: 0.25rem;">
+                        <div class="d-flex align-items-center" style="background: #e2e8f0; border-radius: 10px; padding: 0.25rem;">
                             <button type="button" class="btn border-0 @(DateFilter == "Semua" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Semua" ? "white" : "transparent"); color: @(DateFilter == "Semua" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Semua")'>Semua</button>
-                            <button type="button" class="btn border-0 @(DateFilter == "Hari ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Hari ini" ? "white" : "transparent"); color: @(DateFilter == "Hari ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Hari ini")'>Hari ini</button>
                             <button type="button" class="btn border-0 @(DateFilter == "Minggu ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Minggu ini" ? "white" : "transparent"); color: @(DateFilter == "Minggu ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu ini</button>
+                            <button type="button" class="btn border-0 @(DateFilter == "Bulan ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Bulan ini" ? "white" : "transparent"); color: @(DateFilter == "Bulan ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan ini</button>
+                            <div class="border-start border-secondary opacity-25 mx-1" style="height: 20px;"></div>
+                            <input type="month" class="form-control form-control-sm border-0" style="background: transparent; color: #64748b; font-size: 0.85rem; cursor: pointer; box-shadow: none;" value="@CustomMonthFilter" @onchange='(e) => CustomMonthFilter = e.Value?.ToString() ?? ""'  />
                         </div>
                         <div class="position-relative" style="width: 250px;">
                             <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
@@ -1232,10 +1234,12 @@ else
                     <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Pantau dan kelola seluruh pengajuan acara</p>
                 </div>
                 <div class="d-flex gap-3 flex-wrap flex-md-nowrap align-items-center">
-                    <div class="d-flex" style="background: #e2e8f0; border-radius: 10px; padding: 0.25rem;">
+                    <div class="d-flex align-items-center" style="background: #e2e8f0; border-radius: 10px; padding: 0.25rem;">
                         <button type="button" class="btn border-0 @(DateFilter == "Semua" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Semua" ? "white" : "transparent"); color: @(DateFilter == "Semua" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Semua")'>Semua</button>
-                        <button type="button" class="btn border-0 @(DateFilter == "Hari ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Hari ini" ? "white" : "transparent"); color: @(DateFilter == "Hari ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Hari ini")'>Hari ini</button>
                         <button type="button" class="btn border-0 @(DateFilter == "Minggu ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Minggu ini" ? "white" : "transparent"); color: @(DateFilter == "Minggu ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu ini</button>
+                        <button type="button" class="btn border-0 @(DateFilter == "Bulan ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Bulan ini" ? "white" : "transparent"); color: @(DateFilter == "Bulan ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan ini</button>
+                        <div class="border-start border-secondary opacity-25 mx-1" style="height: 20px;"></div>
+                        <input type="month" class="form-control form-control-sm border-0" style="background: transparent; color: #64748b; font-size: 0.85rem; cursor: pointer; box-shadow: none;" value="@CustomMonthFilter" @onchange='(e) => CustomMonthFilter = e.Value?.ToString() ?? ""' />
                     </div>
                     <div class="position-relative" style="width: 250px;">
                         <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
@@ -2161,25 +2165,48 @@ else
 
     private string SearchFilter { get; set; } = string.Empty;
     private string DateFilter { get; set; } = "Semua";
+    private string _customMonthFilter = "";
+    private string CustomMonthFilter
+    {
+        get => _customMonthFilter;
+        set
+        {
+            _customMonthFilter = value;
+            if (!string.IsNullOrEmpty(value))
+            {
+                DateFilter = "Custom";
+            }
+        }
+    }
 
     private void SetDateFilter(string filter)
     {
         DateFilter = filter;
+        if (filter != "Custom")
+        {
+            _customMonthFilter = "";
+        }
     }
 
     private bool IsDateMatch(DateTime eventDate)
     {
-        if (DateFilter == "Hari ini")
-        {
-            return eventDate.Date == DateTime.Today;
-        }
         if (DateFilter == "Minggu ini")
         {
-            // Dari hari Senin minggu ini hingga hari Minggu
             var diff = (7 + (DateTime.Today.DayOfWeek - DayOfWeek.Monday)) % 7;
             var startOfWeek = DateTime.Today.AddDays(-1 * diff).Date;
             var endOfWeek = startOfWeek.AddDays(7);
             return eventDate.Date >= startOfWeek && eventDate.Date < endOfWeek;
+        }
+        if (DateFilter == "Bulan ini")
+        {
+            return eventDate.Month == DateTime.Today.Month && eventDate.Year == DateTime.Today.Year;
+        }
+        if (DateFilter == "Custom" && !string.IsNullOrEmpty(CustomMonthFilter))
+        {
+            if (DateTime.TryParse(CustomMonthFilter + "-01", out DateTime parsed))
+            {
+                return eventDate.Month == parsed.Month && eventDate.Year == parsed.Year;
+            }
         }
         return true;
     }

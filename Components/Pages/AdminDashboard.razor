@@ -130,6 +130,16 @@
                         <button class="btn btn-sm btn-pill-filter @(AdminStatusFilter == "Dokumen Diunggah" ? "active" : "") text-primary" @onclick='() => SetAdminFilter("Dokumen Diunggah")'>Dokumen Diunggah</button>
 
                     </div>
+                    
+                    <div class="col-12 d-flex align-items-center flex-wrap gap-2 mt-2">
+                        <span class="text-muted small fw-bold me-2">Tanggal:</span>
+                        <button class="btn btn-sm btn-pill-filter @(AdminDateFilter == "Semua" ? "active" : "")" @onclick='() => SetAdminDateFilter("Semua")'>Semua</button>
+                        <button class="btn btn-sm btn-pill-filter @(AdminDateFilter == "Minggu ini" ? "active" : "")" @onclick='() => SetAdminDateFilter("Minggu ini")'>Minggu ini</button>
+                        <button class="btn btn-sm btn-pill-filter @(AdminDateFilter == "Bulan ini" ? "active" : "")" @onclick='() => SetAdminDateFilter("Bulan ini")'>Bulan ini</button>
+                        <div class="ms-2 d-flex align-items-center">
+                            <input type="month" class="form-control form-control-sm" style="border-radius: 20px; font-size: 0.8rem; border-color: #cbd5e1; height: 30px; display: inline-block; width: auto;" value="@AdminCustomMonth" @onchange='(e) => AdminCustomMonth = e.Value?.ToString() ?? ""'  />
+                        </div>
+                    </div>
 
                 </div>
 
@@ -842,17 +852,31 @@
 
 
     private string AdminSearchText { get; set; } = string.Empty;
-
     private string AdminStatusFilter { get; set; } = "Semua";
+    private string AdminDateFilter { get; set; } = "Semua";
+    private string _adminCustomMonth = "";
+    private string AdminCustomMonth
+    {
+        get => _adminCustomMonth;
+        set
+        {
+            _adminCustomMonth = value;
+            if (!string.IsNullOrEmpty(value))
+            {
+                AdminDateFilter = "Custom";
+            }
+        }
+    }
 
-
+    private void SetAdminDateFilter(string filter)
+    {
+        AdminDateFilter = filter;
+        if (filter != "Custom") _adminCustomMonth = "";
+    }
 
     private void SetAdminFilter(string filter)
-
     {
-
         AdminStatusFilter = filter;
-
     }
 
 
@@ -910,6 +934,26 @@
             }
 
             
+
+            // Apply date filter
+            if (AdminDateFilter == "Minggu ini")
+            {
+                var diff = (7 + (DateTime.Today.DayOfWeek - DayOfWeek.Monday)) % 7;
+                var startOfWeek = DateTime.Today.AddDays(-1 * diff).Date;
+                var endOfWeek = startOfWeek.AddDays(7);
+                list = list.Where(e => e.Tanggal.Date >= startOfWeek && e.Tanggal.Date < endOfWeek);
+            }
+            else if (AdminDateFilter == "Bulan ini")
+            {
+                list = list.Where(e => e.Tanggal.Month == DateTime.Today.Month && e.Tanggal.Year == DateTime.Today.Year);
+            }
+            else if (AdminDateFilter == "Custom" && !string.IsNullOrEmpty(AdminCustomMonth))
+            {
+                if (DateTime.TryParse(AdminCustomMonth + "-01", out DateTime parsed))
+                {
+                    list = list.Where(e => e.Tanggal.Month == parsed.Month && e.Tanggal.Year == parsed.Year);
+                }
+            }
 
             // Apply status filter
 
