@@ -1,0 +1,120 @@
+﻿code = '''<div class="col-12">
+                                <div class="tek-card mb-2" style="background:#ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e1e7ef; border-radius: 12px; padding: 1.5rem;">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div style="flex: 1; min-width: 0;">
+                                            <h5 class="fw-bold mb-2" style="color: #072C4C; font-size: 1.25rem; word-break: break-word; white-space: normal;">@assign.Acara?.NamaAcara</h5>
+                                            <div class="text-muted d-flex flex-wrap align-items-center gap-3" style="font-size: 0.85rem;">
+                                                <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#005CA9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                                    @assign.Acara?.Tanggal.ToString("dd MMM yyyy")
+                                                </span>
+                                                <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E31E24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                                    @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")
+                                                </span>
+                                                <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#09A537" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                                    @assign.Acara?.LokasiNavigation?.NamaLokasi
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <div class="row g-4">
+                                            <div class="col-md-7">
+                                                <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                                                    Kebutuhan Acara:
+                                                </h6>
+                                                <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
+                                                    @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
+                                                    {
+                                                        var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
+                                                        var isChecked = CheckedKebutuhan.Contains(kebKey);
+                                                        bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(ka => ka.IsKembali);
+                                                        
+                                                        <li class="@(isChecked ? "checked" : "")" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                                            <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                                                <input type="checkbox" checked="@isChecked" disabled="@(keb.IsKembali || isAllReturned)"
+                                                                    @onchange="async () => await ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 16px; height: 16px; cursor: @((keb.IsKembali || isAllReturned) ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                                                <span style="color: #000000; font-size: 0.9rem; word-break: break-word; white-space: normal;">
+                                                                    @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")
+                                                                </span>
+                                                            </div>
+                                                            <span class="text-muted" style="font-size: 0.85rem; flex-shrink: 0;">@keb.Jumlah Unit</span>
+                                                        </li>
+                                                    }
+                                                </ul>
+
+                                                @if (assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                                                {
+                                                    <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                                                        Pengembalian Barang:
+                                                    </h6>
+                                                    <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
+                                                        @foreach (var keb in assign.Acara.Kebutuhan.Where(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                                                        {
+                                                            bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(ka => ka.IsKembali);
+                                                            <li style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                                                <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                                                    <input type="checkbox" checked="@keb.IsKembali" disabled="@isAllReturned"
+                                                                        @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 16px; height: 16px; cursor: @(isAllReturned ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                                                    <span style="color: #000000; font-size: 0.9rem; text-decoration: @(keb.IsKembali ? "line-through" : "none"); word-break: break-word; white-space: normal;">
+                                                                        @keb.Barang?.NamaBarang (@keb.Jumlah Unit) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})")
+                                                                    </span>
+                                                                </div>
+                                                                <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="flex-shrink: 0; font-size: 0.75rem;">
+                                                                    @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
+                                                                </span>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                            </div>
+                                            
+                                            <div class="col-md-5">
+                                                <div style="background: transparent;">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <label class="form-label fw-bold small text-dark m-0">Progress Acara: @pct%</label>
+                                                        @if (pct == 100)
+                                                        {
+                                                            <span class="badge bg-success" style="font-size: 0.75rem;">100% Selesai</span>
+                                                        }
+                                                    </div>
+                                                    <div class="progress mb-3" style="height: 10px; border-radius: 6px;">
+                                                        <div class="progress-bar" role="progressbar" style="width: @(pct)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 6px;"></div>
+                                                    </div>
+                                                    <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
+                                                    <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
+                                                    
+                                                    <div class="d-flex gap-2">
+                                                        <button class="btn btn-outline-secondary flex-fill" style="font-size: 0.8rem; border-radius: 8px;" @onclick="async () => await SimpanProgress(assign)">Simpan Catatan</button>
+                                                        <button class="btn flex-fill" style="background-color: #0f172a; color: white; font-size: 0.8rem; border-radius: 8px;" @onclick="async () => await OpenUploadModal(assign)">
+                                                            @(string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) ? "Upload Foto (Opsional)" : "Lihat / Edit Foto")
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>'''
+
+with open('Components/Pages/Home.razor', 'r', encoding='utf-8') as f:
+    text = f.read()
+
+import re
+
+# Find the start of <div class="col-12"> inside Laporan Progres Teknisi 
+# and the end of the loop which is just before } <!-- end loop -->
+# It's easier to regex replace everything from <div class="col-12"> up to the final closing </div> of that column.
+# The structure is: <div class="col-12">\n                                <div class="p-4" ... </div>\n                            </div>
+
+pattern = re.compile(r'<div class="col-12">\s*<div class="p-4" style="background:#f8fafc[^>]+>.*?</div>\s*</div>\s*</div>\s*</div>\s*</div>\s*</div>\s*</div>', re.DOTALL)
+matches = pattern.findall(text)
+if len(matches) > 0:
+    text = pattern.sub(code, text)
+    with open('Components/Pages/Home.razor', 'w', encoding='utf-8') as f: f.write(text)
+    print("Replace successful. Replaced", len(matches), "instances.")
+else:
+    print("Could not match the regex pattern.")
