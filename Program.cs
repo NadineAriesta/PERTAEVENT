@@ -4,6 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Set default culture to Indonesian (id-ID) for Indonesian month names
+var cultureInfo = new System.Globalization.CultureInfo("id-ID");
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 // Add DbContext Factory for Blazor Server concurrency safety
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=PERTAEVENT;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True", o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));

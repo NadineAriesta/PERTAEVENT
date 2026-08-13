@@ -16,6 +16,12 @@
     .tek-card:hover {
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
+    .no-hover-search:hover, .no-hover-search:focus, .no-hover-search:active {
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        background-color: #fff !important;
+    }
     .tek-stat-row {
         display: flex;
         gap: 1rem;
@@ -363,10 +369,13 @@ else if (ActiveMenu == "kebutuhan_event")
 }
 else if (ActiveMenu == "penugasan")
 {
-    @foreach (var assign in MyAssignments
-        .OrderBy(a => ((a.Acara?.Kebutuhan != null && a.Acara.Kebutuhan.Any() && a.Acara.Kebutuhan.All(k => k.IsKembali)) || CalculateProgress(a) == 100 || !string.IsNullOrEmpty(a.DokumentasiKegiatanFile) || a.StatusPenugasan == "Selesai") ? 1 : 0)
-        .ThenBy(a => (a.StatusPenugasan == "Ditugaskan" || string.IsNullOrEmpty(a.StatusPenugasan) || a.StatusPenugasan == "Menunggu Konfirmasi") ? 0 : 1)
-        .ThenByDescending(a => a.IdPenugasan))
+    var activeAssignments = MyAssignments
+        .Where(a => GetStatusPenugasan(a) == "Menunggu Konfirmasi" || GetStatusPenugasan(a) == "Berlangsung")
+        .OrderBy(a => GetStatusPenugasan(a) == "Menunggu Konfirmasi" ? 0 : 1)
+        .ThenByDescending(a => a.IdPenugasan)
+        .ToList();
+
+    @foreach (var assign in activeAssignments)
     {
         var status = GetStatusPenugasan(assign);
         var progress = CalculateProgress(assign);
@@ -485,9 +494,9 @@ else if (ActiveMenu == "penugasan")
             </div>
         </div>
     }
-    @if (!MyAssignments.Any())
+    @if (!activeAssignments.Any())
     {
-        <div class="tek-card p-4 text-center text-muted">Belum ada penugasan.</div>
+        <div class="tek-card p-4 text-center text-muted" style="border-radius: 12px;">Belum ada penugasan aktif.</div>
     }
 }
 else if (ActiveMenu == "histori")
@@ -497,15 +506,14 @@ else if (ActiveMenu == "histori")
         .Where(a => string.IsNullOrEmpty(HistoriSearch) || 
                     (a.Acara?.NamaAcara.Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
                     (a.Acara?.LokasiNavigation?.NamaLokasi?.Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
-                    (a.Acara?.Tanggal.ToString("dd MMMM yyyy").Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
-                    (a.Acara?.Tanggal.ToString("dd MMM yyyy").Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (a.Acara?.Tanggal.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")).Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
+                    (a.Acara?.Tanggal.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("id-ID")).Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
                     (a.Acara?.Tanggal.ToString("dd/MM/yyyy").Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase) == true) ||
                     (a.Acara?.Kebutuhan != null && a.Acara.Kebutuhan.Any(k => k.Barang != null && k.Barang.NamaBarang.Contains(HistoriSearch, StringComparison.OrdinalIgnoreCase))))
         .Where(a => HistoriFilterStatus == "Semua" || 
                     (HistoriFilterStatus == "Open" && a.StatusPenugasan != "Selesai" && a.StatusPenugasan != "Ditolak") || 
                     (HistoriFilterStatus == "Close" && (a.StatusPenugasan == "Selesai" || a.StatusPenugasan == "Ditolak")))
         .Where(a => HistoriFilterWaktu == "Semua" ||
-                    (HistoriFilterWaktu == "Hari Ini" && a.Acara?.Tanggal.Date == DateTime.Today) ||
                     (HistoriFilterWaktu == "Minggu Ini" && a.Acara?.Tanggal.Date >= DateTime.Today && a.Acara?.Tanggal.Date <= DateTime.Today.AddDays(7)) ||
                     (HistoriFilterWaktu == "Bulan Ini" && a.Acara?.Tanggal.Month == DateTime.Today.Month && a.Acara?.Tanggal.Year == DateTime.Today.Year))
         .OrderByDescending(a => a.IdPenugasan)
@@ -517,12 +525,11 @@ else if (ActiveMenu == "histori")
                 <span class="position-absolute text-muted" style="left: 0.75rem; top: 50%; transform: translateY(-50%);">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </span>
-                <input type="text" class="form-control" placeholder="Cari event, tgl, lokasi, barang..." style="border-radius: 8px; border: 1px solid #cbd5e1; padding: 0.4rem 0.75rem 0.4rem 2rem; background: #fff; font-size: 0.8rem; width: 100%;" @bind="HistoriSearch" @bind:event="oninput" />
+                <input type="text" class="form-control no-hover-search" placeholder="Cari event, tgl, lokasi, barang..." style="border-radius: 8px; border: 1px solid #cbd5e1; padding: 0.4rem 0.75rem 0.4rem 2rem; background: #fff; font-size: 0.8rem; width: 100%; box-shadow: none; outline: none;" @bind="HistoriSearch" @bind:event="oninput" />
             </div>
 
             <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0">
                 <button class="btn btn-sm @(HistoriFilterWaktu == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Semua"'>Semua Waktu</button>
-                <button class="btn btn-sm @(HistoriFilterWaktu == "Hari Ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Hari Ini"'>Hari Ini</button>
                 <button class="btn btn-sm @(HistoriFilterWaktu == "Minggu Ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Minggu Ini"'>Minggu Ini</button>
                 <button class="btn btn-sm @(HistoriFilterWaktu == "Bulan Ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-2 py-1" style="font-size: 0.78rem;" @onclick='() => HistoriFilterWaktu = "Bulan Ini"'>Bulan Ini</button>
             </div>
@@ -543,19 +550,20 @@ else if (ActiveMenu == "histori")
             <table class="tek-table" style="width: 100%; margin-bottom: 0;">
                 <thead>
                     <tr>
-                        <th style="width: 20%; padding-left: 1.25rem;">NAMA ACARA</th>
-                        <th style="width: 15%;">TANGGAL</th>
-                        <th style="width: 15%;">LOKASI</th>
-                        <th style="width: 20%;">KEBUTUHAN IT</th>
-                        <th style="width: 10%;">STATUS</th>
-                        <th style="width: 20%; padding-right: 1.25rem;">CATATAN TEKNISI</th>
+                        <th style="width: 18%; padding-left: 1.25rem;">NAMA ACARA</th>
+                        <th style="width: 13%;">TANGGAL</th>
+                        <th style="width: 13%;">LOKASI</th>
+                        <th style="width: 18%;">KEBUTUHAN IT</th>
+                        <th style="width: 9%;">STATUS</th>
+                        <th style="width: 15%;">CATATAN TEKNISI</th>
+                        <th style="width: 14%; padding-right: 1.25rem;">DOKUMENTASI</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (!historiFiltered.Any())
                     {
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted" style="padding-left: 1.25rem; padding-right: 1.25rem;">Belum ada histori pekerjaan.</td>
+                            <td colspan="7" class="text-center py-4 text-muted" style="padding-left: 1.25rem; padding-right: 1.25rem;">Belum ada histori pekerjaan.</td>
                         </tr>
                     }
                     else
@@ -571,11 +579,24 @@ else if (ActiveMenu == "histori")
 
                             <tr style="background-color: #fff; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc';" onmouseout="this.style.background='transparent';">
                                 <td class="fw-bold" style="color: #0f172a; font-size: 0.9rem; padding-left: 1.25rem;">@assign.Acara?.NamaAcara</td>
-                                <td>@assign.Acara?.Tanggal.ToString("dd MMM yyyy")</td>
+                                <td>@assign.Acara?.Tanggal.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("id-ID"))</td>
                                 <td>@assign.Acara?.LokasiNavigation?.NamaLokasi</td>
                                 <td style="font-size: 0.8rem; line-height: 1.4;">@needs</td>
                                 <td><span class="badge @statusBadge">@statusText</span></td>
-                                <td style="font-size: 0.8rem; color: #64748b; font-style: italic; padding-right: 1.25rem;">@(string.IsNullOrEmpty(assign.CatatanTeknisi) ? "-" : assign.CatatanTeknisi)</td>
+                                <td style="font-size: 0.8rem; color: #64748b; font-style: italic;">@(string.IsNullOrEmpty(assign.CatatanTeknisi) ? "-" : assign.CatatanTeknisi)</td>
+                                <td style="padding-right: 1.25rem;">
+                                    @if (!string.IsNullOrEmpty(assign.DokumentasiKegiatanFile))
+                                    {
+                                        <div class="d-flex align-items-center gap-2">
+                                            <img src="@assign.DokumentasiKegiatanFile" style="width: 32px; height: 32px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer;" @onclick="() => OnOpenUpload.InvokeAsync(assign)" title="Klik untuk pratinjau / edit" />
+                                            <button class="btn btn-sm btn-outline-primary" style="font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 6px;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">Lihat Foto</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 6px;" @onclick="() => OnOpenUpload.InvokeAsync(assign)">+ Upload Foto</button>
+                                    }
+                                </td>
                             </tr>
                         }
                     }
@@ -652,7 +673,7 @@ else if (ActiveMenu == "histori")
     private async Task ExportExcel(IEnumerable<Penugasan> data)
     {
         var sb = new System.Text.StringBuilder();
-        sb.AppendLine("Nama Acara,Tanggal,Lokasi,Kebutuhan IT,Status,Catatan Teknisi");
+        sb.AppendLine("Nama Acara,Tanggal,Lokasi,Kebutuhan IT,Status,Catatan Teknisi,Dokumentasi");
         foreach (var assign in data)
         {
             var needs = assign.Acara?.Kebutuhan != null 
@@ -663,14 +684,15 @@ else if (ActiveMenu == "histori")
             var catatan = assign.CatatanTeknisi?.Replace(",", " ")?.Replace("\n", " ") ?? "";
             var namaAcara = assign.Acara?.NamaAcara?.Replace(",", " ") ?? "";
             var lokasi = assign.Acara?.LokasiNavigation?.NamaLokasi?.Replace(",", " ") ?? "";
-            var tanggal = assign.Acara?.Tanggal.ToString("dd MMM yyyy");
-            sb.AppendLine($"{namaAcara},{tanggal},{lokasi},{needs},{status},{catatan}");
+            var tanggal = assign.Acara?.Tanggal.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("id-ID"));
+            var doc = string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) ? "Tidak Ada" : "Ada";
+            sb.AppendLine($"{namaAcara},{tanggal},{lokasi},{needs},{status},{catatan},{doc}");
         }
         var fileContent = sb.ToString();
         var bytes = System.Text.Encoding.UTF8.GetBytes(fileContent);
         var base64 = Convert.ToBase64String(bytes);
         
-        await JS.InvokeVoidAsync("eval", "let a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8;base64," + base64 + "'; a.download = 'Histori_Pekerjaan.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);");
+        await JS.InvokeVoidAsync("eval", "let a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8;base64," + base64 + "'; a.download = 'Histori_Saya.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);");
     }
 
     private IEnumerable<Penugasan> FilteredDashboard()
