@@ -442,7 +442,7 @@ else
                             <button type="button" class="btn border-0 @(DateFilter == "Minggu ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Minggu ini" ? "white" : "transparent"); color: @(DateFilter == "Minggu ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu ini</button>
                             <button type="button" class="btn border-0 @(DateFilter == "Bulan ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Bulan ini" ? "white" : "transparent"); color: @(DateFilter == "Bulan ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan ini</button>
                             <div class="border-start border-secondary opacity-25 mx-1" style="height: 20px;"></div>
-                            <input type="month" class="form-control form-control-sm border-0" style="background: transparent; color: #64748b; font-size: 0.85rem; cursor: pointer; box-shadow: none;" value="@CustomMonthFilter" @onchange='(e) => CustomMonthFilter = e.Value?.ToString() ?? ""'  />
+                            <input type="date" class="form-control form-control-sm border-0" style="background: transparent; color: #64748b; font-size: 0.85rem; cursor: pointer; box-shadow: none;" value="@CustomDateFilter" @onchange='(e) => CustomDateFilter = e.Value?.ToString() ?? ""'  />
                         </div>
                         <div class="position-relative" style="width: 250px;">
                             <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
@@ -1241,7 +1241,7 @@ else
                         <div class="border-start border-secondary opacity-25 mx-1" style="height: 20px;"></div>
                         <div class="position-relative d-flex align-items-center justify-content-center mx-1" style="width: 24px; height: 24px; border-radius: 4px;" title="Filter Bulan Spesifik">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            <input type="month" value="@CustomMonthFilter" @onchange='(e) => CustomMonthFilter = e.Value?.ToString() ?? ""' class="position-absolute" style="opacity: 0; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2;" />
+                            <input type="date" value="@CustomDateFilter" @onchange='(e) => CustomDateFilter = e.Value?.ToString() ?? ""' class="position-absolute" style="opacity: 0; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2;" />
                         </div>
                     </div>
                     <div class="position-relative" style="width: 250px;">
@@ -2168,16 +2168,16 @@ else
 
     private string SearchFilter { get; set; } = string.Empty;
     private string DateFilter { get; set; } = "Semua";
-    private string _customMonthFilter = "";
-    private string CustomMonthFilter
+    private string _customDateFilter = "";
+    private string CustomDateFilter
     {
-        get => _customMonthFilter;
+        get => _customDateFilter;
         set
         {
-            _customMonthFilter = value;
+            _customDateFilter = value;
             if (!string.IsNullOrEmpty(value))
             {
-                DateFilter = "Custom";
+                DateFilter = "CustomDate";
             }
         }
     }
@@ -2185,9 +2185,9 @@ else
     private void SetDateFilter(string filter)
     {
         DateFilter = filter;
-        if (filter != "Custom")
+        if (filter != "CustomDate")
         {
-            _customMonthFilter = "";
+            _customDateFilter = "";
         }
     }
 
@@ -2204,11 +2204,11 @@ else
         {
             return eventDate.Month == DateTime.Today.Month && eventDate.Year == DateTime.Today.Year;
         }
-        if (DateFilter == "Custom" && !string.IsNullOrEmpty(CustomMonthFilter))
+        if (DateFilter == "CustomDate" && !string.IsNullOrEmpty(CustomDateFilter))
         {
-            if (DateTime.TryParse(CustomMonthFilter + "-01", out DateTime parsed))
+            if (DateTime.TryParse(CustomDateFilter, out DateTime parsed))
             {
-                return eventDate.Month == parsed.Month && eventDate.Year == parsed.Year;
+                return eventDate.Date == parsed.Date;
             }
         }
         return true;
