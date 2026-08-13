@@ -1,3 +1,4 @@
+@using System.Threading.Tasks
 @page "/"
 @using EventSupportApp.Data
 @using Microsoft.EntityFrameworkCore
@@ -410,101 +411,123 @@ else
                             var pct = assign.Progress;
                             var statusColor = pct >= 100 ? "#16a34a" : pct >= 50 ? "#f59e0b" : "#E31E24";
                             var statusLabel = assign.StatusPenugasan;
-                            <div class="col-12">
-                                <div class="p-4" style="background:#f8fafc; border-radius:12px; border: 1px solid #e2e8f0;">
-                                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
-                                        <div>
-                                            <div class="fw-bold mb-1" style="color:#072C4C; font-size:1.05rem;">@assign.Acara?.NamaAcara</div>
-                                            <div class="text-muted d-flex align-items-center gap-3" style="font-size:0.82rem;">
-                                                <span>📅 @assign.Acara?.Tanggal.ToString("dd MMM yyyy")</span>
-                                                <span>📍 @assign.Acara?.LokasiNavigation?.NamaLokasi</span>
-                                                <span>�� @(assign.Teknisi?.User?.Username ?? "—")</span>
-                                            </div>
-                                        </div>
-                                        <span class="badge fw-normal px-3 py-2" style="background:@(statusLabel == "Selesai" ? "#dcfce7" : statusLabel == "Dokumen Diunggah" ? "#e0f2fe" : "#fef9c3"); color:@(statusLabel == "Selesai" ? "#166534" : statusLabel == "Dokumen Diunggah" ? "#0369a1" : "#854d0e"); border-radius:8px; font-size:0.8rem;">@statusLabel</span>
-                                    </div>
-                                    <div class="mt-4">
-                                        <div class="row g-4">
-                                            <div class="col-md-7">
-                                                <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
-                                                    Kebutuhan Acara:
-                                                </h6>
-                                                <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
-                                                    @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
-                                                    {
-                                                        var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
-                                                        var isChecked = CheckedKebutuhan.Contains(kebKey);
-                                                        bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(k => k.IsKembali);
+<div class="col-12">
+    @{ bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(k => k.IsKembali); }
+<div class="tek-card mb-2" style="border-radius: 12px; padding: 1.5rem;">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div style="flex: 1; min-width: 0;">
+                    <h5 class="fw-bold mb-2" style="color: #072C4C; font-size: 1.25rem; word-break: break-word; white-space: normal;">@assign.Acara?.NamaAcara</h5>
+                    <div class="text-muted d-flex flex-wrap align-items-center gap-3" style="font-size: 0.85rem;">
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#005CA9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            @assign.Acara?.Tanggal.ToString("dd MMM yyyy")
+                        </span>
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E31E24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")
+                        </span>
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#09A537" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            @assign.Acara?.LokasiNavigation?.NamaLokasi
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-                                                        <li class="@(isChecked ? "checked" : "")" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
-                                                            <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
-                                                                @if (statusLabel != "Menunggu Konfirmasi")
-                                                                {
-                                                                    <input type="checkbox" checked="@isChecked" disabled="@(keb.IsKembali || isAllReturned)"
-                                                                        @onchange="async () => await ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 16px; height: 16px; cursor: @((keb.IsKembali || isAllReturned) ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
-                                                                }
-                                                                <span style="color: #000000; font-size: 0.9rem; word-break: break-word; white-space: normal;">
-                                                                    @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")
-                                                                </span>
-                                                            </div>
-                                                            <span class="text-muted" style="font-size: 0.85rem; flex-shrink: 0;">@keb.Jumlah Unit</span>
-                                                        </li>
-                                                    }
-                                                </ul>
+            <div class="mt-4">
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                            Kebutuhan Acara:
+                        </h6>
+                        <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
+                            @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
+                            {
+                                var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
+                                var isChecked = CheckedKebutuhan.Contains(kebKey);
 
-                                                @if (assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
-                                                {
-                                                    <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
-                                                        Pengembalian Barang:
-                                                    </h6>
-                                                    <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
-                                                        @foreach (var keb in assign.Acara.Kebutuhan.Where(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
-                                                        {
-                                                            bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(ka => ka.IsKembali);
-                                                            <li style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
-                                                                <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
-                                                                    @if (statusLabel != "Menunggu Konfirmasi")
-                                                                    {
-                                                                        <input type="checkbox" checked="@keb.IsKembali" disabled="@isAllReturned"
-                                                                            @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 16px; height: 16px; cursor: @(isAllReturned ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
-                                                                    }
-                                                                    <span style="color: #000000; font-size: 0.9rem; text-decoration: @(keb.IsKembali ? "line-through" : "none"); word-break: break-word; white-space: normal;">
-                                                                        @keb.Barang?.NamaBarang (@keb.Jumlah Unit) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})")
-                                                                    </span>
-                                                                </div>
-                                                                <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="flex-shrink: 0; font-size: 0.75rem;">
-                                                                    @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
-                                                                </span>
-                                                            </li>
-                                                        }
-                                                    </ul>
-                                                }
-                                            </div>
-                                            
-                                            <div class="col-md-5">
-                                                <div style="background: transparent;">
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                        <label class="form-label fw-bold small text-dark m-0">Progress Acara: @pct%</label>
-                                                        @if (pct == 100)
-                                                        {
-                                                            <span class="badge bg-success" style="font-size: 0.75rem;">100% Selesai</span>
-                                                        }
-                                                    </div>
-                                                    <div class="progress mb-3" style="height: 10px; border-radius: 6px;">
-                                                        <div class="progress-bar" role="progressbar" style="width: @(pct)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 6px;"></div>
-                                                    </div>
-                                                    <label class="form-label fw-bold small text-dark">Catatan Teknisi / Admin:</label>
-                                                    <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
-                                                    
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-outline-secondary flex-fill" style="font-size: 0.8rem; border-radius: 8px;" @onclick="async () => await SimpanProgress(assign)">Simpan Catatan</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <li class="@(isChecked ? "checked" : "")" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                    <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                        @if (statusLabel != "Menunggu Konfirmasi")
+                                        {
+                                            <input type="checkbox" checked="@isChecked" disabled="@(keb.IsKembali || isAllReturned)"
+                                                @onchange="() => ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 16px; height: 16px; cursor: @((keb.IsKembali || isAllReturned) ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                        }
+                                        <span style="color: #000000; font-size: 0.9rem; word-break: break-word; white-space: normal;">
+                                            @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")
+                                        </span>
                                     </div>
-</div>
+                                    <span class="text-muted" style="font-size: 0.85rem; flex-shrink: 0;">@keb.Jumlah Unit</span>
+                                </li>
+                            }
+                        </ul>
+
+                        @if (assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                        {
+                            <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                                Pengembalian Barang:
+                            </h6>
+                            <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
+                                @foreach (var keb in assign.Acara.Kebutuhan.Where(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                                {
+                                    <li style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                        <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                            @if (statusLabel != "Menunggu Konfirmasi")
+                                            {
+                                                <input type="checkbox" checked="@keb.IsKembali" disabled="@isAllReturned"
+                                                    @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 16px; height: 16px; cursor: @(isAllReturned ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                            }
+                                            <span style="color: #000000; font-size: 0.9rem; text-decoration: @(keb.IsKembali ? "line-through" : "none"); word-break: break-word; white-space: normal;">
+                                                @keb.Barang?.NamaBarang (@keb.Jumlah Unit) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})")
+                                            </span>
+                                        </div>
+                                        <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="flex-shrink: 0; font-size: 0.75rem;">
+                                            @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                    
+                    <div class="col-md-5">
+                        @if (statusLabel == "Menunggu Konfirmasi")
+                        {
+                            <div class="d-flex h-100 align-items-center">
+                                <button class="tek-btn tek-btn-primary w-100" >Terima Penugasan</button>
                             </div>
+                        }
+                        else
+                        {
+                            <div style="background: transparent;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label fw-bold small text-dark m-0">Progress Acara: @pct%</label>
+                                    @if (pct == 100)
+                                    {
+                                        <span class="badge bg-success" style="font-size: 0.75rem;">100% Selesai</span>
+                                    }
+                                </div>
+                                <div class="progress mb-3" style="height: 10px; border-radius: 6px;">
+                                    <div class="progress-bar" role="progressbar" style="width: @(pct)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 6px;"></div>
+                                </div>
+                                <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
+                                <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
+                                
+                                <div class="d-flex gap-2">
+                                    <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" >Simpan Catatan</button>
+                                    <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" >
+                                        @(string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) ? "Upload Foto (Opsional)" : "Lihat / Edit Foto")
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
                         }
                         </div>
                     }
@@ -815,7 +838,7 @@ else
                                             <input type="text" class="form-control form-input-premium" @bind="NewNeedsList[index].Keterangan" placeholder="Keterangan / Catatan (Opsional)" />
                                         </div>
                                         <div class="col-1 text-center">
-                                            <button type="button" class="btn-delete-premium" @onclick="() => RemoveNeedInputRow(index)">
+                                            <button type="button" class="btn-delete-premium" >
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <polyline points="3 6 5 6 21 6"></polyline>
                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -884,8 +907,8 @@ else
                                             @if (CurrentRole == "Admin")
                                             {
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditBarangModal(brg)">Edit</button>
-                                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteBarang(brg)">Hapus</button>
+                                                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" >Edit</button>
+                                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" >Hapus</button>
                                                 </div>
                                             }
                                             else
@@ -936,7 +959,7 @@ else
                                         <td class="py-3 text-center pe-4">
                                             @if (CurrentRole == "Admin")
                                             {
-                                                <div class="d-flex justify-content-center gap-2"><button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditLokasiModal(lok)">Edit</button><button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteLokasi(lok)">Hapus</button></div>
+                                                <div class="d-flex justify-content-center gap-2"><button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" >Edit</button><button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" >Hapus</button></div>
                                             }
                                             else
                                             {
@@ -1013,14 +1036,14 @@ else
                                     </td>
                                     <td class="py-2">
                                         <div class="form-check form-switch m-0">
-                                            <input class="form-check-input" type="checkbox" role="switch" checked="@user.StatusAktif" @onclick="() => ToggleUserStatus(user)" style="cursor: pointer;" />
+                                            <input class="form-check-input" type="checkbox" role="switch" checked="@user.StatusAktif"  style="cursor: pointer;" />
                                             <label class="form-check-label small text-muted" style="margin-left: 0.25rem;">@(user.StatusAktif ? "Aktif" : "Nonaktif")</label>
                                         </div>
                                     </td>
                                     <td class="text-center py-2 pe-4">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditUserModal(user)">Edit</button>
-                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteUser(user)">Hapus</button>
+                                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" >Edit</button>
+                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" >Hapus</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1097,7 +1120,7 @@ else
                                         }
                                     </td>
                                     <td class="text-center py-2 pe-4">
-                                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" title="Edit Spesialisasi" @onclick="() => OpenEditTeknisiModal(tek)">Edit</button>
+                                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" title="Edit Spesialisasi" >Edit</button>
                                     </td>
                                 </tr>
                             }
@@ -1197,101 +1220,123 @@ else
                             var pct = assign.Progress;
                             var statusColor = pct >= 100 ? "#16a34a" : pct >= 50 ? "#f59e0b" : "#E31E24";
                             var statusLabel = assign.StatusPenugasan;
-                            <div class="col-12">
-                                <div class="p-4" style="background:#f8fafc; border-radius:12px; border: 1px solid #e2e8f0;">
-                                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
-                                        <div>
-                                            <div class="fw-bold mb-1" style="color:#072C4C; font-size:1.05rem;">@assign.Acara?.NamaAcara</div>
-                                            <div class="text-muted d-flex align-items-center gap-3" style="font-size:0.82rem;">
-                                                <span>📅 @assign.Acara?.Tanggal.ToString("dd MMM yyyy")</span>
-                                                <span>📍 @assign.Acara?.LokasiNavigation?.NamaLokasi</span>
-                                                <span>�� @(assign.Teknisi?.User?.Username ?? "—")</span>
-                                            </div>
-                                        </div>
-                                        <span class="badge fw-normal px-3 py-2" style="background:@(statusLabel == "Selesai" ? "#dcfce7" : statusLabel == "Dokumen Diunggah" ? "#e0f2fe" : "#fef9c3"); color:@(statusLabel == "Selesai" ? "#166534" : statusLabel == "Dokumen Diunggah" ? "#0369a1" : "#854d0e"); border-radius:8px; font-size:0.8rem;">@statusLabel</span>
-                                    </div>
-                                    <div class="mt-4">
-                                        <div class="row g-4">
-                                            <div class="col-md-7">
-                                                <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
-                                                    Kebutuhan Acara:
-                                                </h6>
-                                                <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
-                                                    @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
-                                                    {
-                                                        var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
-                                                        var isChecked = CheckedKebutuhan.Contains(kebKey);
-                                                        bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(k => k.IsKembali);
+<div class="col-12">
+    @{ bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(k => k.IsKembali); }
+<div class="tek-card mb-2" style="border-radius: 12px; padding: 1.5rem;">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div style="flex: 1; min-width: 0;">
+                    <h5 class="fw-bold mb-2" style="color: #072C4C; font-size: 1.25rem; word-break: break-word; white-space: normal;">@assign.Acara?.NamaAcara</h5>
+                    <div class="text-muted d-flex flex-wrap align-items-center gap-3" style="font-size: 0.85rem;">
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#005CA9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            @assign.Acara?.Tanggal.ToString("dd MMM yyyy")
+                        </span>
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E31E24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            @assign.Acara?.JamMulai.ToString(@"hh\:mm") - @assign.Acara?.JamSelesai.ToString(@"hh\:mm")
+                        </span>
+                        <span class="d-flex align-items-center gap-1" style="word-break: break-word; white-space: normal;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#09A537" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            @assign.Acara?.LokasiNavigation?.NamaLokasi
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-                                                        <li class="@(isChecked ? "checked" : "")" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
-                                                            <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
-                                                                @if (statusLabel != "Menunggu Konfirmasi")
-                                                                {
-                                                                    <input type="checkbox" checked="@isChecked" disabled="@(keb.IsKembali || isAllReturned)"
-                                                                        @onchange="async () => await ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 16px; height: 16px; cursor: @((keb.IsKembali || isAllReturned) ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
-                                                                }
-                                                                <span style="color: #000000; font-size: 0.9rem; word-break: break-word; white-space: normal;">
-                                                                    @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")
-                                                                </span>
-                                                            </div>
-                                                            <span class="text-muted" style="font-size: 0.85rem; flex-shrink: 0;">@keb.Jumlah Unit</span>
-                                                        </li>
-                                                    }
-                                                </ul>
+            <div class="mt-4">
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                            Kebutuhan Acara:
+                        </h6>
+                        <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
+                            @foreach (var keb in assign.Acara?.Kebutuhan ?? new List<KebutuhanAcara>())
+                            {
+                                var kebKey = $"{assign.IdPenugasan}_{keb.IdKebutuhan}";
+                                var isChecked = CheckedKebutuhan.Contains(kebKey);
 
-                                                @if (assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
-                                                {
-                                                    <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
-                                                        Pengembalian Barang:
-                                                    </h6>
-                                                    <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
-                                                        @foreach (var keb in assign.Acara.Kebutuhan.Where(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
-                                                        {
-                                                            bool isAllReturned = assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any() && assign.Acara.Kebutuhan.All(ka => ka.IsKembali);
-                                                            <li style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
-                                                                <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
-                                                                    @if (statusLabel != "Menunggu Konfirmasi")
-                                                                    {
-                                                                        <input type="checkbox" checked="@keb.IsKembali" disabled="@isAllReturned"
-                                                                            @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 16px; height: 16px; cursor: @(isAllReturned ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
-                                                                    }
-                                                                    <span style="color: #000000; font-size: 0.9rem; text-decoration: @(keb.IsKembali ? "line-through" : "none"); word-break: break-word; white-space: normal;">
-                                                                        @keb.Barang?.NamaBarang (@keb.Jumlah Unit) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})")
-                                                                    </span>
-                                                                </div>
-                                                                <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="flex-shrink: 0; font-size: 0.75rem;">
-                                                                    @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
-                                                                </span>
-                                                            </li>
-                                                        }
-                                                    </ul>
-                                                }
-                                            </div>
-                                            
-                                            <div class="col-md-5">
-                                                <div style="background: transparent;">
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                        <label class="form-label fw-bold small text-dark m-0">Progress Acara: @pct%</label>
-                                                        @if (pct == 100)
-                                                        {
-                                                            <span class="badge bg-success" style="font-size: 0.75rem;">100% Selesai</span>
-                                                        }
-                                                    </div>
-                                                    <div class="progress mb-3" style="height: 10px; border-radius: 6px;">
-                                                        <div class="progress-bar" role="progressbar" style="width: @(pct)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 6px;"></div>
-                                                    </div>
-                                                    <label class="form-label fw-bold small text-dark">Catatan Teknisi / Admin:</label>
-                                                    <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
-                                                    
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-outline-secondary flex-fill" style="font-size: 0.8rem; border-radius: 8px;" @onclick="async () => await SimpanProgress(assign)">Simpan Catatan</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <li class="@(isChecked ? "checked" : "")" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                    <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                        @if (statusLabel != "Menunggu Konfirmasi")
+                                        {
+                                            <input type="checkbox" checked="@isChecked" disabled="@(keb.IsKembali || isAllReturned)"
+                                                @onchange="() => ToggleKebutuhan(kebKey, assign, keb)" style="accent-color: #005CA9; width: 16px; height: 16px; cursor: @((keb.IsKembali || isAllReturned) ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                        }
+                                        <span style="color: #000000; font-size: 0.9rem; word-break: break-word; white-space: normal;">
+                                            @keb.Barang?.NamaBarang @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $" ({keb.Keterangan})")
+                                        </span>
                                     </div>
-</div>
+                                    <span class="text-muted" style="font-size: 0.85rem; flex-shrink: 0;">@keb.Jumlah Unit</span>
+                                </li>
+                            }
+                        </ul>
+
+                        @if (assign.Acara?.Kebutuhan != null && assign.Acara.Kebutuhan.Any(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                        {
+                            <h6 class="fw-bold mb-3" style="font-size: 0.85rem; color: #000000;">
+                                Pengembalian Barang:
+                            </h6>
+                            <ul class="keb-checklist mb-4" style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px;">
+                                @foreach (var keb in assign.Acara.Kebutuhan.Where(k => CheckedKebutuhan.Contains($"{assign.IdPenugasan}_{k.IdKebutuhan}")))
+                                {
+                                    <li style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+                                        <div class="d-flex align-items-start gap-2" style="flex: 1; min-width: 0;">
+                                            @if (statusLabel != "Menunggu Konfirmasi")
+                                            {
+                                                <input type="checkbox" checked="@keb.IsKembali" disabled="@isAllReturned"
+                                                    @onchange="async () => await TogglePengembalianBarang(keb, assign)" style="accent-color: #09A537; width: 16px; height: 16px; cursor: @(isAllReturned ? "not-allowed" : "pointer"); flex-shrink: 0; margin-top: 3px;" />
+                                            }
+                                            <span style="color: #000000; font-size: 0.9rem; text-decoration: @(keb.IsKembali ? "line-through" : "none"); word-break: break-word; white-space: normal;">
+                                                @keb.Barang?.NamaBarang (@keb.Jumlah Unit) @(string.IsNullOrEmpty(keb.Keterangan) ? "" : $"({keb.Keterangan})")
+                                            </span>
+                                        </div>
+                                        <span class="badge @(keb.IsKembali ? "bg-success" : "bg-warning text-dark")" style="flex-shrink: 0; font-size: 0.75rem;">
+                                            @(keb.IsKembali ? "Sudah Dikembalikan" : "Belum Dikembalikan")
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                    
+                    <div class="col-md-5">
+                        @if (statusLabel == "Menunggu Konfirmasi")
+                        {
+                            <div class="d-flex h-100 align-items-center">
+                                <button class="tek-btn tek-btn-primary w-100" >Terima Penugasan</button>
                             </div>
+                        }
+                        else
+                        {
+                            <div style="background: transparent;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label fw-bold small text-dark m-0">Progress Acara: @pct%</label>
+                                    @if (pct == 100)
+                                    {
+                                        <span class="badge bg-success" style="font-size: 0.75rem;">100% Selesai</span>
+                                    }
+                                </div>
+                                <div class="progress mb-3" style="height: 10px; border-radius: 6px;">
+                                    <div class="progress-bar" role="progressbar" style="width: @(pct)%; background: linear-gradient(to right, #E31E24, #92C83E, #005CA9); border-radius: 6px;"></div>
+                                </div>
+                                <label class="form-label fw-bold small text-dark">Catatan Teknisi:</label>
+                                <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
+                                
+                                <div class="d-flex gap-2">
+                                    <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" >Simpan Catatan</button>
+                                    <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" >
+                                        @(string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) ? "Upload Foto (Opsional)" : "Lihat / Edit Foto")
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
                         }
                         </div>
                     }
@@ -1457,7 +1502,7 @@ else
                                         <div class="d-flex flex-wrap justify-content-start gap-2">
                                             @if (eventItem.StatusAcara == "Belum Ditugaskan")
                                             {
-                                                <button class="btn btn-sm fw-bold px-3" style="background: #fff; color: #005CA9; border: 1px solid #005CA9; border-radius: 8px; font-size: 0.8rem; transition: all 0.2s;" onmouseover="this.style.background='#005CA9'; this.style.color='#fff';" onmouseout="this.style.background='#fff'; this.style.color='#005CA9';" @onclick="() => OpenAssignModal(eventItem)">➕ Tugaskan Teknisi</button>
+                                                <button class="btn btn-sm fw-bold px-3" style="background: #fff; color: #005CA9; border: 1px solid #005CA9; border-radius: 8px; font-size: 0.8rem; transition: all 0.2s;" onmouseover="this.style.background='#005CA9'; this.style.color='#fff';" onmouseout="this.style.background='#fff'; this.style.color='#005CA9';" >➕ Tugaskan Teknisi</button>
                                             }
                                             else if (eventItem.StatusAcara == "Ditugaskan")
                                             {
@@ -1469,8 +1514,8 @@ else
                                             }
                                             else if (eventItem.StatusAcara == "Dokumen Diunggah" && assignment != null)
                                             {
-                                                <button class="btn btn-sm btn-outline-primary fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem;" @onclick="() => PreviewDocumentation(assignment)">🔍 Bukti</button>
-                                                <button class="btn btn-sm btn-success fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(25,135,84,0.2);" @onclick="() => CompleteEvent(eventItem)">✅ Selesaikan</button>
+                                                <button class="btn btn-sm btn-outline-primary fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem;" >🔍 Bukti</button>
+                                                <button class="btn btn-sm btn-success fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(25,135,84,0.2);" >✅ Selesaikan</button>
                                             }
                                         </div>
                                     </td>
@@ -1744,7 +1789,7 @@ else
                                     @if (EditEvent.StatusAcara != "Selesai")
                                     {
                                         <div class="col-1 text-center">
-                                            <button type="button" class="btn-delete-premium" @onclick="() => RemoveEditNeedInputRow(index)">
+                                            <button type="button" class="btn-delete-premium" >
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <polyline points="3 6 5 6 21 6"></polyline>
                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -1865,7 +1910,7 @@ else
         <div class="custom-modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); max-width: 520px; background-color: #ffffff;">
             <div class="modal-header p-4 border-bottom-0 d-flex justify-content-between align-items-center" style="background-color: #ffffff; padding-bottom: 0.5rem !important;">
                 <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">Tanda Tangan Konfirmasi</h4>
-                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowSignatureModal = false" aria-label="Close"></button>
+                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;"  aria-label="Close"></button>
             </div>
             <div class="modal-body px-3 py-2 text-center">
                 <p class="text-dark mb-4" style="font-size: 0.95rem; line-height: 1.5;">
@@ -1895,7 +1940,7 @@ else
                 </div>
             </div>
             <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowSignatureModal = false">Batal</button>
+                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" >Batal</button>
                 <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitSignature" disabled="@(string.IsNullOrEmpty(TechnicianNameInput))">
                     Kirim Tanda Tangan
                 </button>
@@ -1911,7 +1956,7 @@ else
         <div class="custom-modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); max-width: 520px; background-color: #ffffff;">
             <div class="modal-header p-4 border-bottom-0 d-flex justify-content-between align-items-center" style="background-color: #ffffff; padding-bottom: 0.5rem !important;">
                 <h4 class="modal-title m-0 fw-bold" style="color: #000000; font-family: 'Outfit'; font-size: 1.25rem;">Unggah Dokumentasi Setup</h4>
-                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowUploadModal = false" aria-label="Close"></button>
+                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;"  aria-label="Close"></button>
             </div>
             <div class="modal-body px-3 py-2 text-center">
                 <p class="text-dark mb-4" style="font-size: 0.95rem; line-height: 1.5;">
@@ -1937,7 +1982,7 @@ else
                 }
             </div>
             <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUploadModal = false">Batal</button>
+                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" >Batal</button>
                 <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitUpload">
                     Simpan Dokumentasi
                 </button>
@@ -1949,11 +1994,11 @@ else
 <!-- 4. Image Preview Modal -->
 @if (ShowPreviewModal)
 {
-    <div class="custom-modal-backdrop" @onclick="() => ShowPreviewModal = false">
+    <div class="custom-modal-backdrop" >
         <div class="custom-modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-width: 680px; background-color: #ffffff;" @onclick:stopPropagation>
             <div class="modal-header p-4 border-bottom-0 d-flex justify-content-between align-items-center" style="background-color: #ffffff; padding-bottom: 0.5rem !important;">
                 <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">Pratinjau Dokumentasi</h4>
-                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowPreviewModal = false" aria-label="Close"></button>
+                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;"  aria-label="Close"></button>
             </div>
             <div class="modal-body p-2 text-center" style="background-color: #0f172a;">
                  <img src="@PreviewImageUrl" class="img-fluid rounded" style="max-height: 500px; display: block; margin: 0 auto; object-fit: contain;" />
@@ -1969,7 +2014,7 @@ else
          <div class="custom-modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); max-width: 520px; background-color: #ffffff;">
              <div class="modal-header p-4 border-bottom-0 d-flex justify-content-between align-items-center" style="background-color: #ffffff; padding-bottom: 0.5rem !important;">
                  <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">@UserModalTitle</h4>
-                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowUserModal = false" aria-label="Close"></button>
+                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;"  aria-label="Close"></button>
              </div>
              <div class="modal-body px-3 py-2">
                  <div class="mb-3">
@@ -2003,7 +2048,7 @@ else
                  </div>
              </div>
              <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                 <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUserModal = false">Batal</button>
+                 <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" >Batal</button>
                  <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSaveUser">
                      Simpan Pengguna
                  </button>
