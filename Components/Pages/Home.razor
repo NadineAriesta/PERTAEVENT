@@ -1,4 +1,4 @@
-﻿@using System.Threading.Tasks
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿@using System.Threading.Tasks
 @page "/"
 @using EventSupportApp.Data
 @using Microsoft.EntityFrameworkCore
@@ -142,6 +142,54 @@
    .btn-delete-premium:hover {
         background-color: #fee2e2;
         color: #dc2626;
+    }
+
+    /* Copied from TeknisiDashboard */
+    .tek-card {
+        background: #fff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.2s ease;
+    }
+    .tek-card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+    }
+    .tek-btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s;
+        border: none;
+    }
+    .tek-btn-primary { background: #0f172a; color: white; }
+    .tek-btn-primary:hover { background: #1e293b; }
+    .tek-btn-outline {
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+    }
+    .tek-btn-outline:hover {
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #94a3b8;
+    }
+    .keb-checklist li {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-left: 3px solid #cbd5e1;
+        padding: 10px 14px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    .keb-checklist li:hover {
+        border-color: #cbd5e1;
+        background: #fafafa;
+    }
+    .keb-checklist li.checked {
+        border-left-color: #005CA9;
+        background: #f0f7ff;
     }
 </style>
 
@@ -443,13 +491,16 @@ else
                         <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Pantau status pengajuan acara</p>
                     </div>
                     <div class="d-flex gap-3 flex-wrap flex-md-nowrap align-items-center">
-                        <div class="d-flex align-items-center" style="background: #e2e8f0; border-radius: 10px; padding: 0.25rem;">
-                            <button type="button" class="btn border-0 @(DateFilter == "Semua" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Semua" ? "white" : "transparent"); color: @(DateFilter == "Semua" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Semua")'>Semua</button>
-                            <button type="button" class="btn border-0 @(DateFilter == "Minggu ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Minggu ini" ? "white" : "transparent"); color: @(DateFilter == "Minggu ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu ini</button>
-                            <button type="button" class="btn border-0 @(DateFilter == "Bulan ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Bulan ini" ? "white" : "transparent"); color: @(DateFilter == "Bulan ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan ini</button>
-                            <div class="border-start border-secondary opacity-25 mx-1" style="height: 20px;"></div>
-                            <input type="date" class="form-control form-control-sm border-0" style="background: transparent; color: #64748b; font-size: 0.85rem; cursor: pointer; box-shadow: none;" value="@CustomDateFilter" @onchange='(e) => CustomDateFilter = e.Value?.ToString() ?? ""'  />
-                        </div>
+                        <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0 align-items-center">
+    <button class="btn btn-sm @(DateFilter == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Semua")'>Semua Waktu</button>
+    <button class="btn btn-sm @(DateFilter == "Minggu ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu Ini</button>
+    <button class="btn btn-sm @(DateFilter == "Bulan ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan Ini</button>
+    <div class="border-start border-secondary opacity-25 mx-1" style="height: 18px;"></div>
+    <div class="position-relative d-flex align-items-center justify-content-center mx-1 @(!string.IsNullOrEmpty(CustomDateFilter) ? "bg-white shadow-sm border" : "")" style="width: 28px; height: 28px; border-radius: 6px;" title="Pilih Tanggal Spesifik">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="@(!string.IsNullOrEmpty(CustomDateFilter) ? "#0f172a" : "#64748b")" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <input type="date" max="@(DateTime.Now.Year)-12-31" class="position-absolute" style="opacity: 0; cursor: pointer; width: 100%; height: 100%; left: 0; top: 0; z-index: 2;" value="@CustomDateFilter" @onchange='(e) => { CustomDateFilter = e.Value?.ToString() ?? ""; if(!string.IsNullOrEmpty(CustomDateFilter)) DateFilter = "Custom"; else if (DateFilter == "Custom") DateFilter = "Semua"; }' />
+    </div>
+</div>
                         <div class="position-relative" style="width: 250px;">
                             <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
                             <input type="text" class="form-control" placeholder="Cari acara..." style="border-radius: 10px; border: 1px solid #cbd5e1; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
@@ -633,7 +684,7 @@ else
                         <div class="row g-3 mb-4">
                             <div class="col-md-4">
                                 <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Tanggal</label>
-                                <input type="date" class="form-control form-input-premium" @bind="NewEventDate" required />
+                                <input type="date" max="@(DateTime.Now.Year)-12-31" class="form-control form-input-premium" @bind="NewEventDate" required />
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Waktu Mulai</label>
@@ -692,7 +743,7 @@ else
                                             <input type="text" class="form-control form-input-premium" @bind="NewNeedsList[index].Keterangan" placeholder="Keterangan / Catatan (Opsional)" />
                                         </div>
                                         <div class="col-1 text-center">
-                                            <button type="button" class="btn-delete-premium" >
+                                            <button type="button" class="btn-delete-premium" @onclick="() => RemoveNeedInputRow(index)">
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <polyline points="3 6 5 6 21 6"></polyline>
                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -761,8 +812,8 @@ else
                                             @if (CurrentRole == "Admin")
                                             {
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" >Edit</button>
-                                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" >Hapus</button>
+                                                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditBarangModal(brg)">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteBarang(brg)">Hapus</button>
                                                 </div>
                                             }
                                             else
@@ -813,7 +864,7 @@ else
                                         <td class="py-3 text-center pe-4">
                                             @if (CurrentRole == "Admin")
                                             {
-                                                <div class="d-flex justify-content-center gap-2"><button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" >Edit</button><button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" >Hapus</button></div>
+                                                <div class="d-flex justify-content-center gap-2"><button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditLokasiModal(lok)">Edit</button><button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteLokasi(lok)">Hapus</button></div>
                                             }
                                             else
                                             {
@@ -896,8 +947,8 @@ else
                                     </td>
                                     <td class="text-center py-2 pe-4">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" >Edit</button>
-                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" >Hapus</button>
+                                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" @onclick="() => OpenEditUserModal(user)">Edit</button>
+                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" @onclick="() => DeleteUser(user)">Hapus</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -974,7 +1025,7 @@ else
                                         }
                                     </td>
                                     <td class="text-center py-2 pe-4">
-                                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" title="Edit Spesialisasi" >Edit</button>
+                                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 fw-bold" title="Edit Spesialisasi" @onclick="() => { if (tek.User != null) OpenEditUserModal(tek.User); }">Edit</button>
                                     </td>
                                 </tr>
                             }
@@ -995,11 +1046,16 @@ else
                             <input type="text" class="form-control" placeholder="Cari event, tgl, lokasi, barang..." style="border-radius: 8px; border: 1px solid #cbd5e1; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.85rem; width: 100%;" @bind="SearchFilter" @bind:event="oninput" />
                         </div>
                         
-                        <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0">
-                            <button class="btn btn-sm @(DateFilter == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Semua")'>Semua Waktu</button>
-                            <button class="btn btn-sm @(DateFilter == "Minggu ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu Ini</button>
-                            <button class="btn btn-sm @(DateFilter == "Bulan ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan Ini</button>
-                        </div>
+                        <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0 align-items-center">
+    <button class="btn btn-sm @(DateFilter == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Semua")'>Semua Waktu</button>
+    <button class="btn btn-sm @(DateFilter == "Minggu ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu Ini</button>
+    <button class="btn btn-sm @(DateFilter == "Bulan ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan Ini</button>
+    <div class="border-start border-secondary opacity-25 mx-1" style="height: 18px;"></div>
+    <div class="position-relative d-flex align-items-center justify-content-center mx-1 @(!string.IsNullOrEmpty(CustomDateFilter) ? "bg-white shadow-sm border" : "")" style="width: 28px; height: 28px; border-radius: 6px;" title="Pilih Tanggal Spesifik">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="@(!string.IsNullOrEmpty(CustomDateFilter) ? "#0f172a" : "#64748b")" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <input type="date" max="@(DateTime.Now.Year)-12-31" class="position-absolute" style="opacity: 0; cursor: pointer; width: 100%; height: 100%; left: 0; top: 0; z-index: 2;" value="@CustomDateFilter" @onchange='(e) => { CustomDateFilter = e.Value?.ToString() ?? ""; if(!string.IsNullOrEmpty(CustomDateFilter)) DateFilter = "Custom"; else if (DateFilter == "Custom") DateFilter = "Semua"; }' />
+    </div>
+</div>
                         
                         <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0">
                             <button class="btn btn-sm @(PenugasanStatusFilter == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => PenugasanStatusFilter = "Semua"'>Semua Status</button>
@@ -1074,11 +1130,11 @@ else
                                         {
                                             @if (!string.IsNullOrEmpty(assignment.DokumentasiKegiatanFile))
                                             {
-                                                <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem; border-radius: 16px; padding: 0.25rem 0.75rem;" @onclick="() => Task.CompletedTask">Lihat Foto</button>
+                                                <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem; border-radius: 16px; padding: 0.25rem 0.75rem;" @onclick="() => HandleOpenUpload(assignment)">Lihat Foto</button>
                                             }
                                             else
                                             {
-                                                <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem; border-radius: 16px; padding: 0.25rem 0.75rem;" @onclick="() => Task.CompletedTask">+ Upload Foto</button>
+                                                <button class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem; border-radius: 16px; padding: 0.25rem 0.75rem;" @onclick="() => HandleOpenUpload(assignment)">+ Upload Foto</button>
                                             }
                                         }
                                         else
@@ -1200,7 +1256,7 @@ else
                         @if (statusLabel == "Menunggu Konfirmasi")
                         {
                             <div class="d-flex h-100 align-items-center">
-                                <button class="tek-btn tek-btn-primary w-100" >Terima Penugasan</button>
+                                <button class="tek-btn tek-btn-primary w-100" @onclick="() => TerimaPenugasan(assign)">Terima Penugasan</button>
                             </div>
                         }
                         else
@@ -1220,8 +1276,10 @@ else
                                 <textarea class="form-control mb-3" style="font-size: 0.85rem; border-radius: 8px;" rows="2" @bind="assign.CatatanTeknisi" placeholder="Tambahkan catatan jika ada..."></textarea>
                                 
                                 <div class="d-flex gap-2">
-                                    <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem;" >Simpan Catatan</button>
-                                    <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" >
+                                    <button class="tek-btn tek-btn-outline flex-fill" style="font-size: 0.8rem; @(SavedProgressIds.Contains(assign.IdPenugasan) ? "background-color: #f0fdf4; border-color: #16a34a; color: #16a34a;" : "")" @onclick="() => SimpanProgress(assign)">
+                                        @(SavedProgressIds.Contains(assign.IdPenugasan) ? "✓ Tersimpan" : "Simpan Catatan")
+                                    </button>
+                                    <button class="tek-btn tek-btn-primary flex-fill" style="font-size: 0.8rem;" @onclick="() => HandleOpenUpload(assign)">
                                         @(string.IsNullOrEmpty(assign.DokumentasiKegiatanFile) ? "Upload Foto (Opsional)" : "Lihat / Edit Foto")
                                     </button>
                                 </div>
@@ -1231,7 +1289,6 @@ else
                 </div>
             </div>
         </div>
-    }
 
 </div>
                         }
@@ -1305,16 +1362,16 @@ else
                     <p class="m-0 text-muted mt-1" style="font-size: 0.85rem;">Pantau dan kelola seluruh pengajuan acara</p>
                 </div>
                 <div class="d-flex gap-3 flex-wrap flex-md-nowrap align-items-center">
-                    <div class="d-flex align-items-center" style="background: #e2e8f0; border-radius: 10px; padding: 0.25rem;">
-                        <button type="button" class="btn border-0 @(DateFilter == "Semua" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Semua" ? "white" : "transparent"); color: @(DateFilter == "Semua" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Semua")'>Semua</button>
-                        <button type="button" class="btn border-0 @(DateFilter == "Minggu ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Minggu ini" ? "white" : "transparent"); color: @(DateFilter == "Minggu ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu ini</button>
-                        <button type="button" class="btn border-0 @(DateFilter == "Bulan ini" ? "fw-bold shadow-sm" : "text-muted") px-3 py-1" style="background-color: @(DateFilter == "Bulan ini" ? "white" : "transparent"); color: @(DateFilter == "Bulan ini" ? "#0f172a" : "inherit"); border-radius: 8px; font-size: 0.85rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan ini</button>
-                        <div class="border-start border-secondary opacity-25 mx-1" style="height: 20px;"></div>
-                        <div class="position-relative d-flex align-items-center justify-content-center mx-1" style="width: 24px; height: 24px; border-radius: 4px;" title="Filter Bulan Spesifik">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            <input type="date" min="2020-01-01" max="2026-12-31" value="@CustomDateFilter" @onchange='(e) => CustomDateFilter = e.Value?.ToString() ?? ""' class="position-absolute" style="opacity: 0; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2;" />
-                        </div>
-                    </div>
+                    <div class="d-flex bg-light p-1 rounded-3 border flex-nowrap flex-shrink-0 align-items-center">
+    <button class="btn btn-sm @(DateFilter == "Semua" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Semua")'>Semua Waktu</button>
+    <button class="btn btn-sm @(DateFilter == "Minggu ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Minggu ini")'>Minggu Ini</button>
+    <button class="btn btn-sm @(DateFilter == "Bulan ini" ? "bg-white shadow-sm fw-bold text-dark border-0" : "text-muted border-0") px-3 py-1" style="font-size: 0.8rem;" @onclick='() => SetDateFilter("Bulan ini")'>Bulan Ini</button>
+    <div class="border-start border-secondary opacity-25 mx-1" style="height: 18px;"></div>
+    <div class="position-relative d-flex align-items-center justify-content-center mx-1 @(!string.IsNullOrEmpty(CustomDateFilter) ? "bg-white shadow-sm border" : "")" style="width: 28px; height: 28px; border-radius: 6px;" title="Pilih Tanggal Spesifik">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="@(!string.IsNullOrEmpty(CustomDateFilter) ? "#0f172a" : "#64748b")" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <input type="date" max="@(DateTime.Now.Year)-12-31" class="position-absolute" style="opacity: 0; cursor: pointer; width: 100%; height: 100%; left: 0; top: 0; z-index: 2;" value="@CustomDateFilter" @onchange='(e) => { CustomDateFilter = e.Value?.ToString() ?? ""; if(!string.IsNullOrEmpty(CustomDateFilter)) DateFilter = "Custom"; else if (DateFilter == "Custom") DateFilter = "Semua"; }' />
+    </div>
+</div>
                     <div class="position-relative" style="width: 250px;">
                         <span class="position-absolute text-muted" style="left: 1rem; top: 50%; transform: translateY(-50%);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
                         <input type="text" class="form-control" placeholder="Cari acara..." style="border-radius: 10px; border: 1px solid #cbd5e1; padding: 0.65rem 1rem 0.65rem 2.5rem; background: #fff; font-size: 0.9rem;" @bind="SearchFilter" @bind:event="oninput" />
@@ -1399,7 +1456,7 @@ else
                                         <div class="d-flex flex-wrap justify-content-start gap-2">
                                             @if (eventItem.StatusAcara == "Belum Ditugaskan")
                                             {
-                                                <button class="btn btn-sm fw-bold px-3" style="background: #fff; color: #005CA9; border: 1px solid #005CA9; border-radius: 8px; font-size: 0.8rem; transition: all 0.2s;" onmouseover="this.style.background='#005CA9'; this.style.color='#fff';" onmouseout="this.style.background='#fff'; this.style.color='#005CA9';" >➕ Tugaskan Teknisi</button>
+                                                <button class="btn btn-sm fw-bold px-3" style="background: #fff; color: #005CA9; border: 1px solid #005CA9; border-radius: 8px; font-size: 0.8rem; transition: all 0.2s;" onmouseover="this.style.background='#005CA9'; this.style.color='#fff';" onmouseout="this.style.background='#fff'; this.style.color='#005CA9';" @onclick="() => OpenAssignModal(eventItem)">➕ Tugaskan Teknisi</button>
                                             }
                                             else if (eventItem.StatusAcara == "Ditugaskan")
                                             {
@@ -1411,7 +1468,7 @@ else
                                             }
                                             else if (eventItem.StatusAcara == "Dokumen Diunggah" && assignment != null)
                                             {
-                                                <button class="btn btn-sm btn-outline-primary fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem;" >🔍 Bukti</button>
+                                                <button class="btn btn-sm btn-outline-primary fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem;" @onclick="() => HandleOpenUpload(assignment)">🔍 Bukti</button>
                                                 <button class="btn btn-sm btn-success fw-bold px-3" style="border-radius: 8px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(25,135,84,0.2);" >✅ Selesaikan</button>
                                             }
                                         </div>
@@ -1621,7 +1678,7 @@ else
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Tanggal</label>
-                            <input type="date" class="form-control form-input-premium" @bind="EditEventDate" disabled="@(EditEvent.StatusAcara == "Selesai")" required />
+                            <input type="date" max="@(DateTime.Now.Year)-12-31" class="form-control form-input-premium" @bind="EditEventDate" disabled="@(EditEvent.StatusAcara == "Selesai")" required />
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold text-dark" style="font-size: 0.85rem;">Waktu Mulai</label>
@@ -1853,7 +1910,7 @@ else
         <div class="custom-modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); max-width: 520px; background-color: #ffffff;">
             <div class="modal-header p-4 border-bottom-0 d-flex justify-content-between align-items-center" style="background-color: #ffffff; padding-bottom: 0.5rem !important;">
                 <h4 class="modal-title m-0 fw-bold" style="color: #000000; font-family: 'Outfit'; font-size: 1.25rem;">Unggah Dokumentasi Setup</h4>
-                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;"  aria-label="Close"></button>
+                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowUploadModal = false" aria-label="Close"></button>
             </div>
             <div class="modal-body px-3 py-2 text-center">
                 <p class="text-dark mb-4" style="font-size: 0.95rem; line-height: 1.5;">
@@ -1879,7 +1936,7 @@ else
                 }
             </div>
             <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" >Batal</button>
+                <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUploadModal = false">Batal</button>
                 <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSubmitUpload">
                     Simpan Dokumentasi
                 </button>
@@ -1895,7 +1952,7 @@ else
         <div class="custom-modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-width: 680px; background-color: #ffffff;" @onclick:stopPropagation>
             <div class="modal-header p-4 border-bottom-0 d-flex justify-content-between align-items-center" style="background-color: #ffffff; padding-bottom: 0.5rem !important;">
                 <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">Pratinjau Dokumentasi</h4>
-                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;"  aria-label="Close"></button>
+                <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowPreviewModal = false" aria-label="Close"></button>
             </div>
             <div class="modal-body p-2 text-center" style="background-color: #0f172a;">
                  <img src="@PreviewImageUrl" class="img-fluid rounded" style="max-height: 500px; display: block; margin: 0 auto; object-fit: contain;" />
@@ -1911,7 +1968,7 @@ else
          <div class="custom-modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.12); max-width: 520px; background-color: #ffffff;">
              <div class="modal-header p-4 border-bottom-0 d-flex justify-content-between align-items-center" style="background-color: #ffffff; padding-bottom: 0.5rem !important;">
                  <h4 class="modal-title m-0 fw-bold" style="color: #072C4C; font-family: 'Outfit'; font-size: 1.25rem;">@UserModalTitle</h4>
-                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;"  aria-label="Close"></button>
+                 <button type="button" class="btn-close shadow-none" style="opacity: 0.6;" @onclick="() => ShowUserModal = false" aria-label="Close"></button>
              </div>
              <div class="modal-body px-3 py-2">
                  <div class="mb-3">
@@ -1945,7 +2002,7 @@ else
                  </div>
              </div>
              <div class="modal-footer p-4 border-top-0 d-flex justify-content-end gap-3" style="background-color: #ffffff; padding-top: 0.5rem !important;">
-                 <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" >Batal</button>
+                 <button type="button" class="btn btn-light px-3 py-2 fw-bold rounded-pill" style="border: 1px solid #cbd5e1; color: #475569; font-size: 0.88rem;" @onclick="() => ShowUserModal = false">Batal</button>
                  <button type="button" class="btn-premium-red px-3 py-2 fw-bold rounded-pill" style="min-width: 160px; font-size: 0.88rem;" @onclick="HandleSaveUser">
                      Simpan Pengguna
                  </button>
@@ -2242,42 +2299,53 @@ else
     private string PenugasanStatusFilter { get; set; } = "Semua";
     private async Task ExportExcelPenugasan()
     {
-        var data = AllSupportAcara.Where(ev => {
-            var matchSearch = string.IsNullOrEmpty(SearchFilter) ||
-                ev.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
-                (GetAssignmentForEvent(ev.IdAcara)?.Teknisi?.User?.Username?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                (ev.LokasiNavigation?.NamaLokasi != null && ev.LokasiNavigation.NamaLokasi.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase)) ||
-                (ev.Kebutuhan != null && ev.Kebutuhan.Any(k => k.Barang != null && k.Barang.NamaBarang.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase)));
-            if (!matchSearch) return false;
-            var isClose = (ev.StatusAcara == "Selesai" || ev.StatusAcara == "Ditolak");
-            if (PenugasanStatusFilter == "Open" && isClose) return false;
-            if (PenugasanStatusFilter == "Close" && !isClose) return false;
-            bool matchDate = true;
-            if (DateFilter == "Minggu ini") matchDate = (ev.Tanggal.Date >= DateTime.Today && ev.Tanggal.Date <= DateTime.Today.AddDays(7));
-            else if (DateFilter == "Bulan ini") matchDate = (ev.Tanggal.Month == DateTime.Today.Month && ev.Tanggal.Year == DateTime.Today.Year);
-            return matchDate;
-        }).ToList();
-
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine("Nama Acara,Teknisi,Tanggal,Lokasi,Kebutuhan IT,Status,Catatan Teknisi,Dokumentasi");
-        foreach (var ev in data)
+        try 
         {
-            var assignment = GetAssignmentForEvent(ev.IdAcara);
-            var isClose = (ev.StatusAcara == "Selesai" || ev.StatusAcara == "Ditolak");
-            var status = isClose ? "Close" : "Open";
-            var needs = ev.Kebutuhan != null 
-                ? string.Join(" | ", ev.Kebutuhan.Select(k => k.Barang?.NamaBarang)) 
-                : "";
-            var catatan = assignment != null && !string.IsNullOrEmpty(assignment.CatatanTeknisi) ? assignment.CatatanTeknisi.Replace(",", " ").Replace("\n", " ") : "-";
-            var namaAcara = ev.NamaAcara?.Replace(",", " ") ?? "";
-            var teknisi = (assignment?.Teknisi?.User?.Username ?? "Menunggu").Replace(",", " ");
-            var lokasi = ev.LokasiNavigation?.NamaLokasi?.Replace(",", " ") ?? "";
-            var tanggal = ev.Tanggal.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("id-ID"));
-            var doc = assignment != null && !string.IsNullOrEmpty(assignment.DokumentasiKegiatanFile) ? "Ada" : "Tidak Ada";
-            sb.AppendLine($"{namaAcara},{teknisi},{tanggal},{lokasi},{needs},{status},{catatan},{doc}");
+            var data = AllSupportAcara.Where(ev => {
+                var matchSearch = string.IsNullOrEmpty(SearchFilter) ||
+                    ev.NamaAcara.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                    (GetAssignmentForEvent(ev.IdAcara)?.Teknisi?.User?.Username?.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (ev.LokasiNavigation?.NamaLokasi != null && ev.LokasiNavigation.NamaLokasi.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase)) ||
+                    (ev.Kebutuhan != null && ev.Kebutuhan.Any(k => k.Barang != null && k.Barang.NamaBarang.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase)));
+                if (!matchSearch) return false;
+                var isClose = (ev.StatusAcara == "Selesai" || ev.StatusAcara == "Ditolak");
+                if (PenugasanStatusFilter == "Open" && isClose) return false;
+                if (PenugasanStatusFilter == "Close" && !isClose) return false;
+                bool matchDate = true;
+                if (DateFilter == "Minggu ini") matchDate = (ev.Tanggal.Date >= DateTime.Today && ev.Tanggal.Date <= DateTime.Today.AddDays(7));
+                else if (DateFilter == "Bulan ini") matchDate = (ev.Tanggal.Month == DateTime.Today.Month && ev.Tanggal.Year == DateTime.Today.Year);
+                return matchDate;
+            }).ToList();
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>");
+            sb.AppendLine("<head><meta charset='utf-8'></head><body>");
+            sb.AppendLine("<table border='1'>");
+            sb.AppendLine("<tr><th style='background-color:#09A537;color:white;'>Nama Acara</th><th style='background-color:#09A537;color:white;'>Teknisi</th><th style='background-color:#09A537;color:white;'>Tanggal</th><th style='background-color:#09A537;color:white;'>Lokasi</th><th style='background-color:#09A537;color:white;'>Kebutuhan IT</th><th style='background-color:#09A537;color:white;'>Status</th><th style='background-color:#09A537;color:white;'>Catatan Teknisi</th><th style='background-color:#09A537;color:white;'>Dokumentasi</th></tr>");
+            foreach (var ev in data)
+            {
+                var assignment = GetAssignmentForEvent(ev.IdAcara);
+                var isClose = (ev.StatusAcara == "Selesai" || ev.StatusAcara == "Ditolak");
+                var status = isClose ? "Close" : "Open";
+                var needs = ev.Kebutuhan != null 
+                    ? string.Join(" | ", ev.Kebutuhan.Select(k => k.Barang?.NamaBarang)) 
+                    : "";
+                var catatan = assignment != null && !string.IsNullOrEmpty(assignment.CatatanTeknisi) ? assignment.CatatanTeknisi : "-";
+                var namaAcara = ev.NamaAcara ?? "";
+                var teknisi = (assignment?.Teknisi?.User?.Username ?? "Menunggu");
+                var lokasi = ev.LokasiNavigation?.NamaLokasi ?? "";
+                var tanggal = ev.Tanggal.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("id-ID"));
+                var doc = assignment != null && !string.IsNullOrEmpty(assignment.DokumentasiKegiatanFile) ? "Ada" : "Tidak Ada";
+                sb.AppendLine($"<tr><td>{System.Net.WebUtility.HtmlEncode(namaAcara)}</td><td>{System.Net.WebUtility.HtmlEncode(teknisi)}</td><td>{System.Net.WebUtility.HtmlEncode(tanggal)}</td><td>{System.Net.WebUtility.HtmlEncode(lokasi)}</td><td>{System.Net.WebUtility.HtmlEncode(needs)}</td><td>{System.Net.WebUtility.HtmlEncode(status)}</td><td>{System.Net.WebUtility.HtmlEncode(catatan)}</td><td>{System.Net.WebUtility.HtmlEncode(doc)}</td></tr>");
+            }
+            sb.AppendLine("</table></body></html>");
+            var base64 = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(sb.ToString()));
+            await JSRuntime.InvokeVoidAsync("eval", $"let a = document.createElement('a'); a.href = 'data:application/vnd.ms-excel;base64,{base64}'; a.download = 'Export_Penugasan.xls'; document.body.appendChild(a); a.click(); document.body.removeChild(a);");
+        } 
+        catch (Exception ex)
+        {
+            ShowNotificationWithTimer($"Gagal Export: {ex.Message}");
         }
-        var base64 = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(sb.ToString()));
-        await JSRuntime.InvokeVoidAsync("eval", $"let a = document.createElement('a'); a.href = 'data:text/csv;base64,{base64}'; a.download = 'Export_Penugasan.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);");
     }
 
     private string _customDateFilter = "";
@@ -2486,6 +2554,38 @@ else
         await LoadDataAsync();
     }
 
+    
+    private async Task OpenUploadModal(Penugasan p)
+    {
+        if (!string.IsNullOrEmpty(p.DokumentasiKegiatanFile))
+        {
+            PreviewImageUrl = p.DokumentasiKegiatanFile;
+            ShowPreviewModal = true;
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Teknisi belum mengunggah foto dokumentasi.");
+        }
+    }
+
+    private async Task TerimaPenugasan(Penugasan p)
+    {
+        p.StatusPenugasan = "Siap Bertugas";
+        p.WaktuKonfirmasi = DateTime.Now;
+        p.Progress = CalculateProgress(p);
+        DbContext.Entry(p).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        
+        DbContext.AuditLogs.Add(new AuditLog
+        {
+            Waktu = DateTime.Now, Username = LoggedInUser?.Username ?? "Sistem",
+            Aksi = "Terima Penugasan by Admin/Helpdesk",
+            Detail = $"Penugasan '{p.Acara?.NamaAcara}' diterima."
+        });
+        
+        await DbContext.SaveChangesAsync();
+        await LoadDataAsync();
+    }
+
     private async Task SimpanProgress(Penugasan p)
     {
         DbContext.Entry(p).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
@@ -2500,6 +2600,7 @@ else
         await DbContext.SaveChangesAsync();
         SavedProgressIds.Add(p.IdPenugasan);
         StateHasChanged();
+        ShowNotificationWithTimer("Catatan berhasil disimpan.");
         await Task.Delay(3000);
         SavedProgressIds.Remove(p.IdPenugasan);
         StateHasChanged();

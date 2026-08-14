@@ -1,4 +1,4 @@
-@using EventSupportApp.Data
+﻿﻿@using EventSupportApp.Data
 
 @namespace EventSupportApp.Components.Pages
 
@@ -136,8 +136,9 @@
                         <button class="btn btn-sm btn-pill-filter @(AdminDateFilter == "Semua" ? "active" : "")" @onclick='() => SetAdminDateFilter("Semua")'>Semua</button>
                         <button class="btn btn-sm btn-pill-filter @(AdminDateFilter == "Minggu ini" ? "active" : "")" @onclick='() => SetAdminDateFilter("Minggu ini")'>Minggu ini</button>
                         <button class="btn btn-sm btn-pill-filter @(AdminDateFilter == "Bulan ini" ? "active" : "")" @onclick='() => SetAdminDateFilter("Bulan ini")'>Bulan ini</button>
-                        <div class="ms-2 d-flex align-items-center">
-                            <input type="date" class="form-control form-control-sm" style="border-radius: 20px; font-size: 0.8rem; border-color: #cbd5e1; height: 30px; display: inline-block; width: auto;" value="@AdminCustomDate" @onchange='(e) => AdminCustomDate = e.Value?.ToString() ?? ""'  />
+                        <div class="ms-2 position-relative d-flex align-items-center justify-content-center @(!string.IsNullOrEmpty(AdminCustomDate) ? "bg-white shadow-sm border" : "")" style="width: 28px; height: 28px; border-radius: 6px;" title="Pilih Tanggal Spesifik">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="@(!string.IsNullOrEmpty(AdminCustomDate) ? "#0f172a" : "#64748b")" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <input type="date" max="@(DateTime.Now.Year)-12-31" class="position-absolute" style="opacity: 0; cursor: pointer; width: 100%; height: 100%; left: 0; top: 0; z-index: 2;" value="@AdminCustomDate" @onchange='(e) => { AdminCustomDate = e.Value?.ToString() ?? ""; if(!string.IsNullOrEmpty(AdminCustomDate)) AdminDateFilter = "Custom"; else if (AdminDateFilter == "Custom") AdminDateFilter = "Semua"; }' />
                         </div>
                     </div>
 
